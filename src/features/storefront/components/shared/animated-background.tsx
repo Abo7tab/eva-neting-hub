@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useStorefrontContext } from '../providers/storefront-provider';
 
 export const AnimatedBackground = () => {
@@ -15,15 +16,20 @@ export const AnimatedBackground = () => {
   // Maps 0-100 speed to 30s-5s duration
   const duration = 30 - (speed / 100) * 25;
 
-  const blobs = Array.from({ length: count }).map((_, i) => ({
-    id: i,
-    color: i % 2 === 0 ? 'var(--eva-bg-1, #F97316)' : 'var(--eva-bg-2, #FB923C)',
-    left: `${Math.random() * 80}%`,
-    top: `${Math.random() * 80}%`,
-    animationName: `blob-${i % 4}`,
-    animationDuration: `${duration + (i * 2)}s`,
-    animationDelay: `-${i * 3}s`,
-  }));
+  const [blobs, setBlobs] = useState<any[]>([]);
+
+  useEffect(() => {
+    const generated = Array.from({ length: count }).map((_, i) => ({
+      id: i,
+      color: i % 2 === 0 ? 'var(--eva-bg-1, #F97316)' : 'var(--eva-bg-2, #FB923C)',
+      left: `${Math.random() * 80}%`,
+      top: `${Math.random() * 80}%`,
+      animationName: `blob-${i % 4}`,
+      animationDuration: `${duration + (i * 2)}s`,
+      animationDelay: `-${i * 3}s`,
+    }));
+    setBlobs(generated);
+  }, [count, duration]);
 
   return (
     <>
