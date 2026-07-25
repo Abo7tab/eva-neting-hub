@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useInfiniteQuery } from '@tanstack/react-query';
 import { storefrontApi } from '../api/storefront.api';
 import { ProductsListParams } from '@/features/products/types/product.types';
 import { CheckoutPayload } from '../types/storefront.types';
@@ -41,6 +41,18 @@ export const usePublicProducts = (params?: ProductsListParams) => {
   return useQuery({
     queryKey: ['public-products', params],
     queryFn: () => storefrontApi.getProducts(params),
+  });
+};
+
+export const usePublicInfiniteProducts = (params?: ProductsListParams) => {
+  return useInfiniteQuery({
+    queryKey: ['public-products-infinite', params],
+    queryFn: ({ pageParam = 1 }) => storefrontApi.getProducts({ ...params, page: pageParam }),
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.meta) return undefined;
+      return lastPage.meta.current_page < lastPage.meta.last_page ? lastPage.meta.current_page + 1 : undefined;
+    },
+    initialPageParam: 1,
   });
 };
 

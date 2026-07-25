@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { AnimatedBackground } from '@/features/storefront/components/shared/animated-background';
-import { usePublicProducts } from '@/features/storefront/hooks/use-storefront';
+import { usePublicInfiniteProducts } from '@/features/storefront/hooks/use-storefront';
 import { Search, Filter, ChevronDown } from 'lucide-react';
 import {
   DropdownMenu,
@@ -24,10 +24,12 @@ export default function ProductsPage() {
     setTimeout(() => setDebouncedSearch(e.target.value), 500);
   };
 
-  const { data: productsData, isLoading } = usePublicProducts({
+  const { data: infiniteData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = usePublicInfiniteProducts({
     search: debouncedSearch,
     sort_by: sortBy,
   });
+
+  const allProducts = infiniteData?.pages.flatMap(page => page.data) || [];
 
   return (
     <div className="relative min-h-screen pb-20">
@@ -83,24 +85,45 @@ export default function ProductsPage() {
         {/* Product Grid */}
         {isLoading ? (
           <ProductGridSkeleton />
-        ) : productsData?.data.length === 0 ? (
+        ) : allProducts.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-slate-100">
             <h3 className="text-2xl font-bold text-slate-600 mb-2">لا توجد منتجات</h3>
             <p className="text-slate-500">جربي البحث بكلمات أخرى.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-            {productsData?.data.map((product, i) => (
-              <motion.div
-                key={product.uuid}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: (i % 10) * 0.1 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+              {allProducts.map((product, i) => (
+                <motion.div
+                  key={product.uuid}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: (i % 10) * 0.1 }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
+              ))}
+            </div>
+
+            {hasNextPage && (
+              <div className="mt-12 text-center">
+                <button
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetchingNextPage}
+                  className="px-8 py-3 bg-white text-slate-700 hover:text-(--color-primary) font-bold rounded-xl shadow-sm border border-slate-200 transition-all disabled:opacity-50 inline-flex items-center justify-center gap-2"
+                >
+                  {isFetchingNextPage ? (
+                    <>
+                      <span className="w-5 h-5 border-2 border-slate-300 border-t-slate-700 rounded-full animate-spin"></span>
+                      جاري التحميل...
+                    </>
+                  ) : (
+                    'عرض المزيد'
+                  )}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

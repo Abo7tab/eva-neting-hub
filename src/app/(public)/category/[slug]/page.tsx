@@ -3,7 +3,7 @@
 import { use, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
-import { usePublicCategory, usePublicProducts, usePublicBrands } from '@/features/storefront/hooks/use-storefront';
+import { usePublicCategory, usePublicInfiniteProducts, usePublicBrands } from '@/features/storefront/hooks/use-storefront';
 import { Filter, ChevronDown, SlidersHorizontal, X } from 'lucide-react';
 import {
   DropdownMenu,
@@ -20,17 +20,19 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   const { data: category, isLoading: isCategoryLoading } = usePublicCategory(resolvedParams.slug);
-  const { data: productsData, isLoading: isProductsLoading } = usePublicProducts({
+  const { data: infiniteData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isProductsLoading } = usePublicInfiniteProducts({
     category_uuid: category?.uuid,
     brand_uuid: selectedBrand,
     sort_by: sortBy,
   });
   const { data: brandsData } = usePublicBrands();
 
-  const isLoading = isCategoryLoading || (isProductsLoading && !productsData);
+  const isLoading = isCategoryLoading || (isProductsLoading && !infiniteData);
+  
+  const allProducts = infiniteData?.pages.flatMap(page => page.data) || [];
   
   // Local price filtering
-  const displayedProducts = productsData?.data?.filter(product => {
+  const displayedProducts = allProducts.filter(product => {
     if (priceFilter === 'all') return true;
     const price = parseFloat(product.price);
     if (priceFilter === 'under_500') return price < 500;
@@ -204,19 +206,40 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                 )}
               </div>
             ) : (
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={{
-                  hidden: { opacity: 0 },
-                  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-                }}
-                className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-              >
-                {displayedProducts?.map((product) => (
-                  <ProductCard key={product.uuid} product={product} />
-                ))}
-              </motion.div>
+              <>
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+                  }}
+                  className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+                >
+                  {displayedProducts?.map((product) => (
+                    <ProductCard key={product.uuid} product={product} />
+                  ))}
+                </motion.div>
+
+                {hasNextPage && (
+                  <div className="mt-12 text-center">
+                    <button
+                      onClick={() => fetchNextPage()}
+                      disabled={isFetchingNextPage}
+                      className="px-8 py-3 bg-white text-slate-700 hover:text-(--color-primary) font-bold rounded-xl shadow-sm border border-slate-200 transition-all disabled:opacity-50 inline-flex items-center justify-center gap-2"
+                    >
+                      {isFetchingNextPage ? (
+                        <>
+                          <span className="w-5 h-5 border-2 border-slate-300 border-t-slate-700 rounded-full animate-spin"></span>
+                          جاري التحميل...
+                        </>
+                      ) : (
+                        'عرض المزيد'
+                      )}
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
