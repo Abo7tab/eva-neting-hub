@@ -36,13 +36,13 @@
   --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
+  --color-accent: var(--eva-accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
+  --color-secondary: var(--eva-secondary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
+  --color-primary: var(--eva-primary);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -57,6 +57,14 @@
 }
 
 :root {
+  /* EVA Theme fallback colors — overwritten by StorefrontProvider on mount */
+  --eva-primary: #F97316;
+  --eva-secondary: #EA580C;
+  --eva-accent: #FED7AA;
+  --eva-text: #1F2937;
+  --eva-bg-1: #F97316;
+  --eva-bg-2: #FB923C;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);

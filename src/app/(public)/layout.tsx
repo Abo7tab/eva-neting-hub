@@ -1,0 +1,65 @@
+import type { Metadata, ResolvingMetadata } from "next";
+import { StorefrontProvider } from "@/features/storefront/components/providers/storefront-provider";
+import { storefrontApi } from "@/features/storefront/api/storefront.api";
+import { Header } from "@/features/storefront/components/shared/header";
+import { Footer } from "@/features/storefront/components/shared/footer";
+
+export async function generateMetadata(
+  { params }: { params: {} },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  try {
+    const settings = await storefrontApi.getSettings();
+    const settingsMap = settings.reduce((acc, curr) => {
+      acc[curr.setting_key] = curr.setting_value;
+      return acc;
+    }, {} as Record<string, string | null>);
+
+    return {
+      title: {
+        default: settingsMap['site_name'] || "Eva Beauty Hub",
+        template: `%s | ${settingsMap['site_name'] || "Eva Beauty Hub"}`,
+      },
+      description: settingsMap['seo_meta_description'] || "منصتك الأولى لمنتجات التجميل",
+      keywords: settingsMap['seo_meta_keywords'] || "تجميل, مكياج, عطور, عناية",
+      openGraph: {
+        title: settingsMap['seo_meta_title'] || settingsMap['site_name'] || "Eva Beauty Hub",
+        description: settingsMap['seo_meta_description'] || "منصتك الأولى لمنتجات التجميل",
+        url: 'https://evabeauty.com',
+        siteName: settingsMap['site_name'] || "Eva Beauty Hub",
+        images: [
+          {
+            url: settingsMap['site_logo_url'] || '/logos/main.svg',
+            width: 800,
+            height: 600,
+          },
+        ],
+        locale: 'ar_EG',
+        type: 'website',
+      },
+    };
+  } catch (error) {
+    return {
+      title: "Eva Beauty Hub",
+      description: "منصتك الأولى لمنتجات التجميل",
+    };
+  }
+}
+
+export default function PublicLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <StorefrontProvider>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-1 relative z-10 pt-20">
+          {children}
+        </main>
+        <Footer />
+      </div>
+    </StorefrontProvider>
+  );
+}
