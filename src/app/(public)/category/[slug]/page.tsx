@@ -36,40 +36,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       <AnimatedBackground />
 
       <div className="container mx-auto px-4 pt-10 relative z-10">
-        {/* Header Hero */}
-        <div 
-          className="relative rounded-3xl overflow-hidden shadow-lg mb-10 text-center min-h-[350px] flex flex-col justify-center items-center bg-slate-900 border border-slate-800"
-        >
-          {category?.cover_image_url && (
-            <div 
-              className="absolute inset-0 bg-cover bg-center opacity-50 mix-blend-overlay"
-              style={{ backgroundImage: `url(${category.cover_image_url})` }}
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
-          
-          {isCategoryLoading ? (
-            <div className="space-y-4 flex flex-col items-center relative z-10">
-              <div className="h-12 bg-white/20 rounded animate-pulse w-64" />
-              <div className="h-6 bg-white/20 rounded animate-pulse w-96 max-w-full" />
-            </div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center relative z-10 p-8"
-            >
-              <h1 className="text-4xl md:text-6xl font-black text-white mb-4 drop-shadow-md">
-                {category?.name}
-              </h1>
-              {category?.description && (
-                <p className="text-lg md:text-xl text-slate-200 max-w-2xl drop-shadow">
-                  {category.description}
-                </p>
-              )}
-            </motion.div>
-          )}
-        </div>
+
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}

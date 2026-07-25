@@ -11,7 +11,7 @@ import { CartDrawer } from './cart-drawer';
 import { usePublicCategories } from '../../hooks/use-storefront';
 
 export const Header = () => {
-  const { settings, setActiveTheme } = useStorefrontContext();
+  const { settings, activeTheme, setActiveTheme } = useStorefrontContext();
   const totalItems = useCartStore((state) => state.getTotalItems());
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -61,12 +61,17 @@ export const Header = () => {
           {/* RIGHT SIDE: Logo + Site Name */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
             {logoUrl ? (
-              <img src={logoUrl} alt={siteName} className="h-12 lg:h-14 w-auto object-contain" />
+              <img src={logoUrl} alt={siteName} className="h-16 lg:h-20 w-auto object-contain" />
             ) : (
-              <div className="flex items-center gap-2 text-[var(--eva-primary,#F97316)]">
-                <Sparkles size={24} />
-                <span className="text-lg lg:text-xl font-black">{siteName}</span>
-              </div>
+              <img 
+                src={
+                  activeTheme === 'women' ? '/logos/women.svg' : 
+                  activeTheme === 'men' ? '/logos/men.svg' : 
+                  '/logos/main.svg'
+                } 
+                alt={siteName} 
+                className="h-16 lg:h-20 w-auto object-contain" 
+              />
             )}
           </Link>
 
