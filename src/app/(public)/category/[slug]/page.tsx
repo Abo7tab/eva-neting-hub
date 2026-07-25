@@ -16,6 +16,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const resolvedParams = use(params);
   const [sortBy, setSortBy] = useState<'newest' | 'price_asc' | 'price_desc' | 'popular'>('newest');
   const [selectedBrand, setSelectedBrand] = useState<string | undefined>();
+  const [priceFilter, setPriceFilter] = useState<'all' | 'under_500' | '500_1000' | '1000_2000' | 'over_2000'>('all');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   const { data: category, isLoading: isCategoryLoading } = usePublicCategory(resolvedParams.slug);
@@ -27,7 +28,19 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const { data: brandsData } = usePublicBrands();
 
   const isLoading = isCategoryLoading || (isProductsLoading && !productsData);
-  const productCount = productsData?.data?.length ?? 0;
+  
+  // Local price filtering
+  const displayedProducts = productsData?.data?.filter(product => {
+    if (priceFilter === 'all') return true;
+    const price = parseFloat(product.price);
+    if (priceFilter === 'under_500') return price < 500;
+    if (priceFilter === '500_1000') return price >= 500 && price <= 1000;
+    if (priceFilter === '1000_2000') return price >= 1000 && price <= 2000;
+    if (priceFilter === 'over_2000') return price > 2000;
+    return true;
+  });
+
+  const productCount = displayedProducts?.length ?? 0;
 
   const sortLabel = sortBy === 'newest' ? 'الأحدث' :
     sortBy === 'price_asc' ? 'السعر: الأقل أولاً' :
@@ -65,12 +78,38 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             </label>
           ))}
         </div>
-        {selectedBrand && (
+        <h4 className="font-bold text-slate-600 text-sm uppercase tracking-wider pt-4 border-t border-slate-100">السعر</h4>
+        <div className="space-y-2">
+          {[
+            { id: 'all', label: 'الكل' },
+            { id: 'under_500', label: 'أقل من 500 ج.م' },
+            { id: '500_1000', label: '500 - 1000 ج.م' },
+            { id: '1000_2000', label: '1000 - 2000 ج.م' },
+            { id: 'over_2000', label: 'أكثر من 2000 ج.م' },
+          ].map(option => (
+            <label key={option.id} className="flex items-center gap-3 cursor-pointer group py-1.5 px-2 rounded-xl hover:bg-slate-50 transition-colors">
+              <input
+                type="radio"
+                name="price-filter"
+                value={option.id}
+                checked={priceFilter === option.id}
+                onChange={() => setPriceFilter(option.id as any)}
+                className="w-4 h-4 border-slate-300 accent-primary"
+              />
+              <span className="text-slate-700 font-medium text-sm group-hover:text-slate-900 transition-colors">{option.label}</span>
+            </label>
+          ))}
+        </div>
+
+        {(selectedBrand || priceFilter !== 'all') && (
           <button
-            onClick={() => setSelectedBrand(undefined)}
+            onClick={() => {
+              setSelectedBrand(undefined);
+              setPriceFilter('all');
+            }}
             className="w-full text-center text-sm font-bold py-2 rounded-xl transition-colors text-primary"
           >
-            مسح الفلتر
+            مسح جميع الفلاتر
           </button>
         )}
       </div>
@@ -151,10 +190,13 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                   <Filter size={40} className="text-slate-300" />
                 </div>
                 <h3 className="text-xl font-black text-slate-700 mb-2">لا توجد منتجات</h3>
-                <p className="text-slate-500 max-w-xs mx-auto text-sm">جرب تغيير خيارات التصفية</p>
-                {selectedBrand && (
+                <p className="text-slate-500 max-w-xs mx-auto text-sm">جرب تغيير خيارات التصفية أو البحث</p>
+                {(selectedBrand || priceFilter !== 'all') && (
                   <button
-                    onClick={() => setSelectedBrand(undefined)}
+                    onClick={() => {
+                      setSelectedBrand(undefined);
+                      setPriceFilter('all');
+                    }}
                     className="mt-4 text-sm font-bold px-5 py-2 rounded-xl transition-colors text-primary-foreground bg-primary"
                   >
                     عرض الكل
@@ -171,7 +213,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                 }}
                 className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
               >
-                {productsData?.data.map((product) => (
+                {displayedProducts?.map((product) => (
                   <ProductCard key={product.uuid} product={product} />
                 ))}
               </motion.div>

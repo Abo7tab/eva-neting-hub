@@ -94,20 +94,20 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </div>
 
         {/* Content */}
-        <div className="p-4 flex flex-col flex-1 bg-white">
-          <h3 className="font-semibold text-slate-800 line-clamp-1 mb-1 group-hover:text-primary transition-colors">
+        <div className="p-3 sm:p-4 flex flex-col flex-1 bg-white">
+          <h3 className="font-semibold text-sm sm:text-base text-slate-800 line-clamp-1 mb-1 group-hover:text-primary transition-colors">
             {product.name}
           </h3>
-          <p className="text-xs text-slate-500 line-clamp-1 mb-3 font-medium">
+          <p className="text-[10px] sm:text-xs text-slate-500 line-clamp-1 mb-2 sm:mb-3 font-medium">
             {product.brand?.name || 'منتج أصلي'}
           </p>
 
-          <div className="mt-auto flex items-end gap-2">
-            <span className="text-xl font-black text-primary">
-              {product.price} <span className="text-xs font-bold">ج.م</span>
+          <div className="mt-auto flex items-end gap-1.5 sm:gap-2">
+            <span className="text-lg sm:text-xl font-black text-primary">
+              {product.price} <span className="text-[10px] sm:text-xs font-bold">ج.م</span>
             </span>
             {hasDiscount && (
-              <span className="text-xs text-slate-400 line-through mb-1">
+              <span className="text-[10px] sm:text-xs text-slate-400 line-through mb-0.5 sm:mb-1">
                 {product.compare_at_price} ج.م
               </span>
             )}
