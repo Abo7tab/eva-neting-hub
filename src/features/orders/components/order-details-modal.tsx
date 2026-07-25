@@ -62,7 +62,7 @@ export function OrderDetailsModal({ order, open, onOpenChange }: OrderDetailsMod
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] overflow-y-auto overflow-x-hidden p-0">
+      <DialogContent className="w-[95vw] md:max-w-3xl lg:max-w-4xl xl:max-w-5xl max-h-[90vh] overflow-y-auto overflow-x-hidden p-0">
         {/* ── Header ── */}
         <div className="p-6 pb-4 border-b">
           <div className="flex flex-wrap items-start justify-between gap-3">
@@ -92,17 +92,17 @@ export function OrderDetailsModal({ order, open, onOpenChange }: OrderDetailsMod
           {/* ── Info Grid ── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Customer Info */}
-            <div className="border rounded-lg p-4 bg-slate-50 space-y-2">
+            <div className="border rounded-lg p-4 bg-slate-50 space-y-2 min-w-0 break-words">
               <h3 className="font-bold text-slate-700 text-sm uppercase tracking-wide">بيانات العميل</h3>
               <p className="text-sm">
-                <span className="text-slate-500 ml-1">الاسم:</span>
+                <span className="text-slate-500 ml-1 whitespace-nowrap">الاسم:</span>
                 <span className="font-medium">{order.customer_name || 'غير متوفر'}</span>
               </p>
-              <div className="text-sm flex items-center gap-2">
-                <span className="text-slate-500">الهاتف:</span>
-                <span dir="ltr" className="font-medium">{order.customer_phone || 'غير متوفر'}</span>
+              <div className="text-sm flex flex-wrap items-center gap-2">
+                <span className="text-slate-500 whitespace-nowrap">الهاتف:</span>
+                <span dir="ltr" className="font-medium break-all">{order.customer_phone || 'غير متوفر'}</span>
                 {order.customer_phone && (
-                  <Button variant="ghost" size="icon-sm" onClick={() => handleCopy(order.customer_phone!)}>
+                  <Button variant="ghost" size="icon-sm" onClick={() => handleCopy(order.customer_phone!)} className="shrink-0">
                     <CopyIcon className="w-3 h-3" />
                   </Button>
                 )}
@@ -110,12 +110,12 @@ export function OrderDetailsModal({ order, open, onOpenChange }: OrderDetailsMod
             </div>
 
             {/* WhatsApp Info */}
-            <div className="border rounded-lg p-4 bg-slate-50 space-y-2">
+            <div className="border rounded-lg p-4 bg-slate-50 space-y-2 min-w-0 break-words">
               <h3 className="font-bold text-slate-700 text-sm uppercase tracking-wide">الواتساب المستلم</h3>
-              <div className="text-sm flex items-center gap-2">
-                <span className="text-slate-500">الرقم:</span>
-                <span dir="ltr" className="font-medium">{order.assigned_phone_number}</span>
-                <Button variant="ghost" size="icon-sm" onClick={() => handleCopy(order.assigned_phone_number)}>
+              <div className="text-sm flex flex-wrap items-center gap-2">
+                <span className="text-slate-500 whitespace-nowrap">الرقم:</span>
+                <span dir="ltr" className="font-medium break-all">{order.assigned_phone_number}</span>
+                <Button variant="ghost" size="icon-sm" onClick={() => handleCopy(order.assigned_phone_number)} className="shrink-0">
                   <CopyIcon className="w-3 h-3" />
                 </Button>
               </div>
