@@ -98,13 +98,13 @@ export const Header = () => {
           borderBottom: isScrolled ? `2px solid var(--primary)` : 'none',
         }}
       >
-        <div className="container mx-auto px-4 flex items-center justify-between lg:justify-between relative">
+        <div className="container mx-auto px-4 grid grid-cols-3 lg:flex lg:items-center lg:justify-between relative items-center">
           
           {/* RIGHT SIDE: Logo + Site Name */}
-          <div className="flex-1 lg:flex-none flex justify-start">
+          <div className="col-span-1 flex justify-start lg:block lg:flex-none">
             <Link href="/" className="flex items-center gap-2 shrink-0">
               {logoUrl ? (
-                <img src={logoUrl} alt={siteName} className="h-16 lg:h-20 w-auto object-contain" />
+                <img src={logoUrl} alt={siteName} className="h-10 sm:h-12 lg:h-20 w-auto object-contain" />
               ) : (
                 <img 
                   src={
@@ -113,7 +113,7 @@ export const Header = () => {
                     '/logos/main.svg'
                   } 
                   alt={siteName} 
-                  className="h-16 lg:h-20 w-auto object-contain" 
+                  className="h-10 sm:h-12 lg:h-20 w-auto object-contain" 
                 />
               )}
             </Link>
@@ -162,7 +162,7 @@ export const Header = () => {
           </nav>
 
           {/* CENTER MOBILE: Search Bar */}
-          <div className="flex-1 lg:hidden flex justify-center items-center">
+          <div className="col-span-1 lg:hidden flex justify-center items-center">
             <div className="flex items-center">
               <AnimatePresence>
                 {isSearchOpen && (
@@ -193,7 +193,7 @@ export const Header = () => {
           </div>
 
           {/* LEFT SIDE: Gender Tabs + Icons */}
-          <div className="flex-1 lg:flex-none flex items-center justify-end gap-1 sm:gap-3">
+          <div className="col-span-1 lg:flex-none flex items-center justify-end gap-3 sm:gap-4">
             
             {/* Gender Pill Tabs (Desktop) */}
             {parentCategories.length > 0 && (
