@@ -42,7 +42,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       }}
       whileHover={{ y: -8, transition: { duration: 0.3 } }}
       className="group relative flex flex-col bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden transition-shadow duration-300 hover:shadow-2xl"
-      style={{ '--hover-glow': 'color-mix(in srgb, var(--eva-primary) 30%, transparent)' } as any}
+      style={{ '--hover-glow': 'color-mix(in srgb, var(--primary) 30%, transparent)' } as any}
     >
       <style jsx>{`
         .group:hover {
@@ -65,14 +65,13 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           {/* Top Badges */}
           <div className="absolute top-3 right-3 flex flex-col gap-2 z-20">
             {hasDiscount && (
-              <div className="bg-rose-500 text-white text-xs font-black px-3 py-1.5 rounded-full shadow-md">
+              <div className="bg-primary text-primary-foreground text-xs font-black px-3 py-1.5 rounded-full shadow-md">
                 خصم {discountPercent}%
               </div>
             )}
             {product.is_trending && (
               <div 
-                className="text-white text-xs font-black px-3 py-1.5 rounded-full shadow-md"
-                style={{ backgroundColor: 'var(--eva-primary, #F97316)' }}
+                className="bg-primary text-primary-foreground text-xs font-black px-3 py-1.5 rounded-full shadow-md"
               >
                 الأكثر مبيعاً
               </div>
@@ -86,8 +85,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 400 }}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-white font-bold text-sm shadow-lg"
-              style={{ backgroundColor: 'var(--eva-primary, #F97316)' }}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-primary-foreground font-bold text-sm shadow-lg bg-primary"
             >
               <ShoppingBag size={16} />
               أضف للسلة
@@ -97,7 +95,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Content */}
         <div className="p-4 flex flex-col flex-1 bg-white">
-          <h3 className="font-semibold text-slate-800 line-clamp-1 mb-1 group-hover:text-[var(--eva-primary,#F97316)] transition-colors">
+          <h3 className="font-semibold text-slate-800 line-clamp-1 mb-1 group-hover:text-primary transition-colors">
             {product.name}
           </h3>
           <p className="text-xs text-slate-500 line-clamp-1 mb-3 font-medium">
@@ -105,7 +103,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </p>
 
           <div className="mt-auto flex items-end gap-2">
-            <span className="text-xl font-black" style={{ color: 'var(--eva-primary, #F97316)' }}>
+            <span className="text-xl font-black text-primary">
               {product.price} <span className="text-xs font-bold">ج.م</span>
             </span>
             {hasDiscount && (

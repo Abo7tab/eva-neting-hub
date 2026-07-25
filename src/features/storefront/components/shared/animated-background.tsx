@@ -17,7 +17,7 @@ export const AnimatedBackground = () => {
   useEffect(() => {
     const generated = Array.from({ length: count }).map((_, i) => ({
       id: i,
-      color: i % 2 === 0 ? 'var(--eva-bg-1, #F97316)' : 'var(--eva-bg-2, #FB923C)',
+      color: i % 2 === 0 ? 'var(--eva-bg-1, var(--primary))' : 'var(--eva-bg-2, var(--secondary))',
       left: `${10 + (i * 25) % 70}%`,
       top: `${10 + (i * 30) % 60}%`,
       animationName: `blob-${i % 4}`,

@@ -27,8 +27,7 @@ export const CategoriesSection = ({ title, hook }: CategoriesSectionProps) => {
       <div className="flex flex-col items-center mb-12">
         <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">{title}</h2>
         <div 
-          className="h-1 w-20 rounded-full" 
-          style={{ backgroundColor: 'var(--eva-primary, #F97316)' }}
+          className="h-1 w-20 rounded-full bg-primary"
         />
       </div>
 
@@ -61,12 +60,12 @@ export const CategoriesSection = ({ title, hook }: CategoriesSectionProps) => {
               <Link href={`/category/${cat.slug}`} className="block">
                 <div 
                   className="relative flex flex-col items-center p-4 bg-white rounded-3xl shadow-sm border border-slate-100 transition-all duration-300 group-hover:shadow-2xl"
-                  style={{ '--hover-glow': 'color-mix(in srgb, var(--eva-primary) 30%, transparent)' } as any}
+                  style={{ '--hover-glow': 'color-mix(in srgb, var(--primary) 30%, transparent)' } as any}
                 >
                   <style jsx>{`
                     .group:hover > div {
                       box-shadow: 0 20px 40px -10px var(--hover-glow);
-                      border-color: color-mix(in srgb, var(--eva-primary) 50%, transparent);
+                      border-color: color-mix(in srgb, var(--primary) 50%, transparent);
                     }
                   `}</style>
                   
@@ -95,7 +94,7 @@ export const CategoriesSection = ({ title, hook }: CategoriesSectionProps) => {
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-bold text-lg text-slate-800 text-center group-hover:text-[var(--eva-primary,#F97316)] transition-colors">
+                  <h3 className="font-bold text-lg text-slate-800 text-center group-hover:text-primary transition-colors">
                     {cat.name}
                   </h3>
                 </div>

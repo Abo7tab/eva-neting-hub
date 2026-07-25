@@ -113,7 +113,7 @@ export const StorefrontProvider = ({ children }: { children: React.ReactNode }) 
       {children}
       <NextTopLoader
         height={4}
-        color="var(--eva-primary, #F97316)"
+        color="var(--primary)"
         showSpinner={false}
       />
     </StorefrontContext.Provider>

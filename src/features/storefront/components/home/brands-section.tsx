@@ -23,7 +23,7 @@ export const BrandsSection = ({ title, hook }: BrandsSectionProps) => {
         <h2 className="text-3xl md:text-4xl font-black text-slate-800 text-center mb-4">{title}</h2>
         <div
           className="h-1.5 w-24 rounded-full"
-          style={{ background: 'linear-gradient(90deg, var(--eva-primary, #F97316), var(--eva-secondary, #EA580C))' }}
+          style={{ background: 'linear-gradient(90deg, var(--primary), var(--secondary))' }}
         />
       </div>
 
@@ -56,7 +56,7 @@ export const BrandsSection = ({ title, hook }: BrandsSectionProps) => {
                 {/* Subtle gradient glow on hover */}
                 <div 
                   className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300"
-                  style={{ background: 'linear-gradient(135deg, var(--eva-primary,#F97316), transparent)' }}
+                  style={{ background: 'linear-gradient(135deg, var(--primary), transparent)' }}
                 />
 
                 {brand.logo_url ? (
@@ -69,7 +69,7 @@ export const BrandsSection = ({ title, hook }: BrandsSectionProps) => {
                     />
                   </div>
                 ) : (
-                  <span className="font-black text-slate-400 group-hover:text-[var(--eva-primary,#F97316)] text-center text-lg transition-colors duration-300 relative z-10">
+                  <span className="font-black text-slate-400 group-hover:text-primary text-center text-lg transition-colors duration-300 relative z-10">
                     {brand.name}
                   </span>
                 )}

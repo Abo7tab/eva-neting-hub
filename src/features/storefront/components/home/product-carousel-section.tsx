@@ -21,9 +21,8 @@ export const ProductCarouselSection = ({ title, hook }: ProductCarouselSectionPr
       {/* Title & Underline */}
       <div className="flex flex-col items-start mb-8">
         <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">{title}</h2>
-        <div 
-          className="h-1 w-20 rounded-full" 
-          style={{ backgroundColor: 'var(--eva-primary, #F97316)' }}
+        <div
+          className="h-1 w-20 rounded-full bg-primary" 
         />
       </div>
 

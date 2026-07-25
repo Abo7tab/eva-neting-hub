@@ -69,7 +69,7 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-slate-100">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-(--color-primary)/10 text-(--color-primary) rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center">
                   <ShoppingBag size={20} />
                 </div>
                 <h2 className="text-xl font-bold text-slate-800">سلة المشتريات</h2>
@@ -109,7 +109,7 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                       <h4 className="font-bold text-slate-800 text-sm line-clamp-2 leading-tight">
                         {item.name}
                       </h4>
-                      <p className="text-(--color-primary) font-black mt-1">
+                      <p className="text-primary font-black mt-1">
                         {item.price} ج.م
                       </p>
                       
@@ -117,7 +117,7 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                         <div className="flex items-center gap-3 bg-white rounded-lg border border-slate-200 px-2 py-1">
                           <button
                             onClick={() => updateQuantity(item.product_uuid, Math.max(1, item.quantity - 1))}
-                            className="text-slate-500 hover:text-(--color-primary) transition-colors"
+                            className="text-slate-500 hover:text-primary transition-colors"
                           >
                             <Minus size={14} />
                           </button>
@@ -126,7 +126,7 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                           </span>
                           <button
                             onClick={() => updateQuantity(item.product_uuid, item.quantity + 1)}
-                            className="text-slate-500 hover:text-(--color-primary) transition-colors"
+                            className="text-slate-500 hover:text-primary transition-colors"
                           >
                             <Plus size={14} />
                           </button>
@@ -154,14 +154,14 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                     placeholder="الاسم (اختياري)"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-(--color-primary) focus:border-transparent transition-all bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-white"
                   />
                   <input
                     type="tel"
                     placeholder="رقم الهاتف (اختياري)"
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-(--color-primary) focus:border-transparent transition-all bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-white"
                   />
                 </div>
                 
@@ -175,7 +175,7 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                 <button
                   onClick={handleCheckout}
                   disabled={checkoutMutation.isPending}
-                  className="w-full bg-(--color-primary) hover:bg-(--color-secondary) text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors disabled:opacity-70 shadow-lg shadow-(--color-primary)/20"
+                  className="w-full bg-[#25D366] hover:bg-[#1DA851] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors disabled:opacity-70 shadow-lg shadow-[#25D366]/20"
                 >
                   {checkoutMutation.isPending ? (
                     <span className="animate-pulse">جاري التحويل...</span>

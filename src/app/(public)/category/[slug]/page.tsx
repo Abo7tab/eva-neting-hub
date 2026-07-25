@@ -45,8 +45,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             <input
               type="radio"
               name="brand-filter"
-              className="w-4 h-4 border-slate-300"
-              style={{ accentColor: 'var(--eva-primary, #F97316)' }}
+              className="w-4 h-4 border-slate-300 accent-primary"
               checked={!selectedBrand}
               onChange={() => setSelectedBrand(undefined)}
             />
@@ -60,8 +59,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                 value={brand.uuid}
                 checked={selectedBrand === brand.uuid}
                 onChange={(e) => setSelectedBrand(e.target.value)}
-                className="w-4 h-4 border-slate-300"
-                style={{ accentColor: 'var(--eva-primary, #F97316)' }}
+                className="w-4 h-4 border-slate-300 accent-primary"
               />
               <span className="text-slate-700 font-medium text-sm group-hover:text-slate-900 transition-colors">{brand.name}</span>
             </label>
@@ -70,8 +68,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
         {selectedBrand && (
           <button
             onClick={() => setSelectedBrand(undefined)}
-            className="w-full text-center text-sm font-bold py-2 rounded-xl transition-colors"
-            style={{ color: 'var(--eva-primary, #F97316)' }}
+            className="w-full text-center text-sm font-bold py-2 rounded-xl transition-colors text-primary"
           >
             مسح الفلتر
           </button>
@@ -104,8 +101,8 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm border border-slate-200 bg-white shadow-sm"
             onClick={() => setIsMobileFilterOpen(true)}
           >
-            <SlidersHorizontal size={16} style={{ color: 'var(--eva-primary, #F97316)' }} />
-            <span style={{ color: 'var(--eva-primary, #F97316)' }}>فلترة</span>
+            <SlidersHorizontal size={16} className="text-primary" />
+            <span className="text-primary">فلترة</span>
           </button>
         </div>
 
@@ -123,11 +120,11 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             {/* Sort bar */}
             <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm border border-slate-100 mb-6">
               <div className="flex items-center gap-2 text-slate-600 font-bold text-sm">
-                <Filter size={16} style={{ color: 'var(--eva-primary, #F97316)' }} />
+                <Filter size={16} className="text-primary" />
                 <span>ترتيب حسب:</span>
               </div>
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold outline-none border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors" style={{ color: 'var(--eva-primary, #F97316)' }}>
+                <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold outline-none border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors text-primary">
                   {sortLabel}
                   <ChevronDown size={14} />
                 </DropdownMenuTrigger>
@@ -136,8 +133,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                     <DropdownMenuItem
                       key={s}
                       onClick={() => setSortBy(s)}
-                      className={sortBy === s ? 'font-bold' : ''}
-                      style={sortBy === s ? { backgroundColor: 'var(--eva-primary, #F97316)15', color: 'var(--eva-primary, #F97316)' } : {}}
+                      className={sortBy === s ? 'font-bold bg-primary/15 text-primary' : ''}
                     >
                       {s === 'newest' ? 'الأحدث' : s === 'popular' ? 'الأكثر شعبية' : s === 'price_asc' ? 'السعر: الأقل أولاً' : 'السعر: الأعلى أولاً'}
                     </DropdownMenuItem>
@@ -159,8 +155,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                 {selectedBrand && (
                   <button
                     onClick={() => setSelectedBrand(undefined)}
-                    className="mt-4 text-sm font-bold px-5 py-2 rounded-xl transition-colors text-white"
-                    style={{ backgroundColor: 'var(--eva-primary, #F97316)' }}
+                    className="mt-4 text-sm font-bold px-5 py-2 rounded-xl transition-colors text-primary-foreground bg-primary"
                   >
                     عرض الكل
                   </button>
@@ -215,8 +210,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
               <div className="p-4 border-t">
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="w-full py-3 rounded-2xl font-black text-white text-base"
-                  style={{ backgroundColor: 'var(--eva-primary, #F97316)' }}
+                  className="w-full py-3 rounded-2xl font-black text-primary-foreground text-base bg-primary"
                 >
                   عرض النتائج ({productCount})
                 </button>

@@ -53,8 +53,7 @@ export const HeroSection = ({ settings, isLoading }: HeroSectionProps) => {
           variants={item}
           animate={{ y: [0, -5, 0] }}
           transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-          className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-white font-bold text-sm mb-8 shadow-lg"
-          style={{ backgroundColor: 'var(--eva-primary, #F97316)' }}
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-primary-foreground font-bold text-sm mb-8 shadow-lg bg-primary"
         >
           <Star size={16} fill="currentColor" />
           مرحباً بك في {siteName}
@@ -82,10 +81,9 @@ export const HeroSection = ({ settings, isLoading }: HeroSectionProps) => {
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-10 py-4 rounded-xl text-white font-bold text-lg shadow-xl"
+              className="px-10 py-4 rounded-xl text-primary-foreground font-bold text-lg shadow-xl bg-primary"
               style={{ 
-                backgroundColor: 'var(--eva-primary, #F97316)',
-                boxShadow: '0 10px 25px -5px color-mix(in srgb, var(--eva-primary) 50%, transparent)'
+                boxShadow: '0 10px 25px -5px color-mix(in srgb, var(--primary) 50%, transparent)'
               }}
             >
               تسوقي الآن
@@ -96,11 +94,7 @@ export const HeroSection = ({ settings, isLoading }: HeroSectionProps) => {
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-10 py-4 rounded-xl font-bold text-lg border-2 bg-white/50 backdrop-blur-sm"
-              style={{ 
-                borderColor: 'var(--eva-primary, #F97316)',
-                color: 'var(--eva-primary, #F97316)'
-              }}
+              className="px-10 py-4 rounded-xl font-bold text-lg border-2 bg-white/50 backdrop-blur-sm border-primary text-primary"
             >
               تصفح الأقسام
             </motion.button>
@@ -122,9 +116,9 @@ export const HeroSection = ({ settings, isLoading }: HeroSectionProps) => {
             >
               <div 
                 className="w-12 h-12 rounded-full flex items-center justify-center mb-3"
-                style={{ backgroundColor: 'color-mix(in srgb, var(--eva-primary) 15%, transparent)' }}
+                style={{ backgroundColor: 'color-mix(in srgb, var(--primary) 15%, transparent)' }}
               >
-                <Icon size={24} style={{ color: 'var(--eva-primary, #F97316)' }} />
+                <Icon size={24} className="text-primary" />
               </div>
               <span className="font-bold text-slate-700 text-sm">{text}</span>
             </motion.div>

@@ -15,8 +15,7 @@ export const Footer = () => {
 
   return (
     <footer 
-      className="pt-20 pb-8 mt-24 text-white"
-      style={{ backgroundColor: 'var(--eva-primary, #F97316)' }}
+      className="pt-20 pb-8 mt-24 bg-primary text-primary-foreground"
     >
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
@@ -30,7 +29,7 @@ export const Footer = () => {
                 <span className="text-2xl font-black">{siteName}</span>
               )}
             </Link>
-            <p className="text-white/80 leading-relaxed text-sm">
+            <p className="opacity-80 leading-relaxed text-sm">
               {about}
             </p>
           </div>
@@ -41,8 +40,8 @@ export const Footer = () => {
             <ul className="space-y-4">
               {['الرئيسية', 'كل المنتجات', 'الأقسام', 'الماركات العالمية'].map((link, i) => (
                 <li key={i}>
-                  <Link href={i === 0 ? '/' : i === 1 ? '/products' : i === 2 ? '/categories' : '/brands'} className="text-white/80 hover:text-white transition-colors font-medium flex items-center gap-2 group">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white/50 group-hover:bg-white transition-colors" />
+                  <Link href={i === 0 ? '/' : i === 1 ? '/products' : i === 2 ? '/categories' : '/brands'} className="opacity-80 hover:opacity-100 transition-colors font-medium flex items-center gap-2 group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground/50 group-hover:bg-primary-foreground transition-colors" />
                     {link}
                   </Link>
                 </li>
@@ -55,19 +54,19 @@ export const Footer = () => {
             <h4 className="font-black text-xl">تواصل معنا</h4>
             <ul className="space-y-4">
               {settings['contact_phone'] && (
-                <li className="flex items-start gap-3 text-white/80">
+                <li className="flex items-start gap-3 opacity-80">
                   <Phone size={20} className="shrink-0 mt-0.5" />
                   <span className="font-bold" dir="ltr">{settings['contact_phone']}</span>
                 </li>
               )}
               {settings['contact_email'] && (
-                <li className="flex items-start gap-3 text-white/80">
+                <li className="flex items-start gap-3 opacity-80">
                   <Mail size={20} className="shrink-0 mt-0.5" />
                   <span className="font-medium">{settings['contact_email']}</span>
                 </li>
               )}
               {settings['contact_address'] && (
-                <li className="flex items-start gap-3 text-white/80">
+                <li className="flex items-start gap-3 opacity-80">
                   <MapPin size={20} className="shrink-0 mt-0.5" />
                   <span className="font-medium">{settings['contact_address']}</span>
                 </li>
@@ -117,8 +116,8 @@ export const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 border-t border-white/20 flex flex-col md:flex-row items-center justify-center text-center">
-          <p className="text-white/60 font-medium">{copyright}</p>
+        <div className="pt-8 border-t border-primary-foreground/20 flex flex-col md:flex-row items-center justify-center text-center">
+          <p className="opacity-60 font-medium">{copyright}</p>
         </div>
       </div>
     </footer>

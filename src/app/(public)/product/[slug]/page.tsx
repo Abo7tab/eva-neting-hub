@@ -100,7 +100,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             </AnimatePresence>
             
             {product.compare_at_price && (
-              <div className="absolute top-4 right-4 bg-rose-500 text-white font-bold px-3 py-1.5 rounded-full shadow-lg">
+              <div className="absolute top-4 right-4 bg-primary text-primary-foreground font-bold px-3 py-1.5 rounded-full shadow-lg">
                 تخفيض
               </div>
             )}
@@ -113,7 +113,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                   key={idx}
                   onClick={() => setActiveImage(idx)}
                   className={`relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all ${
-                    activeImage === idx ? 'border-(--color-primary) shadow-md' : 'border-transparent opacity-70 hover:opacity-100'
+                    activeImage === idx ? 'border-primary shadow-md' : 'border-transparent opacity-70 hover:opacity-100'
                   }`}
                 >
                   <Image src={img} alt={`Gallery ${idx}`} fill className="object-cover" />
@@ -131,7 +131,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             className="space-y-4"
           >
             {product.brand && (
-              <span className="text-(--color-primary) font-bold text-sm tracking-wider uppercase">
+              <span className="text-primary font-bold text-sm tracking-wider uppercase">
                 {product.brand.name}
               </span>
             )}
@@ -141,7 +141,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             </h1>
             
             <div className="flex items-end gap-4">
-              <span className="text-4xl font-black text-(--color-primary)">
+              <span className="text-4xl font-black text-primary">
                 {product.price} ج.م
               </span>
               {product.compare_at_price && (
@@ -170,14 +170,14 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             <div className="flex items-center justify-between sm:justify-start bg-slate-50 rounded-2xl p-2 border border-slate-200">
               <button 
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-12 h-12 flex items-center justify-center text-slate-500 hover:text-(--color-primary) transition-colors"
+                className="w-12 h-12 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
               >
                 <ChevronRight size={20} />
               </button>
               <span className="w-12 text-center font-bold text-xl">{quantity}</span>
               <button 
                 onClick={() => setQuantity(quantity + 1)}
-                className="w-12 h-12 flex items-center justify-center text-slate-500 hover:text-(--color-primary) transition-colors"
+                className="w-12 h-12 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
               >
                 <ChevronLeft size={20} />
               </button>
@@ -185,7 +185,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
             <button
               onClick={handleAddToCart}
-              className="flex-1 bg-(--color-primary) text-white font-bold py-4 px-8 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg hover:opacity-90"
+              className="flex-1 bg-primary text-primary-foreground font-bold py-4 px-8 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg hover:opacity-90"
             >
               <ShoppingCart size={20} />
               أضف للسلة
@@ -207,13 +207,13 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-100"
           >
             <div className="flex items-center gap-3 text-slate-600">
-              <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
                 <ShieldCheck size={20} />
               </div>
               <span className="font-bold text-sm">منتجات أصلية 100%</span>
             </div>
             <div className="flex items-center gap-3 text-slate-600">
-              <div className="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
                 <Truck size={20} />
               </div>
               <span className="font-bold text-sm">توصيل سريع</span>

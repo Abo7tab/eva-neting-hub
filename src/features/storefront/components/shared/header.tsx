@@ -67,7 +67,7 @@ export const Header = () => {
     router.push(`/category/${slug}`);
   };
 
-  const primaryColor = 'var(--eva-primary, #F97316)';
+  const primaryColor = 'var(--primary)';
 
   return (
     <>
@@ -97,15 +97,15 @@ export const Header = () => {
 
           {/* CENTER: Navigation (Desktop) */}
           <nav className="hidden lg:flex items-center gap-6">
-            <Link href="/" className="font-bold text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors">الرئيسية</Link>
-            <Link href="/products" className="font-bold text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors">المنتجات</Link>
+            <Link href="/" className="font-bold text-slate-700 hover:text-primary transition-colors">الرئيسية</Link>
+            <Link href="/products" className="font-bold text-slate-700 hover:text-primary transition-colors">المنتجات</Link>
             
             <div 
               className="relative group cursor-pointer flex flex-col justify-center h-full"
               onMouseEnter={() => setIsCategoriesDropdownOpen(true)}
               onMouseLeave={() => setIsCategoriesDropdownOpen(false)}
             >
-              <div className="flex items-center gap-1 font-bold text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors py-4">
+              <div className="flex items-center gap-1 font-bold text-slate-700 hover:text-primary transition-colors py-4">
                 <Link href="/categories">الأقسام</Link>
                 <ChevronDown size={14} className="group-hover:rotate-180 transition-transform" />
               </div>
@@ -124,7 +124,7 @@ export const Header = () => {
                       <Link 
                         key={cat.uuid}
                         href={`/category/${cat.slug}`}
-                        className="block px-4 py-2 hover:bg-slate-50 hover:text-[var(--eva-primary,#F97316)] font-bold text-sm transition-colors text-slate-700"
+                        className="block px-4 py-2 hover:bg-slate-50 hover:text-primary font-bold text-sm transition-colors text-slate-700"
                         onClick={() => setIsCategoriesDropdownOpen(false)}
                       >
                         {cat.name}
@@ -135,7 +135,7 @@ export const Header = () => {
               </AnimatePresence>
             </div>
             
-            <Link href="/brands" className="font-bold text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors">الماركات</Link>
+            <Link href="/brands" className="font-bold text-slate-700 hover:text-primary transition-colors">الماركات</Link>
           </nav>
 
           {/* LEFT SIDE: Gender Tabs + Icons */}
@@ -149,7 +149,7 @@ export const Header = () => {
                     key={cat.uuid}
                     onClick={() => handleTabClick(cat.slug)}
                     className="relative px-5 py-1.5 rounded-full text-sm font-bold transition-colors z-10"
-                    style={{ color: activeTab === cat.slug ? '#fff' : 'var(--eva-primary,#F97316)' }}
+                    style={{ color: activeTab === cat.slug ? 'var(--primary-foreground)' : 'var(--primary)' }}
                   >
                     {activeTab === cat.slug && (
                       <motion.div
@@ -179,7 +179,7 @@ export const Header = () => {
                     <input 
                       type="text" 
                       placeholder="ابحث عن منتج..."
-                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--eva-primary,#F97316)]"
+                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       autoFocus
                       onBlur={() => setIsSearchOpen(false)}
                     />
@@ -188,7 +188,7 @@ export const Header = () => {
               </AnimatePresence>
               <button 
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-2 text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors"
+                className="p-2 text-slate-700 hover:text-primary transition-colors"
               >
                 <Search size={22} />
               </button>
@@ -198,7 +198,7 @@ export const Header = () => {
             <button
               ref={cartIconRef}
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2 text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors transform origin-center"
+              className="relative p-2 text-slate-700 hover:text-primary transition-colors transform origin-center"
             >
               <ShoppingBag size={22} />
               {totalItems > 0 && (
@@ -207,7 +207,7 @@ export const Header = () => {
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ type: "spring", stiffness: 500 }}
-                  className="absolute -top-1 -right-1 w-5 h-5 text-white text-xs font-black rounded-full flex items-center justify-center shadow-md"
+                  className="absolute -top-1 -right-1 w-5 h-5 text-primary-foreground text-xs font-black rounded-full flex items-center justify-center shadow-md"
                   style={{ backgroundColor: primaryColor }}
                 >
                   {totalItems}
@@ -237,7 +237,7 @@ export const Header = () => {
                   style={{
                     backgroundColor: activeTab === cat.slug ? primaryColor : 'transparent',
                     borderColor: primaryColor,
-                    color: activeTab === cat.slug ? '#fff' : primaryColor,
+                    color: activeTab === cat.slug ? 'var(--primary-foreground)' : primaryColor,
                   }}
                 >
                   {cat.name}
