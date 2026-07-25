@@ -20,14 +20,22 @@ export const CategoryCard = ({ category, index }: CategoryCardProps) => {
       className="group"
     >
       <Link href={`/category/${category.slug}`} className="flex flex-col items-center gap-4">
-        <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300 bg-slate-50 border-4 border-white group-hover:border-primary">
-          <Image
-            src={category.cover_image_url || '/placeholder.png'}
-            alt={category.name}
-            fill
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
-            sizes="(max-width: 768px) 128px, 160px"
-          />
+        <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300 bg-slate-50 border-4 border-white group-hover:border-primary flex items-center justify-center">
+          {category.cover_image_url ? (
+            <Image
+              src={category.cover_image_url}
+              alt={category.name}
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-110"
+              sizes="(max-width: 768px) 128px, 160px"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-200 text-slate-300 transition-transform duration-700 group-hover:scale-110">
+              <span className="text-5xl font-black">
+                {category.name.substring(0, 1)}
+              </span>
+            </div>
+          )}
           <div className="absolute inset-0 bg-black/10 group-hover:bg-primary/10 transition-colors duration-300" />
         </div>
         
