@@ -59,35 +59,37 @@ export function RecentOrdersTable({ orders, isLoading }: RecentOrdersTableProps)
               </p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-right">رقم الطلب</TableHead>
-                  <TableHead className="text-right">العميل</TableHead>
-                  <TableHead className="text-right">القطع</TableHead>
-                  <TableHead className="text-right">الإجمالي</TableHead>
-                  <TableHead className="text-right">الحالة</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {orders.map((order) => {
-                  const status = statusLabels[order.status] || statusLabels.pending;
-                  return (
-                    <TableRow key={order.uuid} className="cursor-pointer hover:bg-slate-50 transition-colors">
-                      <TableCell className="font-mono text-xs">{order.reference_code}</TableCell>
-                      <TableCell>{order.customer_name || 'غير محدد'}</TableCell>
-                      <TableCell>{order.total_items}</TableCell>
-                      <TableCell className="font-semibold">
-                        {Number(order.total_price).toLocaleString('ar-EG')} ج
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={status.variant}>{status.label}</Badge>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            <div className="overflow-x-auto">
+              <Table className="min-w-[500px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-right">رقم الطلب</TableHead>
+                    <TableHead className="text-right">العميل</TableHead>
+                    <TableHead className="text-right">القطع</TableHead>
+                    <TableHead className="text-right">الإجمالي</TableHead>
+                    <TableHead className="text-right">الحالة</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {orders.map((order) => {
+                    const status = statusLabels[order.status] || statusLabels.pending;
+                    return (
+                      <TableRow key={order.uuid} className="cursor-pointer hover:bg-slate-50 transition-colors">
+                        <TableCell className="font-mono text-xs">{order.reference_code}</TableCell>
+                        <TableCell>{order.customer_name || 'غير محدد'}</TableCell>
+                        <TableCell>{order.total_items}</TableCell>
+                        <TableCell className="font-semibold">
+                          {Number(order.total_price).toLocaleString('ar-EG')} ج
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={status.variant}>{status.label}</Badge>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>

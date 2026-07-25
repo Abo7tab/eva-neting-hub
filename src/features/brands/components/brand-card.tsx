@@ -14,8 +14,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
-import { DeleteBrandDialog } from './delete-brand-dialog';
-import { useUpdateBrand } from '../hooks/use-brands';
+import { ConfirmDeleteDialog } from '@/shared/components/feedback/confirm-delete-dialog';
+import { useUpdateBrand, useDeleteBrand } from '../hooks/use-brands';
 import type { Brand } from '../types/brand.types';
 import { cn } from '@/shared/lib/utils';
 
@@ -27,6 +27,7 @@ export function BrandCard({ brand }: BrandCardProps) {
   const router = useRouter();
   const [showDelete, setShowDelete] = useState(false);
   const updateMutation = useUpdateBrand(brand.uuid);
+  const deleteMutation = useDeleteBrand();
 
   const toggleActive = () => {
     updateMutation.mutate({ active_status: !brand.active_status });
@@ -126,10 +127,13 @@ export function BrandCard({ brand }: BrandCardProps) {
         </div>
       </Card>
 
-      <DeleteBrandDialog
-        isOpen={showDelete}
-        onClose={() => setShowDelete(false)}
-        brand={brand}
+      <ConfirmDeleteDialog
+        open={showDelete}
+        onOpenChange={setShowDelete}
+        title="حذف البراند"
+        description={`هل أنت متأكد من حذف براند "${brand.name}"؟`}
+        onConfirm={() => deleteMutation.mutate(brand.uuid)}
+        isPending={deleteMutation.isPending}
       />
     </>
   );

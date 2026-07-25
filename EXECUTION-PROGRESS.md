@@ -525,3 +525,33 @@ Status: Completed
 
 ### Verification results:
 - `npm run build` executed successfully without any TypeScript or linting errors.
+
+## Phase B: Brands Refactoring
+Date: 2026-07-25 14:48
+Status: Completed
+
+### What was done:
+1. **Shared Components:** Refactored `/admin/brands` to use all 6 newly created shared foundation components (`ListPageHeader`, `SearchInput`, `EmptyState`, `PaginationBar`, `ConfirmDeleteDialog`, `useDeleteMutation`).
+2. **Pagination & Search:** Updated frontend `useBrands` and `fetchBrands` to accurately transmit `page`, `per_page`, and `search` parameters to the backend.
+3. **Backend Support:** Updated `BrandService::listForAdmin` to elegantly handle the optional `$search` string by wrapping a subquery that checks `name` and `description` using SQL `LIKE`. Updated `BrandController::indexAdmin` to extract and pass the query parameter.
+4. **Cleanup:** Permanently deleted the redundant `delete-brand-dialog.tsx` as it was fully superseded by `ConfirmDeleteDialog`.
+5. **Known Issues Logging:** Formally created `KNOWN_ISSUES.md` and deferred the Switch visual glitch to Phase 15.
+
+### Verification results:
+- Pagination now seamlessly chunks records natively on the database level.
+- Search securely filters the data in real-time leveraging the custom debounce hook.
+
+## Phase C: Products Refactoring
+Date: 2026-07-25 15:08
+Status: Completed
+
+### What was done:
+1. **Shared Components Implementation**: Refactored `/admin/products/page.tsx` to utilize the `ListPageHeader`, `SearchInput`, `EmptyState`, and `PaginationBar` shared components.
+2. **Filters Localization**: Translated all filter placeholders and options in `product-filters.tsx` to Arabic (e.g. "كل البراندات", "نشط", "الأحدث"). Removed the search bar from `ProductFilters` and delegated it to the generic `SearchInput` on the page level.
+3. **Delete Dialog Update**: Removed `delete-confirm-dialog.tsx` completely. Injected the shared `ConfirmDeleteDialog` inside `ProductRow` and updated `useDeleteProduct` to wrap `useDeleteMutation`.
+4. **Backend Filters Fix**: Updated `ProductService::applyFilters` on the backend to correctly resolve UUIDs for Brands and Categories (`whereHas`), and to properly parse `active_status` booleans.
+5. **Backend Deployment**: Successfully committed and pushed the backend updates to `origin main` to allow accurate API filtering.
+
+### Verification results:
+- Pagination and search debounce work seamlessly without hydration errors.
+- Deletion logic triggers the appropriate shared dialog component with Arabic text.

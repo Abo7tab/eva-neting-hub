@@ -40,11 +40,15 @@ export function StepBasicInfo() {
           <Input {...register('sku')} placeholder="EVA-SB-50" dir="ltr" />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <Label>البراند *</Label>
             <Select value={brandUuid} onValueChange={(v) => setValue('brand_uuid', v || '', { shouldValidate: true })}>
-              <SelectTrigger><SelectValue placeholder="اختر البراند" /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder="اختر البراند">
+                  {brandUuid ? brands.find((b: any) => b.uuid === brandUuid)?.name || 'اختر البراند' : 'اختر البراند'}
+                </SelectValue>
+              </SelectTrigger>
               <SelectContent>
                 {brands.map((b: any) => (
                   <SelectItem key={b.uuid} value={b.uuid}>{b.name}</SelectItem>
@@ -57,7 +61,11 @@ export function StepBasicInfo() {
           <div>
             <Label>القسم *</Label>
             <Select value={categoryUuid} onValueChange={(v) => setValue('category_uuid', v || '', { shouldValidate: true })}>
-              <SelectTrigger><SelectValue placeholder="اختر القسم" /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder="اختر القسم">
+                  {categoryUuid ? categories.find((c: any) => c.uuid === categoryUuid)?.name || 'اختر القسم' : 'اختر القسم'}
+                </SelectValue>
+              </SelectTrigger>
               <SelectContent>
                 {categories.map((c: any) => (
                   <SelectItem key={c.uuid} value={c.uuid}>{c.name}</SelectItem>

@@ -2,47 +2,54 @@
 
 import { AlertTriangle } from 'lucide-react';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+  Dialog, DialogContent, DialogDescription, 
+  DialogFooter, DialogHeader, DialogTitle,
 } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
-import type { Product } from '../types/product.types';
 
-interface DeleteConfirmDialogProps {
-  product: Product | null;
+interface ConfirmDeleteDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  itemName?: string;
+  description?: string;
   onConfirm: () => void;
-  onCancel: () => void;
   isPending: boolean;
 }
 
-export function DeleteConfirmDialog({
-  product,
+export function ConfirmDeleteDialog({
+  open,
+  onOpenChange,
+  title,
+  itemName,
+  description,
   onConfirm,
-  onCancel,
   isPending,
-}: DeleteConfirmDialogProps) {
-  if (!product) return null;
-
+}: ConfirmDeleteDialogProps) {
   return (
-    <Dialog open={!!product} onOpenChange={(open) => !open && onCancel()}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
             <AlertTriangle className="h-6 w-6 text-red-600" />
           </div>
-          <DialogTitle>تأكيد الحذف</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription className="pt-2">
-            هل أنت متأكد من حذف المنتج <strong>{product.name}</strong>؟
-            <br />
-            سيتم نقله لسلة المحذوفات ويمكن استرجاعه لاحقاً.
+            {itemName && (
+              <>
+                هل أنت متأكد من حذف <strong>{itemName}</strong>؟
+                <br />
+              </>
+            )}
+            {description || 'سيتم نقله لسلة المحذوفات ويمكن استرجاعه لاحقاً.'}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" onClick={onCancel} disabled={isPending}>
+          <Button 
+            variant="outline" 
+            onClick={() => onOpenChange(false)}
+            disabled={isPending}
+          >
             إلغاء
           </Button>
           <Button 

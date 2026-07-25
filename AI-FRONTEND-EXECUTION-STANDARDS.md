@@ -216,3 +216,18 @@ Do NOT implement:
 - Multi-language support
 - Dark mode toggle
 - Real-time features
+
+═══════════════════════════════════════════════════════════════
+§11 — Backend Auto-Deploy Protocol (MANDATORY)
+═══════════════════════════════════════════════════════════════
+
+Whenever backend files are modified:
+1. git add specific files
+2. git commit with clear message
+3. git push origin main
+4. VERIFY push succeeded
+5. Instruct user with exact SSH deploy command
+6. Wait for user confirmation
+7. Do NOT proceed until deploy verified
+
+Failure to follow this = wasted debugging cycles for user.

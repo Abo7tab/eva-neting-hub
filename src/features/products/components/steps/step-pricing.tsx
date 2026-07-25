@@ -18,7 +18,7 @@ export function StepPricing() {
         <CardTitle>السعر والمخزون</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <Label>السعر *</Label>
             <Input type="number" step="0.01" {...register('price')} placeholder="0.00" dir="ltr" />
@@ -30,7 +30,7 @@ export function StepPricing() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <Label>الكمية المتاحة</Label>
             <Input type="number" {...register('stock_quantity')} dir="ltr" />
@@ -42,7 +42,16 @@ export function StepPricing() {
           <div>
             <Label>الوحدة</Label>
             <Select value={watch('weight_unit')} onValueChange={(v: any) => setValue('weight_unit', v || 'ml')}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue>
+                  {{
+                    'ml': 'مل',
+                    'g': 'جرام',
+                    'kg': 'كيلو',
+                    'piece': 'قطعة'
+                  }[watch('weight_unit') || 'ml'] || 'مل'}
+                </SelectValue>
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ml">مل</SelectItem>
                 <SelectItem value="g">جرام</SelectItem>

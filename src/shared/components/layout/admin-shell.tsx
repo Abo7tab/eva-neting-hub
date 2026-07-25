@@ -26,7 +26,7 @@ export function AdminShell({ children }: AdminShellProps) {
       />
 
       {/* Main Content Area - offset by sidebar width on desktop */}
-      <div className="lg:mr-72 min-h-screen flex flex-col">
+      <div className="lg:mr-72 min-h-screen flex flex-col overflow-x-hidden">
         {/* Sticky Top Header */}
         <TopHeader onMenuClick={() => setMobileSidebarOpen(true)} />
         

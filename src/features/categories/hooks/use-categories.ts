@@ -63,17 +63,13 @@ export function useUpdateCategory(uuid: string) {
   });
 }
 
+import { useDeleteMutation } from '@/shared/hooks/use-delete-mutation';
+
 export function useDeleteCategory() {
-  const queryClient = useQueryClient();
-  return useMutation({
+  return useDeleteMutation({
     mutationFn: deleteCategory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-      toast.success('تم حذف القسم بنجاح');
-    },
-    onError: (error: any) => {
-      const backendMessage = error?.response?.data?.message;
-      toast.error(backendMessage || 'فشل حذف القسم');
-    },
+    queryKey: ['categories'],
+    successMessage: 'تم حذف القسم بنجاح',
+    defaultErrorMessage: 'فشل حذف القسم',
   });
 }

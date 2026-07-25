@@ -1,5 +1,5 @@
 export interface Admin {
-  uuid: string;
+  id: number;
   name: string;
   email: string;
   created_at: string;

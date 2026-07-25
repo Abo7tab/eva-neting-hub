@@ -8,6 +8,7 @@ import {
   MessageCircle,
   Palette,
   Settings,
+  Users,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -57,5 +58,10 @@ export const adminNavItems: NavItem[] = [
     title: 'الإعدادات العامة',
     href: '/admin/settings',
     icon: Settings,
+  },
+  {
+    title: 'إدارة الأدمن',
+    href: '/admin/users',
+    icon: Users,
   },
 ];

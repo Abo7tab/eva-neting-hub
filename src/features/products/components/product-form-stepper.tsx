@@ -23,8 +23,8 @@ export function ProductFormStepper({
   onStepClick,
 }: ProductFormStepperProps) {
   return (
-    <div className="w-full bg-white rounded-lg border border-slate-200 p-6">
-      <div className="flex items-center justify-between">
+    <div className="w-full bg-white rounded-lg border border-slate-200 p-6 overflow-hidden">
+      <div className="flex items-center justify-between overflow-x-auto pb-4 scrollbar-hide">
         {steps.map((step, index) => {
           const isCompleted = completedSteps.includes(step.id);
           const isCurrent = currentStep === step.id;

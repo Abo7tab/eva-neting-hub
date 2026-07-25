@@ -63,9 +63,8 @@ export function ProductsTable({
   }
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-      <div className="overflow-x-auto">
-        <Table>
+    <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <Table className="min-w-[800px]">
           <TableHeader>
             <TableRow className="bg-slate-50 hover:bg-slate-50">
               <TableHead className="text-right">المنتج</TableHead>
@@ -91,7 +90,6 @@ export function ProductsTable({
             ))}
           </TableBody>
         </Table>
-      </div>
     </div>
   );
 }

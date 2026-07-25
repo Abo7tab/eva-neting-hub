@@ -151,8 +151,8 @@ export function CategoryForm({ initialData, categories, onSubmit, isSubmitting }
                 />
                 {errors.slug && <p className="text-sm text-red-500">{errors.slug.message}</p>}
                 {slug && (
-                  <p className="text-xs text-slate-500 mt-1" dir="ltr">
-                    Preview: /categories/{slug}
+                  <p className="text-xs text-slate-500 mt-1" dir="rtl">
+                    سيتم إنشاء الرابط: <span dir="ltr">/categories/{slug}</span>
                   </p>
                 )}
               </div>

@@ -2,14 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus } from 'lucide-react';
-import { Button } from '@/shared/components/ui/button';
+import { Package, Loader2 } from 'lucide-react';
 import { useDebounce } from '@/shared/hooks/use-debounce';
-import { useProducts, useDeleteProduct } from '@/features/products/hooks/use-products';
+import { useProducts } from '@/features/products/hooks/use-products';
 import { ProductFilters } from '@/features/products/components/product-filters';
 import { ProductsTable } from '@/features/products/components/products-table';
-import { ProductsPagination } from '@/features/products/components/products-pagination';
-import { DeleteConfirmDialog } from '@/features/products/components/delete-confirm-dialog';
+import { ListPageHeader } from '@/shared/components/data/list-page-header';
+import { SearchInput } from '@/shared/components/data/search-input';
+import { EmptyState } from '@/shared/components/data/empty-state';
+import { PaginationBar } from '@/shared/components/data/pagination-bar';
 import type { Product } from '@/features/products/types/product.types';
 
 import { useBrandsList } from '@/features/brands/hooks/use-brands';
@@ -25,25 +26,21 @@ export default function ProductsPage() {
   const [categoryUuid, setCategoryUuid] = useState<string | undefined>();
   const [status, setStatus] = useState<string | undefined>();
   const [page, setPage] = useState(1);
-  
-  // Delete state
-  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const perPage = 20;
 
   // Debounced search
   const debouncedSearch = useDebounce(search, 500);
 
   // Fetch data
-  const { data, isLoading } = useProducts({
+  const { data: paginatedProducts, isLoading, isError } = useProducts({
     search: debouncedSearch || undefined,
     brand_uuid: brandUuid,
     category_uuid: categoryUuid,
     active_status: status === 'active' ? true : status === 'inactive' ? false : undefined,
     sort_by: sortBy as any,
     page,
-    per_page: 20,
+    per_page: perPage,
   });
-
-  const deleteProduct = useDeleteProduct();
 
   const hasActiveFilters = !!(
     search || brandUuid || categoryUuid || status || sortBy !== 'newest'
@@ -62,81 +59,85 @@ export default function ProductsPage() {
     router.push(`/admin/products/${uuid}/edit`);
   };
 
-  const handleDelete = (product: Product) => {
-    setProductToDelete(product);
-  };
-
-  const handleConfirmDelete = () => {
-    if (productToDelete) {
-      deleteProduct.mutate(productToDelete.uuid, {
-        onSuccess: () => setProductToDelete(null),
-      });
-    }
-  };
-
   const { data: brands = [] } = useBrandsList();
   const { data: categories = [] } = useCategoriesList();
 
   return (
-    <div className="space-y-4">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">المنتجات</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            إدارة كل المنتجات في متجرك
-          </p>
+    <div className="space-y-6">
+      <ListPageHeader 
+        title="المنتجات"
+        description="إدارة كل المنتجات في متجرك"
+        actionHref="/admin/products/new"
+        actionLabel="إضافة منتج"
+      />
+
+      <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm space-y-4">
+        <div className="max-w-sm">
+          <SearchInput
+            value={search}
+            onChange={(v) => {
+              setSearch(v);
+              setPage(1);
+            }}
+            placeholder="ابحث بالاسم أو SKU..."
+          />
         </div>
-        <Button onClick={() => router.push('/admin/products/new')}>
-          <Plus className="ml-2 h-4 w-4" />
-          إضافة منتج
-        </Button>
+        
+        <ProductFilters
+          sortBy={sortBy}
+          onSortChange={(v) => { setSortBy(v); setPage(1); }}
+          brandUuid={brandUuid}
+          onBrandChange={(v) => { setBrandUuid(v); setPage(1); }}
+          categoryUuid={categoryUuid}
+          onCategoryChange={(v) => { setCategoryUuid(v); setPage(1); }}
+          status={status}
+          onStatusChange={(v) => { setStatus(v); setPage(1); }}
+          brands={brands}
+          categories={categories}
+          onResetFilters={handleResetFilters}
+          hasActiveFilters={hasActiveFilters}
+        />
       </div>
 
-      {/* Filters */}
-      <ProductFilters
-        search={search}
-        onSearchChange={setSearch}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
-        brandUuid={brandUuid}
-        onBrandChange={setBrandUuid}
-        categoryUuid={categoryUuid}
-        onCategoryChange={setCategoryUuid}
-        status={status}
-        onStatusChange={setStatus}
-        brands={brands}
-        categories={categories}
-        onResetFilters={handleResetFilters}
-        hasActiveFilters={hasActiveFilters}
-      />
-
-      {/* Table */}
-      <ProductsTable
-        products={data?.data}
-        isLoading={isLoading}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
-
-      {/* Pagination */}
-      {data?.meta && (
-        <ProductsPagination
-          currentPage={data.meta.current_page}
-          totalPages={data.meta.last_page}
-          total={data.meta.total}
-          perPage={data.meta.per_page}
-          onPageChange={setPage}
+      {isLoading ? (
+        <div className="flex justify-center items-center py-20">
+          <Loader2 className="h-8 w-8 text-rose-500 animate-spin" />
+        </div>
+      ) : isError ? (
+        <div className="text-center py-20 text-red-500">
+          حدث خطأ أثناء تحميل المنتجات. يرجى المحاولة مرة أخرى.
+        </div>
+      ) : !paginatedProducts?.data || paginatedProducts.data.length === 0 ? (
+        <EmptyState
+          icon={Package}
+          title="لا توجد منتجات بعد"
+          description={hasActiveFilters 
+            ? "لم يتم العثور على منتجات مطابقة للبحث أو الفلاتر المحددة." 
+            : "لم تقم بإضافة أي منتج حتى الآن. ابدأ بإضافة منتجك الأول."}
+          actionHref="/admin/products/new"
+          actionLabel="إضافة منتج جديد"
         />
-      )}
+      ) : (
+        <>
+          <ProductsTable
+            products={paginatedProducts.data}
+            isLoading={false}
+            onEdit={handleEdit}
+            onDelete={() => {}} // Deletion is handled inside table now
+          />
 
-      {/* Delete Dialog */}
-      <DeleteConfirmDialog
-        product={productToDelete}
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setProductToDelete(null)}
-        isPending={deleteProduct.isPending}
-      />
+          {paginatedProducts.meta && (
+            <PaginationBar
+              currentPage={paginatedProducts.meta.current_page}
+              totalPages={paginatedProducts.meta.last_page}
+              total={paginatedProducts.meta.total}
+              perPage={paginatedProducts.meta.per_page}
+              onPageChange={(p) => setPage(p)}
+              itemName="منتج"
+            />
+          )}
+        </>
+      )}
     </div>
   );
 }

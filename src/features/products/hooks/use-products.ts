@@ -29,19 +29,14 @@ export function useProduct(uuid: string | null) {
   });
 }
 
-export function useDeleteProduct() {
-  const queryClient = useQueryClient();
+import { useDeleteMutation } from '@/shared/hooks/use-delete-mutation';
 
-  return useMutation({
-    mutationFn: (uuid: string) => deleteProduct(uuid),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      toast.success('تم حذف المنتج بنجاح');
-    },
-    onError: (error: any) => {
-      const message = error?.message || 'فشل حذف المنتج';
-      toast.error(message);
-    },
+export function useDeleteProduct() {
+  return useDeleteMutation({
+    mutationFn: deleteProduct,
+    queryKey: ['products'],
+    successMessage: 'تم حذف المنتج بنجاح',
+    defaultErrorMessage: 'فشل حذف المنتج',
   });
 }
 

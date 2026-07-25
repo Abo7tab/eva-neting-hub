@@ -11,6 +11,7 @@ import {
   deleteBrand,
 } from '../api/brands.api';
 import type { BrandsListParams } from '../types/brand.types';
+import { useDeleteMutation } from '@/shared/hooks/use-delete-mutation';
 
 export function useBrands(params: BrandsListParams = {}) {
   return useQuery({
@@ -64,20 +65,10 @@ export function useUpdateBrand(uuid: string) {
 }
 
 export function useDeleteBrand() {
-  const queryClient = useQueryClient();
-  return useMutation({
+  return useDeleteMutation({
     mutationFn: deleteBrand,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['brands'] });
-      toast.success('تم حذف البراند بنجاح');
-    },
-    onError: (error: any) => {
-      const status = error.response?.status;
-      if (status === 409 || status === 422) {
-        toast.error('لا يمكن حذف البراند لأنه يحتوي على منتجات. قم بإزالة المنتجات أولاً.');
-      } else {
-        toast.error('فشل حذف البراند');
-      }
-    },
+    queryKey: ['brands'],
+    successMessage: 'تم حذف البراند بنجاح',
+    defaultErrorMessage: 'فشل حذف البراند',
   });
 }

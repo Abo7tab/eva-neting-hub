@@ -1,7 +1,6 @@
 "use client";
 
-import { Search, X } from 'lucide-react';
-import { Input } from '@/shared/components/ui/input';
+import { X } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import {
   Select,
@@ -12,8 +11,6 @@ import {
 } from '@/shared/components/ui/select';
 
 interface ProductFiltersProps {
-  search: string;
-  onSearchChange: (value: string) => void;
   sortBy: string;
   onSortChange: (value: string) => void;
   brandUuid?: string;
@@ -29,8 +26,6 @@ interface ProductFiltersProps {
 }
 
 export function ProductFilters({
-  search,
-  onSearchChange,
   sortBy,
   onSortChange,
   brandUuid,
@@ -44,24 +39,32 @@ export function ProductFilters({
   onResetFilters,
   hasActiveFilters,
 }: ProductFiltersProps) {
-  return (
-    <div className="bg-white rounded-lg border border-slate-200 p-4 space-y-4">
-      {/* Search bar */}
-      <div className="relative">
-        <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-        <Input
-          placeholder="ابحث بالاسم أو SKU..."
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="pr-10"
-        />
-      </div>
+  const STATUS_LABELS: Record<string, string> = {
+    'all': 'كل الحالات',
+    'active': 'نشط',
+    'inactive': 'غير نشط',
+  };
 
+  const SORT_LABELS: Record<string, string> = {
+    'newest': 'الأحدث',
+    'oldest': 'الأقدم',
+    'price_asc': 'السعر: من الأقل',
+    'price_desc': 'السعر: من الأعلى',
+    'popular': 'الأكثر مشاهدة',
+  };
+
+  const selectedBrand = brands.find((b) => b.uuid === brandUuid);
+  const selectedCategory = categories.find((c) => c.uuid === categoryUuid);
+
+  return (
+    <div className="space-y-4">
       {/* Filters row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Select value={brandUuid || 'all'} onValueChange={(v) => onBrandChange(v === 'all' ? '' : (v || ''))}>
           <SelectTrigger>
-            <SelectValue placeholder="كل البراندات" />
+            <SelectValue placeholder="كل البراندات">
+              {brandUuid && brandUuid !== 'all' ? selectedBrand?.name || 'كل البراندات' : 'كل البراندات'}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">كل البراندات</SelectItem>
@@ -75,7 +78,9 @@ export function ProductFilters({
 
         <Select value={categoryUuid || 'all'} onValueChange={(v) => onCategoryChange(v === 'all' ? '' : (v || ''))}>
           <SelectTrigger>
-            <SelectValue placeholder="كل الأقسام" />
+            <SelectValue placeholder="كل الأقسام">
+              {categoryUuid && categoryUuid !== 'all' ? selectedCategory?.name || 'كل الأقسام' : 'كل الأقسام'}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">كل الأقسام</SelectItem>
@@ -89,25 +94,27 @@ export function ProductFilters({
 
         <Select value={status || 'all'} onValueChange={(v) => onStatusChange(v === 'all' ? '' : (v || ''))}>
           <SelectTrigger>
-            <SelectValue placeholder="الحالة" />
+            <SelectValue>
+              {STATUS_LABELS[status || 'all'] || 'كل الحالات'}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">كل الحالات</SelectItem>
-            <SelectItem value="active">نشط</SelectItem>
-            <SelectItem value="inactive">غير نشط</SelectItem>
+            {Object.entries(STATUS_LABELS).map(([value, label]) => (
+              <SelectItem key={value} value={value}>{label}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
 
-        <Select value={sortBy} onValueChange={(v) => onSortChange(v || 'newest')}>
+        <Select value={sortBy || 'newest'} onValueChange={(v) => onSortChange(v || 'newest')}>
           <SelectTrigger>
-            <SelectValue />
+            <SelectValue>
+              {SORT_LABELS[sortBy || 'newest'] || 'الأحدث'}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="newest">الأحدث أولاً</SelectItem>
-            <SelectItem value="oldest">الأقدم أولاً</SelectItem>
-            <SelectItem value="price_asc">السعر: من الأقل</SelectItem>
-            <SelectItem value="price_desc">السعر: من الأعلى</SelectItem>
-            <SelectItem value="popular">الأكثر مشاهدة</SelectItem>
+            {Object.entries(SORT_LABELS).map(([value, label]) => (
+              <SelectItem key={value} value={value}>{label}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>

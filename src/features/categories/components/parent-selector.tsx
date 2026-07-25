@@ -94,7 +94,11 @@ export function ParentSelector({
       disabled={disabled}
     >
       <SelectTrigger className="w-full h-10 px-3 flex justify-between items-center text-sm border border-input rounded-md bg-transparent">
-        <SelectValue placeholder="اختر القسم الأب (أو اتركه قسماً رئيسياً)" />
+        <SelectValue placeholder="اختر القسم الأب (أو اتركه قسماً رئيسياً)">
+          {displayValue === 'none' 
+            ? 'لا يوجد أب (قسم رئيسي)' 
+            : options.find(o => o.uuid === displayValue)?.name || 'اختر القسم الأب (أو اتركه قسماً رئيسياً)'}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="none" className="font-semibold text-rose-600">

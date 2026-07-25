@@ -10,7 +10,6 @@ interface CategoryTreeProps {
   categories: Category[];
   searchQuery: string;
   onEdit: (uuid: string) => void;
-  onDelete: (category: Category) => void;
   onAddChild: (parentUuid: string) => void;
 }
 
@@ -18,7 +17,6 @@ export function CategoryTree({
   categories,
   searchQuery,
   onEdit,
-  onDelete,
   onAddChild,
 }: CategoryTreeProps) {
   // Helper to construct the tree hierarchy
@@ -72,30 +70,11 @@ export function CategoryTree({
   }, [categories, searchQuery]);
 
   if (categories.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24 text-center border-2 border-dashed border-slate-200 rounded-xl bg-white mt-6">
-        <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mb-6">
-          <FolderTree className="h-10 w-10 text-rose-500" />
-        </div>
-        <h3 className="text-xl font-bold text-slate-900 mb-2">لا توجد أقسام بعد</h3>
-        <p className="text-slate-500 max-w-md mx-auto mb-8">
-          قم بإنشاء شجرة الأقسام الخاصة بك لتنظيم المنتجات بشكل هرمي يسهل على العملاء تصفحه.
-        </p>
-        <Button onClick={() => onAddChild('')} className="bg-rose-600 hover:bg-rose-700">
-          إضافة القسم الأول
-        </Button>
-      </div>
-    );
+    return null; // Handled by parent EmptyState
   }
 
   if (searchQuery && treeNodes.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-center bg-white rounded-xl border border-slate-200 mt-6">
-        <PackageSearch className="h-12 w-12 text-slate-300 mb-4" />
-        <h3 className="text-lg font-medium text-slate-900 mb-1">لم يتم العثور على نتائج</h3>
-        <p className="text-sm text-slate-500">جرّب كلمات بحث مختلفة</p>
-      </div>
-    );
+    return null; // Handled by parent EmptyState or we can show a minimal message
   }
 
   return (
@@ -106,7 +85,6 @@ export function CategoryTree({
             key={node.uuid}
             node={node}
             onEdit={onEdit}
-            onDelete={onDelete}
             onAddChild={onAddChild}
             searchQuery={searchQuery}
           />
