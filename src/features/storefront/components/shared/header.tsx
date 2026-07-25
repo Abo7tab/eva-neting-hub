@@ -90,7 +90,7 @@ export const Header = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        className={`sticky top-0 left-0 right-0 z-40 transition-all duration-300 ${
           isScrolled ? 'backdrop-blur-md shadow-md py-2' : 'py-4'
         }`}
         style={{
@@ -98,10 +98,10 @@ export const Header = () => {
           borderBottom: isScrolled ? `2px solid var(--primary)` : 'none',
         }}
       >
-        <div className="container mx-auto px-4 grid grid-cols-3 lg:flex lg:items-center lg:justify-between relative items-center">
+        <div className="container mx-auto px-4 flex items-center justify-between relative">
           
           {/* RIGHT SIDE: Logo + Site Name */}
-          <div className="col-span-1 flex justify-start lg:block lg:flex-none">
+          <div className="flex-none flex justify-start">
             <Link href="/" className="flex items-center gap-2 shrink-0">
               {logoUrl ? (
                 <img src={logoUrl} alt={siteName} className="h-10 sm:h-12 lg:h-20 w-auto object-contain" />
@@ -161,39 +161,8 @@ export const Header = () => {
             
           </nav>
 
-          {/* CENTER MOBILE: Search Bar */}
-          <div className="col-span-1 lg:hidden flex justify-center items-center">
-            <div className="flex items-center">
-              <AnimatePresence>
-                {isSearchOpen && (
-                  <motion.div
-                    initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: "100%", opacity: 1 }}
-                    exit={{ width: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden mr-2 absolute right-12 left-4 top-1/2 -translate-y-1/2 z-50 bg-white py-2"
-                  >
-                    <input 
-                      type="text" 
-                      placeholder="ابحث عن منتج..."
-                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-inner"
-                      autoFocus
-                      onBlur={() => setIsSearchOpen(false)}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <button 
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-2 text-slate-700 hover:text-primary transition-colors z-50"
-              >
-                <Search size={22} />
-              </button>
-            </div>
-          </div>
-
           {/* LEFT SIDE: Gender Tabs + Icons */}
-          <div className="col-span-1 lg:flex-none flex items-center justify-end gap-3 sm:gap-4">
+          <div className="flex-none flex items-center justify-end gap-3 sm:gap-4">
             
             {/* Gender Pill Tabs (Desktop) */}
             {parentCategories.length > 0 && (
@@ -219,21 +188,21 @@ export const Header = () => {
               </div>
             )}
 
-            {/* DESKTOP Search Bar + Icon */}
-            <div className="hidden lg:flex items-center">
+            {/* Search Bar + Icon (Mobile & Desktop) */}
+            <div className="flex items-center">
               <AnimatePresence>
                 {isSearchOpen && (
                   <motion.div
                     initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: "200px", opacity: 1 }}
+                    animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? "100%" : "200px", opacity: 1 }}
                     exit={{ width: 0, opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="overflow-hidden mr-2"
+                    className="overflow-hidden mr-2 absolute lg:relative right-12 lg:right-auto left-4 lg:left-auto top-1/2 -translate-y-1/2 lg:translate-y-0 z-50 lg:z-auto bg-white lg:bg-transparent py-2 lg:py-0 shadow-lg lg:shadow-none rounded-full"
                   >
                     <input 
                       type="text" 
                       placeholder="ابحث عن منتج..."
-                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-inner lg:shadow-none"
                       autoFocus
                       onBlur={() => setIsSearchOpen(false)}
                     />
@@ -242,7 +211,7 @@ export const Header = () => {
               </AnimatePresence>
               <button 
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-2 text-slate-700 hover:text-primary transition-colors"
+                className="p-2 text-slate-700 hover:text-primary transition-colors z-50 lg:z-auto relative"
               >
                 <Search size={22} />
               </button>
@@ -287,7 +256,7 @@ export const Header = () => {
                 <button
                   key={cat.uuid}
                   onClick={() => handleTabClick(cat.slug)}
-                  className="flex-1 text-center py-2.5 rounded-xl text-sm font-bold border-2 transition-all shadow-sm active:scale-95"
+                  className="flex-1 text-center py-2 rounded-xl text-xs sm:text-sm font-bold border-2 transition-all shadow-sm active:scale-95"
                   style={{
                     backgroundColor: activeTab === cat.slug ? primaryColor : 'transparent',
                     borderColor: primaryColor,
