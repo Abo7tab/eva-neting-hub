@@ -39,11 +39,17 @@ export async function generateMetadata(): Promise<Metadata> {
         locale: 'ar_EG',
         type: 'website',
       },
+      verification: {
+        google: 'IhX2U9bzob2dTAvxoqXQtyq6tqe9uD2o649TpL4oOKs',
+      },
     };
   } catch (error) {
     return {
       title: "Eva Beauty Hub",
       description: "منصتك الأولى لمنتجات التجميل",
+      verification: {
+        google: 'IhX2U9bzob2dTAvxoqXQtyq6tqe9uD2o649TpL4oOKs',
+      },
     };
   }
 }
