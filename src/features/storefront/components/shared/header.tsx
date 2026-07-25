@@ -73,8 +73,9 @@ export const Header = () => {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'
+          isScrolled ? 'backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'
         }`}
+        style={isScrolled ? { backgroundColor: 'var(--eva-accent)' } : undefined}
       >
         <div className="container mx-auto px-4 flex items-center justify-between">
           
@@ -135,7 +136,6 @@ export const Header = () => {
               </AnimatePresence>
             </div>
             
-            <Link href="/brands" className="font-bold text-slate-700 hover:text-primary transition-colors">الماركات</Link>
           </nav>
 
           {/* LEFT SIDE: Gender Tabs + Icons */}
@@ -260,7 +260,6 @@ export const Header = () => {
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>الرئيسية</Link>
                 <Link href="/products" onClick={() => setIsMobileMenuOpen(false)}>المنتجات</Link>
                 <Link href="/categories" onClick={() => setIsMobileMenuOpen(false)}>الأقسام</Link>
-                <Link href="/brands" onClick={() => setIsMobileMenuOpen(false)}>الماركات</Link>
               </div>
             </motion.div>
           )}
