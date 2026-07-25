@@ -98,24 +98,26 @@ export const Header = () => {
           borderBottom: isScrolled ? `2px solid var(--primary)` : 'none',
         }}
       >
-        <div className="container mx-auto px-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 flex items-center justify-between lg:justify-between relative">
           
           {/* RIGHT SIDE: Logo + Site Name */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            {logoUrl ? (
-              <img src={logoUrl} alt={siteName} className="h-16 lg:h-20 w-auto object-contain" />
-            ) : (
-              <img 
-                src={
-                  activeTheme === 'women' ? '/logos/women.svg' : 
-                  activeTheme === 'men' ? '/logos/men.svg' : 
-                  '/logos/main.svg'
-                } 
-                alt={siteName} 
-                className="h-16 lg:h-20 w-auto object-contain" 
-              />
-            )}
-          </Link>
+          <div className="flex-1 lg:flex-none flex justify-start">
+            <Link href="/" className="flex items-center gap-2 shrink-0">
+              {logoUrl ? (
+                <img src={logoUrl} alt={siteName} className="h-16 lg:h-20 w-auto object-contain" />
+              ) : (
+                <img 
+                  src={
+                    activeTheme === 'women' ? '/logos/women.svg' : 
+                    activeTheme === 'men' ? '/logos/men.svg' : 
+                    '/logos/main.svg'
+                  } 
+                  alt={siteName} 
+                  className="h-16 lg:h-20 w-auto object-contain" 
+                />
+              )}
+            </Link>
+          </div>
 
           {/* CENTER: Navigation (Desktop) */}
           <nav className="hidden lg:flex items-center gap-6">
@@ -159,8 +161,39 @@ export const Header = () => {
             
           </nav>
 
+          {/* CENTER MOBILE: Search Bar */}
+          <div className="flex-1 lg:hidden flex justify-center items-center">
+            <div className="flex items-center">
+              <AnimatePresence>
+                {isSearchOpen && (
+                  <motion.div
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: "100%", opacity: 1 }}
+                    exit={{ width: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden mr-2 absolute right-12 left-4 top-1/2 -translate-y-1/2 z-50 bg-white py-2"
+                  >
+                    <input 
+                      type="text" 
+                      placeholder="ابحث عن منتج..."
+                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-inner"
+                      autoFocus
+                      onBlur={() => setIsSearchOpen(false)}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <button 
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="p-2 text-slate-700 hover:text-primary transition-colors z-50"
+              >
+                <Search size={22} />
+              </button>
+            </div>
+          </div>
+
           {/* LEFT SIDE: Gender Tabs + Icons */}
-          <div className="flex items-center gap-3">
+          <div className="flex-1 lg:flex-none flex items-center justify-end gap-1 sm:gap-3">
             
             {/* Gender Pill Tabs (Desktop) */}
             {parentCategories.length > 0 && (
@@ -186,21 +219,21 @@ export const Header = () => {
               </div>
             )}
 
-            {/* Search Bar + Icon */}
-            <div className="flex items-center">
+            {/* DESKTOP Search Bar + Icon */}
+            <div className="hidden lg:flex items-center">
               <AnimatePresence>
                 {isSearchOpen && (
                   <motion.div
                     initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? "100%" : "200px", opacity: 1 }}
+                    animate={{ width: "200px", opacity: 1 }}
                     exit={{ width: 0, opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="overflow-hidden mr-2 absolute lg:relative right-12 lg:right-auto left-4 lg:left-auto top-1/2 -translate-y-1/2 lg:translate-y-0 z-50 lg:z-auto bg-white lg:bg-transparent py-2 lg:py-0"
+                    className="overflow-hidden mr-2"
                   >
                     <input 
                       type="text" 
                       placeholder="ابحث عن منتج..."
-                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-inner lg:shadow-none"
+                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       autoFocus
                       onBlur={() => setIsSearchOpen(false)}
                     />
@@ -209,7 +242,7 @@ export const Header = () => {
               </AnimatePresence>
               <button 
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-2 text-slate-700 hover:text-primary transition-colors z-50"
+                className="p-2 text-slate-700 hover:text-primary transition-colors"
               >
                 <Search size={22} />
               </button>
@@ -248,13 +281,13 @@ export const Header = () => {
         
         {/* Mobile Gender Tabs (Shows below header on mobile if exists) */}
         {parentCategories.length > 0 && (
-          <div className="lg:hidden container mx-auto px-4 mt-1 pb-2">
-            <div className="flex items-center w-full gap-2">
+          <div className="lg:hidden container mx-auto px-4 mt-2 mb-4">
+            <div className="flex items-center w-full gap-3 sm:gap-4">
               {parentCategories.slice(0, 3).map((cat) => (
                 <button
                   key={cat.uuid}
                   onClick={() => handleTabClick(cat.slug)}
-                  className="flex-1 text-center py-2 rounded-xl text-sm font-bold border-2 transition-all shadow-sm active:scale-95"
+                  className="flex-1 text-center py-2.5 rounded-xl text-sm font-bold border-2 transition-all shadow-sm active:scale-95"
                   style={{
                     backgroundColor: activeTab === cat.slug ? primaryColor : 'transparent',
                     borderColor: primaryColor,
