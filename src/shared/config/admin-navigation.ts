@@ -6,6 +6,7 @@ import {
   FolderTree,
   ShoppingCart,
   MessageCircle,
+  MessageSquare,
   Palette,
   Settings,
   Users,
@@ -48,6 +49,11 @@ export const adminNavItems: NavItem[] = [
     title: 'أرقام الواتساب',
     href: '/admin/whatsapp-numbers',
     icon: MessageCircle,
+  },
+  {
+    title: 'قالب الواتساب',
+    href: '/admin/whatsapp-template',
+    icon: MessageSquare,
   },
   {
     title: 'إعدادات الثيم',
