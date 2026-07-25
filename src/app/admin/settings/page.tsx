@@ -1,8 +1,14 @@
+import { ListPageHeader } from '@/shared/components/data/list-page-header';
+import { SettingsTabs } from '@/features/settings/components/settings-tabs';
+
 export default function SettingsPage() {
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">الإعدادات العامة</h1>
-      <p className="text-slate-500 mt-2">قيد الإنشاء - Phase 8</p>
+    <div className="flex-1 space-y-4 p-8 pt-6" dir="rtl">
+      <ListPageHeader 
+        title="الإعدادات العامة" 
+        description="إدارة نصوص وصور وألوان الموقع وإعدادات SEO"
+      />
+      <SettingsTabs />
     </div>
   );
 }
