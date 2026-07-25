@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { usePublicSettings, usePublicTheme } from '../../hooks/use-storefront';
+import { usePublicSettings, usePublicTheme, usePublicCategories } from '../../hooks/use-storefront';
 import { ThemeApiResponse } from '@/features/theme/types/theme.types';
 import NextTopLoader from 'nextjs-toploader';
 
