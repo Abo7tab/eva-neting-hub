@@ -6,14 +6,10 @@ import { useStorefrontContext } from '../providers/storefront-provider';
 export const AnimatedBackground = () => {
   const { themeConfig } = useStorefrontContext();
 
-  // Settings from theme (with defaults)
   const count = themeConfig?.background?.animation_blobs_count ?? 4;
   const blur = themeConfig?.background?.animation_blur ?? 80;
-  const opacity = (themeConfig?.background?.animation_opacity ?? 40) / 100;
+  const opacity = (themeConfig?.background?.animation_opacity ?? 30) / 100;
   const speed = themeConfig?.background?.animation_speed ?? 50;
-  
-  // Calculate duration (higher speed = lower duration)
-  // Maps 0-100 speed to 30s-5s duration
   const duration = 30 - (speed / 100) * 25;
 
   const [blobs, setBlobs] = useState<any[]>([]);
@@ -22,11 +18,11 @@ export const AnimatedBackground = () => {
     const generated = Array.from({ length: count }).map((_, i) => ({
       id: i,
       color: i % 2 === 0 ? 'var(--eva-bg-1, #F97316)' : 'var(--eva-bg-2, #FB923C)',
-      left: `${Math.random() * 80}%`,
-      top: `${Math.random() * 80}%`,
+      left: `${10 + (i * 25) % 70}%`,
+      top: `${10 + (i * 30) % 60}%`,
       animationName: `blob-${i % 4}`,
       animationDuration: `${duration + (i * 2)}s`,
-      animationDelay: `-${i * 3}s`,
+      animationDelay: `-${i * 4}s`,
     }));
     setBlobs(generated);
   }, [count, duration]);
@@ -35,44 +31,45 @@ export const AnimatedBackground = () => {
     <>
       <style>{`
         @keyframes blob-0 {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
+          0%,100% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(40px, -60px) scale(1.15); }
+          66% { transform: translate(-30px, 30px) scale(0.9); }
         }
         @keyframes blob-1 {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(-30px, 30px) scale(1.1); }
-          66% { transform: translate(20px, -20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
+          0%,100% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(-50px, 40px) scale(1.1); }
+          66% { transform: translate(30px, -30px) scale(0.95); }
         }
         @keyframes blob-2 {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(40px, 40px) scale(1.15); }
-          66% { transform: translate(-40px, -40px) scale(0.85); }
-          100% { transform: translate(0px, 0px) scale(1); }
+          0%,100% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(50px, 50px) scale(1.2); }
+          66% { transform: translate(-50px, -40px) scale(0.85); }
         }
         @keyframes blob-3 {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(-40px, -40px) scale(0.85); }
-          66% { transform: translate(40px, 40px) scale(1.15); }
-          100% { transform: translate(0px, 0px) scale(1); }
+          0%,100% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(-40px, -50px) scale(0.9); }
+          66% { transform: translate(60px, 40px) scale(1.1); }
         }
       `}</style>
-      
-      <div 
-        className="fixed inset-0 pointer-events-none" 
-        style={{ zIndex: -1, backgroundColor: 'var(--eva-accent, #FFF7ED)' }}
+
+      {/* Fixed background: always white base + blobs on top */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{ zIndex: 0, backgroundColor: '#ffffff' }}
       >
-        <div 
-          className="absolute inset-0 w-full h-full"
+        <div
+          className="absolute inset-0 w-full h-full overflow-hidden"
           style={{ filter: `blur(${blur}px)` }}
         >
           {blobs.map((blob) => (
             <div
               key={blob.id}
-              className="absolute rounded-full w-[40vw] h-[40vw] min-w-[300px] min-h-[300px]"
+              className="absolute rounded-full"
               style={{
+                width: '45vw',
+                height: '45vw',
+                minWidth: '320px',
+                minHeight: '320px',
                 backgroundColor: blob.color,
                 left: blob.left,
                 top: blob.top,
@@ -83,9 +80,8 @@ export const AnimatedBackground = () => {
             />
           ))}
         </div>
-        
-        {/* Overlay for content readability */}
-        <div className="absolute inset-0 bg-white/70" />
+        {/* White overlay for readability */}
+        <div className="absolute inset-0" style={{ backgroundColor: 'rgba(255,255,255,0.65)' }} />
       </div>
     </>
   );

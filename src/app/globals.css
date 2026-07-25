@@ -4,6 +4,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Force storefront to always be light — OS dark mode should not affect customer-facing pages */
+html {
+  color-scheme: light only;
+}
+
+
 @keyframes border-beam {
   100% {
     offset-distance: 100%;

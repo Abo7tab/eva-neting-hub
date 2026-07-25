@@ -3,6 +3,7 @@ import { StorefrontProvider } from "@/features/storefront/components/providers/s
 import { storefrontApi } from "@/features/storefront/api/storefront.api";
 import { Header } from "@/features/storefront/components/shared/header";
 import { Footer } from "@/features/storefront/components/shared/footer";
+import { AnimatedBackground } from "@/features/storefront/components/shared/animated-background";
 
 export async function generateMetadata(
   { params }: { params: {} },
@@ -53,9 +54,11 @@ export default function PublicLayout({
 }>) {
   return (
     <StorefrontProvider>
-      <div className="flex flex-col min-h-screen">
+      {/* Global animated background — fixed behind all pages */}
+      <AnimatedBackground />
+      <div className="flex flex-col min-h-screen relative z-10">
         <Header />
-        <main className="flex-1 relative z-10 pt-20">
+        <main className="flex-1 pt-20">
           {children}
         </main>
         <Footer />
