@@ -32,11 +32,11 @@ export const ProductCarouselSection = ({ title, hook }: ProductCarouselSectionPr
       ) : (
         <motion.div 
           initial="hidden"
-          whileInView="show"
+          whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={{
             hidden: { opacity: 0 },
-            show: {
+            visible: {
               opacity: 1,
               transition: { staggerChildren: 0.1 }
             }
@@ -45,17 +45,12 @@ export const ProductCarouselSection = ({ title, hook }: ProductCarouselSectionPr
           className="flex overflow-x-auto pb-8 snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0 gap-4 md:gap-6 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0"
         >
           {products!.slice(0, 8).map((product) => (
-            <motion.div
+            <div
               key={product.uuid}
-              variants={{
-                hidden: { opacity: 0, y: 30 },
-                show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
-              }}
-              // Give fixed width on mobile for horizontal scroll, fluid on grid
               className="w-[75vw] sm:w-[45vw] shrink-0 snap-center lg:w-auto"
             >
               <ProductCard product={product} />
-            </motion.div>
+            </div>
           ))}
         </motion.div>
       )}

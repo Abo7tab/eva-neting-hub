@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,6 +9,7 @@ import { useStorefrontContext } from '../providers/storefront-provider';
 import { useCartStore } from '../../store/use-cart-store';
 import { CartDrawer } from './cart-drawer';
 import { usePublicCategories } from '../../hooks/use-storefront';
+import { useReducedMotion } from 'framer-motion';
 
 export const Header = () => {
   const { settings, activeTheme, setActiveTheme } = useStorefrontContext();
@@ -17,7 +18,12 @@ export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isCategoriesDropdownOpen, setIsCategoriesDropdownOpen] = useState(false);
+  
+  const cartIconRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
+  const shouldReduceMotion = useReducedMotion();
 
   const { data: categories } = usePublicCategories();
   const parentCategories = (categories || []).filter((c) => !c.parent_uuid);
@@ -32,6 +38,20 @@ export const Header = () => {
     const saved = localStorage.getItem('eva-active-category');
     if (saved) setActiveTab(saved);
   }, []);
+
+  // Cart bounce effect
+  useEffect(() => {
+    if (totalItems > 0 && cartIconRef.current && !shouldReduceMotion) {
+      cartIconRef.current.animate([
+        { transform: 'scale(1)' },
+        { transform: 'scale(1.3)' },
+        { transform: 'scale(1)' }
+      ], {
+        duration: 300,
+        easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+      });
+    }
+  }, [totalItems, shouldReduceMotion]);
 
   const siteName = settings['site_name'] || 'إيفا نيتنج هاب';
   const logoUrl = settings['site_logo_url'];
@@ -79,10 +99,42 @@ export const Header = () => {
           <nav className="hidden lg:flex items-center gap-6">
             <Link href="/" className="font-bold text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors">الرئيسية</Link>
             <Link href="/products" className="font-bold text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors">المنتجات</Link>
-            <div className="relative group cursor-pointer flex items-center gap-1 font-bold text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors">
-              <Link href="/categories">الأقسام</Link>
-              <ChevronDown size={14} className="group-hover:rotate-180 transition-transform" />
+            
+            <div 
+              className="relative group cursor-pointer flex flex-col justify-center h-full"
+              onMouseEnter={() => setIsCategoriesDropdownOpen(true)}
+              onMouseLeave={() => setIsCategoriesDropdownOpen(false)}
+            >
+              <div className="flex items-center gap-1 font-bold text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors py-4">
+                <Link href="/categories">الأقسام</Link>
+                <ChevronDown size={14} className="group-hover:rotate-180 transition-transform" />
+              </div>
+              
+              {/* Dropdown Menu */}
+              <AnimatePresence>
+                {isCategoriesDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-[100%] right-0 w-64 bg-white shadow-xl rounded-2xl border border-slate-100 overflow-hidden z-50 pt-2 pb-2"
+                  >
+                    {parentCategories.map(cat => (
+                      <Link 
+                        key={cat.uuid}
+                        href={`/category/${cat.slug}`}
+                        className="block px-4 py-2 hover:bg-slate-50 hover:text-[var(--eva-primary,#F97316)] font-bold text-sm transition-colors text-slate-700"
+                        onClick={() => setIsCategoriesDropdownOpen(false)}
+                      >
+                        {cat.name}
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
+            
             <Link href="/brands" className="font-bold text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors">الماركات</Link>
           </nav>
 
@@ -113,23 +165,48 @@ export const Header = () => {
               </div>
             )}
 
-            {/* Search Icon */}
-            <button className="p-2 text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors">
-              <Search size={22} />
-            </button>
+            {/* Search Bar + Icon */}
+            <div className="flex items-center">
+              <AnimatePresence>
+                {isSearchOpen && (
+                  <motion.div
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: "200px", opacity: 1 }}
+                    exit={{ width: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden mr-2"
+                  >
+                    <input 
+                      type="text" 
+                      placeholder="ابحث عن منتج..."
+                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--eva-primary,#F97316)]"
+                      autoFocus
+                      onBlur={() => setIsSearchOpen(false)}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <button 
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="p-2 text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors"
+              >
+                <Search size={22} />
+              </button>
+            </div>
 
             {/* Cart Icon */}
             <button
+              ref={cartIconRef}
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2 text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors"
+              className="relative p-2 text-slate-700 hover:text-[var(--eva-primary,#F97316)] transition-colors transform origin-center"
             >
               <ShoppingBag size={22} />
               {totalItems > 0 && (
                 <motion.div
                   key={totalItems}
-                  initial={{ scale: 0.5, y: -5 }}
-                  animate={{ scale: 1, y: 0 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 500 }}
                   className="absolute -top-1 -right-1 w-5 h-5 text-white text-xs font-black rounded-full flex items-center justify-center shadow-md"
                   style={{ backgroundColor: primaryColor }}
                 >

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Brand } from '@/features/brands/types/brand.types';
+import { BrandGridSkeleton } from '../shared/skeletons/brand-card-skeleton';
 
 interface BrandsSectionProps {
   title: string;
@@ -26,22 +27,30 @@ export const BrandsSection = ({ title, hook }: BrandsSectionProps) => {
         />
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {isLoading
-          ? Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="aspect-[3/2] bg-white rounded-3xl shadow-sm border border-slate-50 animate-pulse"
-              />
-            ))
-          : brands!.slice(0, 12).map((brand, i) => (
-              <motion.div
-                key={brand.uuid}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                whileHover={{ y: -6, scale: 1.02 }}
+      {isLoading ? (
+        <BrandGridSkeleton />
+      ) : (
+        <motion.div 
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1 }
+            }
+          }}
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
+        >
+          {brands!.slice(0, 12).map((brand) => (
+            <motion.div
+              key={brand.uuid}
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+              }}
+              whileHover={{ y: -6, scale: 1.02 }}
                 className="aspect-[3/2] bg-white rounded-3xl shadow-sm hover:shadow-xl border border-slate-50 flex items-center justify-center p-6 cursor-pointer group transition-all duration-300 relative overflow-hidden"
               >
                 {/* Subtle gradient glow on hover */}
@@ -66,7 +75,8 @@ export const BrandsSection = ({ title, hook }: BrandsSectionProps) => {
                 )}
               </motion.div>
             ))}
-      </div>
+        </motion.div>
+      )}
     </section>
   );
 };

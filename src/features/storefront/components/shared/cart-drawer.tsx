@@ -60,7 +60,7 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
 
           {/* Drawer */}
           <motion.div
-            initial={{ x: '-100%' }} // RTL means drawer comes from right, so initial is 100% or we can just use right-0 and x: '100%'
+            initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}

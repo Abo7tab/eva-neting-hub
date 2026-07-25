@@ -35,8 +35,13 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     : 0;
 
   return (
-    <div 
-      className="group relative flex flex-col bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+    <motion.div 
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+      }}
+      whileHover={{ y: -8, transition: { duration: 0.3 } }}
+      className="group relative flex flex-col bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden transition-shadow duration-300 hover:shadow-2xl"
       style={{ '--hover-glow': 'color-mix(in srgb, var(--eva-primary) 30%, transparent)' } as any}
     >
       <style jsx>{`
@@ -76,14 +81,17 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
           {/* Hover "Add to Cart" Slide-Up Overlay */}
           <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex justify-center bg-gradient-to-t from-black/60 to-transparent z-20">
-            <button
+            <motion.button
               onClick={handleAddToCart}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-white font-bold text-sm shadow-lg hover:scale-105 transition-transform"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 400 }}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-white font-bold text-sm shadow-lg"
               style={{ backgroundColor: 'var(--eva-primary, #F97316)' }}
             >
               <ShoppingBag size={16} />
               أضف للسلة
-            </button>
+            </motion.button>
           </div>
         </div>
 
@@ -108,24 +116,20 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         </div>
       </Link>
+    </motion.div>
+  );
+};
+
+export const ProductGridSkeleton = () => {
+  const { ProductCardSkeleton } = require('./skeletons/product-card-skeleton');
+  return (
+    <div className="flex overflow-x-auto pb-8 snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0 gap-4 md:gap-6 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0">
+      {[1, 2, 3, 4].map(i => (
+        <div key={i} className="w-[75vw] sm:w-[45vw] shrink-0 snap-center lg:w-auto">
+          <ProductCardSkeleton />
+        </div>
+      ))}
     </div>
   );
 };
 
-export const ProductGridSkeleton = () => (
-  <div className="flex overflow-x-auto pb-8 snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0 gap-4 md:gap-6 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0">
-    {[1,2,3,4].map(i => (
-      <div key={i} className="w-[75vw] sm:w-[45vw] shrink-0 snap-center lg:w-auto flex flex-col bg-white rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
-        {/* Shimmer */}
-        <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent z-10" />
-        
-        <div className="w-full aspect-square bg-slate-100 animate-pulse" />
-        <div className="p-4 flex flex-col gap-3">
-          <div className="h-4 bg-slate-100 rounded-lg animate-pulse w-3/4" />
-          <div className="h-3 bg-slate-100 rounded-lg animate-pulse w-1/3" />
-          <div className="h-6 bg-slate-100 rounded-lg animate-pulse w-1/2 mt-2" />
-        </div>
-      </div>
-    ))}
-  </div>
-);

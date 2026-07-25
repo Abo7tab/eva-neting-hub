@@ -2,8 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Category } from '@/features/categories/types/category.types';
+import { CategoryGridSkeleton } from '../shared/skeletons/category-card-skeleton';
+import Image from 'next/image';
 
 interface CategoriesSectionProps {
   title: string;
@@ -107,15 +108,4 @@ export const CategoriesSection = ({ title, hook }: CategoriesSectionProps) => {
   );
 };
 
-export const CategoryGridSkeleton = () => (
-  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-    {[1,2,3,4].map(i => (
-      <div key={i} className="flex flex-col items-center p-4 bg-white rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
-        {/* Shimmer effect */}
-        <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent z-10" />
-        <div className="w-full aspect-square bg-slate-100 animate-pulse rounded-2xl mb-4" />
-        <div className="h-6 w-1/2 bg-slate-100 animate-pulse rounded-full" />
-      </div>
-    ))}
-  </div>
-);
+

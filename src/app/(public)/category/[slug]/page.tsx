@@ -167,18 +167,19 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {productsData?.data.map((product, i) => (
-                  <motion.div
-                    key={product.uuid}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, delay: (i % 8) * 0.07 }}
-                  >
-                    <ProductCard product={product} />
-                  </motion.div>
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+                }}
+                className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+              >
+                {productsData?.data.map((product) => (
+                  <ProductCard key={product.uuid} product={product} />
                 ))}
-              </div>
+              </motion.div>
             )}
           </div>
         </div>

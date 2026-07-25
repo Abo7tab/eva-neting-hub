@@ -4,6 +4,8 @@ import { storefrontApi } from "@/features/storefront/api/storefront.api";
 import { Header } from "@/features/storefront/components/shared/header";
 import { Footer } from "@/features/storefront/components/shared/footer";
 import { AnimatedBackground } from "@/features/storefront/components/shared/animated-background";
+import NextTopLoader from "nextjs-toploader";
+import { PageTransition } from "@/features/storefront/components/shared/page-transition";
 
 export async function generateMetadata(
   { params }: { params: {} },
@@ -54,12 +56,15 @@ export default function PublicLayout({
 }>) {
   return (
     <StorefrontProvider>
+      <NextTopLoader color="var(--eva-primary, #F97316)" height={3} showSpinner={false} />
       {/* Global animated background — fixed behind all pages */}
       <AnimatedBackground />
       <div className="flex flex-col min-h-screen relative z-10">
         <Header />
         <main className="flex-1 pt-20">
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
         </main>
         <Footer />
       </div>
