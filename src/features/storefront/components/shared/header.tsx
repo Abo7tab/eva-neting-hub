@@ -192,15 +192,15 @@ export const Header = () => {
                 {isSearchOpen && (
                   <motion.div
                     initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: "200px", opacity: 1 }}
+                    animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? "100%" : "200px", opacity: 1 }}
                     exit={{ width: 0, opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="overflow-hidden mr-2"
+                    className="overflow-hidden mr-2 absolute lg:relative right-12 lg:right-auto left-4 lg:left-auto top-1/2 -translate-y-1/2 lg:translate-y-0 z-50 lg:z-auto bg-white lg:bg-transparent py-2 lg:py-0"
                   >
                     <input 
                       type="text" 
                       placeholder="ابحث عن منتج..."
-                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-inner lg:shadow-none"
                       autoFocus
                       onBlur={() => setIsSearchOpen(false)}
                     />
@@ -209,7 +209,7 @@ export const Header = () => {
               </AnimatePresence>
               <button 
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-2 text-slate-700 hover:text-primary transition-colors"
+                className="p-2 text-slate-700 hover:text-primary transition-colors z-50"
               >
                 <Search size={22} />
               </button>
@@ -248,13 +248,13 @@ export const Header = () => {
         
         {/* Mobile Gender Tabs (Shows below header on mobile if exists) */}
         {parentCategories.length > 0 && (
-          <div className="lg:hidden container mx-auto px-4 mt-2">
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="lg:hidden container mx-auto px-4 mt-1 pb-2">
+            <div className="flex items-center w-full gap-2">
               {parentCategories.slice(0, 3).map((cat) => (
                 <button
                   key={cat.uuid}
                   onClick={() => handleTabClick(cat.slug)}
-                  className="relative px-5 py-1.5 rounded-full text-sm font-bold shrink-0 border-2"
+                  className="flex-1 text-center py-2 rounded-xl text-sm font-bold border-2 transition-all shadow-sm active:scale-95"
                   style={{
                     backgroundColor: activeTab === cat.slug ? primaryColor : 'transparent',
                     borderColor: primaryColor,

@@ -78,8 +78,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             )}
           </div>
 
-          {/* Hover "Add to Cart" Slide-Up Overlay */}
-          <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex justify-center bg-gradient-to-t from-black/60 to-transparent z-20">
+          {/* Hover "Add to Cart" Slide-Up Overlay (Desktop Only) */}
+          <div className="hidden lg:flex absolute inset-x-0 bottom-0 p-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 justify-center bg-gradient-to-t from-black/60 to-transparent z-20">
             <motion.button
               onClick={handleAddToCart}
               whileHover={{ scale: 1.03 }}
@@ -102,15 +102,26 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             {product.brand?.name || 'منتج أصلي'}
           </p>
 
-          <div className="mt-auto flex items-end gap-1.5 sm:gap-2">
-            <span className="text-lg sm:text-xl font-black text-primary">
-              {product.price} <span className="text-[10px] sm:text-xs font-bold">ج.م</span>
-            </span>
-            {hasDiscount && (
-              <span className="text-[10px] sm:text-xs text-slate-400 line-through mb-0.5 sm:mb-1">
-                {product.compare_at_price} ج.م
+          <div className="mt-auto flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-lg sm:text-xl font-black text-primary leading-tight">
+                {product.price} <span className="text-[10px] sm:text-xs font-bold">ج.م</span>
               </span>
-            )}
+              {hasDiscount && (
+                <span className="text-[10px] sm:text-xs text-slate-400 line-through mt-0.5">
+                  {product.compare_at_price} ج.م
+                </span>
+              )}
+            </div>
+            
+            {/* Mobile Add to Cart Button (Visible on all sizes, but mainly for mobile) */}
+            <button
+              onClick={handleAddToCart}
+              className="lg:hidden flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors shrink-0"
+              aria-label="أضف للسلة"
+            >
+              <ShoppingBag size={16} className="sm:w-5 sm:h-5" />
+            </button>
           </div>
         </div>
       </Link>
