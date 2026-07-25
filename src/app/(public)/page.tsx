@@ -2,11 +2,11 @@
 
 import { motion } from 'framer-motion';
 import { useStorefrontContext } from '@/features/storefront/components/providers/storefront-provider';
-import { useFeaturedProducts, useTrendingProducts, usePublicCategories, usePublicBrands } from '@/features/storefront/hooks/use-storefront';
+import { useFeaturedProducts, useTrendingProducts, usePublicCategories } from '@/features/storefront/hooks/use-storefront';
 import { HeroSection } from '@/features/storefront/components/home/hero-section';
 import { ProductCarouselSection } from '@/features/storefront/components/home/product-carousel-section';
 import { CategoriesSection } from '@/features/storefront/components/home/categories-section';
-import { BrandsSection } from '@/features/storefront/components/home/brands-section';
+
 import { AnimatedBackground } from '@/features/storefront/components/shared/animated-background';
 
 export default function HomePage() {
@@ -38,11 +38,6 @@ export default function HomePage() {
           <ProductCarouselSection 
             title={settings['content_home_trending_title'] || 'الأكثر مبيعاً'}
             hook={useTrendingProducts} 
-          />
-
-          <BrandsSection 
-            title={settings['content_home_brands_title'] || 'أشهر الماركات'}
-            hook={usePublicBrands} 
           />
         </div>
       </motion.div>
