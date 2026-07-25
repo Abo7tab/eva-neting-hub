@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Category } from '@/features/categories/types/category.types';
-import { CategoryGridSkeleton } from '../shared/skeletons/category-card-skeleton';
 import Image from 'next/image';
 
 interface CategoriesSectionProps {
@@ -32,79 +31,53 @@ export const CategoriesSection = ({ title, hook }: CategoriesSectionProps) => {
       </div>
 
       {isLoading ? (
-        <CategoryGridSkeleton />
+        <div className="flex flex-wrap justify-center gap-3 md:gap-4">
+          {[1, 2, 3, 4, 5].map(i => (
+            <div key={i} className="h-14 w-32 bg-slate-100 animate-pulse rounded-full" />
+          ))}
+        </div>
       ) : (
           <motion.div 
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "-50px" }}
             variants={{
               hidden: { opacity: 0 },
               show: {
                 opacity: 1,
-                transition: { staggerChildren: 0.15 }
+                transition: { staggerChildren: 0.1 }
               }
             }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+            className="flex flex-wrap justify-center gap-3 md:gap-4"
           >
-            {categories.slice(0, 6).map((cat, index) => {
-              // Generate a chic fallback gradient if no image is present
-              const fallbackGradients = [
-                'from-rose-100 to-teal-100',
-                'from-indigo-100 to-purple-100',
-                'from-orange-100 to-rose-100',
-                'from-blue-100 to-cyan-100'
-              ];
-              const gradientClass = fallbackGradients[index % fallbackGradients.length];
-
-              return (
-                <motion.div
-                  key={cat.uuid}
-                  variants={{
-                    hidden: { opacity: 0, y: 40 },
-                    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
-                  }}
-                  className="group block w-full"
-                >
-                  <Link href={`/category/${cat.slug}`} className="block w-full h-full">
-                    <div className="relative w-full h-[320px] md:h-[420px] rounded-[2rem] overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow duration-500">
-                      
-                      {/* Background (Image or Chic Gradient) */}
-                      {cat.cover_image_url ? (
-                        <Image
-                          src={cat.cover_image_url}
-                          alt={cat.name}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            {categories.map((cat, index) => (
+              <motion.div
+                key={cat.uuid}
+                variants={{
+                  hidden: { opacity: 0, scale: 0.9 },
+                  show: { opacity: 1, scale: 1, transition: { duration: 0.4, type: 'spring', bounce: 0.4 } }
+                }}
+              >
+                <Link href={`/category/${cat.slug}`} className="block">
+                  <div className="bg-white hover:bg-primary border border-slate-200 hover:border-primary shadow-sm hover:shadow-md transition-all duration-300 rounded-full px-6 md:px-8 py-3 flex items-center justify-center gap-3 group">
+                    {cat.cover_image_url && (
+                      <div className="w-8 h-8 rounded-full overflow-hidden relative shrink-0 shadow-sm border border-slate-100">
+                        <Image 
+                          src={cat.cover_image_url} 
+                          alt={cat.name} 
+                          fill 
+                          className="object-cover" 
+                          sizes="32px"
                         />
-                      ) : (
-                        <div className={`w-full h-full bg-gradient-to-br ${gradientClass} group-hover:scale-110 transition-transform duration-700 ease-out`} />
-                      )}
-
-                      {/* Premium Overlay Gradient */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-                      
-                      {/* Badge */}
-                      {cat.products_count !== undefined && (
-                        <div className="absolute top-6 left-6 z-10 bg-white/20 backdrop-blur-md text-white border border-white/30 text-xs font-bold px-4 py-1.5 rounded-full">
-                          {cat.products_count} منتج
-                        </div>
-                      )}
-
-                      {/* Content */}
-                      <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col items-center justify-end text-center z-10 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                        <h3 className="font-black text-3xl md:text-4xl text-white mb-3 tracking-wide drop-shadow-md">
-                          {cat.name}
-                        </h3>
-                        <div className="w-0 h-1 bg-primary mx-auto group-hover:w-16 transition-all duration-500 ease-out rounded-full" />
                       </div>
-                      
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
+                    )}
+                    <span className="font-bold text-slate-700 group-hover:text-primary-foreground transition-colors text-base md:text-lg">
+                      {cat.name}
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
           </motion.div>
       )}
     </section>
