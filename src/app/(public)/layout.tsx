@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import type { Metadata } from "next";
 import { StorefrontProvider } from "@/features/storefront/components/providers/storefront-provider";
 import { storefrontApi } from "@/features/storefront/api/storefront.api";
