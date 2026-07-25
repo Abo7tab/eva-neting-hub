@@ -59,11 +59,29 @@ export const Header = () => {
   const handleTabClick = (slug: string) => {
     setActiveTab(slug);
     localStorage.setItem('eva-active-category', slug);
-    const themeMap: Record<string, string> = {
-      women: 'women', حريمي: 'women',
-      men: 'men', رجالي: 'men',
-    };
-    setActiveTheme(themeMap[slug] || 'default');
+    
+    // Find the category by slug and detect its gender
+    const category = categories?.find(c => c.slug === slug);
+    if (category) {
+      // Walk up to root parent
+      let root = category;
+      while (root.parent_uuid && categories) {
+        const parent = categories.find(c => c.uuid === root.parent_uuid);
+        if (!parent) break;
+        root = parent;
+      }
+      const rootName = root.name?.trim();
+      if (rootName === 'حريمي' || rootName === 'حريمى') {
+        setActiveTheme('women');
+      } else if (rootName === 'رجالي' || rootName === 'رجالى') {
+        setActiveTheme('men');
+      } else {
+        setActiveTheme('default');
+      }
+    } else {
+      setActiveTheme('default');
+    }
+    
     router.push(`/category/${slug}`);
   };
 
@@ -73,9 +91,12 @@ export const Header = () => {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          isScrolled ? 'backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'
+          isScrolled ? 'backdrop-blur-md shadow-md py-2' : 'py-4'
         }`}
-        style={isScrolled ? { backgroundColor: 'var(--eva-accent)' } : undefined}
+        style={{
+          backgroundColor: isScrolled ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.7)',
+          borderBottom: isScrolled ? `2px solid var(--primary)` : 'none',
+        }}
       >
         <div className="container mx-auto px-4 flex items-center justify-between">
           

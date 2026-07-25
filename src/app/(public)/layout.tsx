@@ -1,4 +1,4 @@
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import { StorefrontProvider } from "@/features/storefront/components/providers/storefront-provider";
 import { storefrontApi } from "@/features/storefront/api/storefront.api";
 import { Header } from "@/features/storefront/components/shared/header";
@@ -6,10 +6,7 @@ import { Footer } from "@/features/storefront/components/shared/footer";
 import { AnimatedBackground } from "@/features/storefront/components/shared/animated-background";
 import { PageTransition } from "@/features/storefront/components/shared/page-transition";
 
-export async function generateMetadata(
-  { params }: { params: {} },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   try {
     const settings = await storefrontApi.getSettings();
     const settingsMap = settings.reduce((acc, curr) => {

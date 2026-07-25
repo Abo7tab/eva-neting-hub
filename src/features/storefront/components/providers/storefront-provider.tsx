@@ -39,21 +39,35 @@ export const StorefrontProvider = ({ children }: { children: React.ReactNode }) 
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
 
+  const { data: categoriesData } = usePublicCategories();
+
   useEffect(() => {
     setIsMounted(true);
     
-    // Check URL path first to automatically infer category theme
-    if (pathname) {
+    if (pathname && categoriesData) {
       const match = pathname.match(/\/category\/([^\/]+)/);
       if (match) {
         const slug = match[1];
-        if (slug.includes('women') || slug.includes('حريمي')) {
-          setActiveThemeState('women');
-          return;
-        }
-        if (slug.includes('men') || slug.includes('رجالي')) {
-          setActiveThemeState('men');
-          return;
+        // Find the category by slug
+        const category = categoriesData.find(c => c.slug === slug);
+        if (category) {
+          // Walk up to root parent to find gender
+          let root = category;
+          while (root.parent_uuid) {
+            const parent = categoriesData.find(c => c.uuid === root.parent_uuid);
+            if (!parent) break;
+            root = parent;
+          }
+          // Check root category name for gender
+          const rootName = root.name?.trim() || '';
+          if (rootName === 'حريمي' || rootName === 'حريمى' || rootName.toLowerCase().includes('women') || rootName.toLowerCase().includes('female')) {
+            setActiveThemeState('women');
+            return;
+          }
+          if (rootName === 'رجالي' || rootName === 'رجالى' || rootName.toLowerCase().includes('men') || rootName.toLowerCase().includes('male')) {
+            setActiveThemeState('men');
+            return;
+          }
         }
       }
     }
@@ -61,7 +75,7 @@ export const StorefrontProvider = ({ children }: { children: React.ReactNode }) 
     // Fallback to localStorage if no specific URL theme applies
     const savedTheme = localStorage.getItem('eva-theme');
     if (savedTheme) setActiveThemeState(savedTheme);
-  }, [pathname]);
+  }, [pathname, categoriesData]);
 
   const setActiveTheme = (theme: string) => {
     setActiveThemeState(theme);
