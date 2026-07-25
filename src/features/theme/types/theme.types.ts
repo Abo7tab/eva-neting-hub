@@ -1,23 +1,26 @@
 export type ThemeName = 'default' | 'women' | 'men';
 
-// What the backend API actually returns from GET /api/v1/public/theme/{name}
+export interface ThemeColors {
+  primary: string;
+  secondary: string;
+  accent: string;
+  text: string;
+}
+
+export interface ThemeBackground {
+  color_1: string;
+  color_2: string;
+  animation_speed: number;
+  animation_blur: number;
+  animation_opacity: number;
+  animation_blobs_count: number;
+}
+
 export interface ThemeApiResponse {
-  theme: string;
-  colors: {
-    primary: string;
-    secondary: string;
-    accent: string;
-    text: string;
-  };
+  theme: 'default' | 'women' | 'men';
+  colors: ThemeColors;
   logo_url: string | null;
-  background: {
-    color_1: string;
-    color_2: string;
-    animation_speed: number;
-    animation_blur: number;
-    animation_opacity: number;
-    animation_blobs_count: number;
-  };
+  background: ThemeBackground;
 }
 
 // Legacy flat config used in admin theme settings

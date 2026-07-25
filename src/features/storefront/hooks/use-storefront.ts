@@ -15,7 +15,8 @@ export const usePublicTheme = (themeName: string) => {
   return useQuery({
     queryKey: ['public-theme', themeName],
     queryFn: () => storefrontApi.getTheme(themeName),
-    staleTime: 0, // Fetch always to reflect admin changes instantly
+    staleTime: 0,
+    refetchOnMount: 'always',
     enabled: !!themeName,
   });
 };

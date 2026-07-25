@@ -63,13 +63,18 @@ html {
 }
 
 :root {
-  /* EVA Theme fallback colors — overwritten by StorefrontProvider on mount */
   --eva-primary: #F97316;
-  --eva-secondary: #EA580C;
+  --eva-secondary: #FFFFFF;
   --eva-accent: #FED7AA;
   --eva-text: #1F2937;
   --eva-bg-1: #F97316;
   --eva-bg-2: #FB923C;
+  --eva-primary-foreground: #FFFFFF;
+  --eva-accent-foreground: #0F172A;
+  --eva-anim-speed: 50;
+  --eva-anim-blur: 80;
+  --eva-anim-opacity: 60;
+  --eva-anim-blobs: 4;
 
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
