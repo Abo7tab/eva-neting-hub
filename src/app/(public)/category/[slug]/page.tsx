@@ -41,6 +41,7 @@ export default function CategoryPage({
     category_uuid: category?.uuid,
     brand_uuid: selectedBrand,
     sort_by: sortBy,
+    search: debouncedSearch || undefined,
   });
   const { data: brandsData } = usePublicBrands();
 
@@ -48,14 +49,9 @@ export default function CategoryPage({
   
   const allProducts = infiniteData?.pages.flatMap(page => page.data) || [];
   
-  // Local filtering (price and search query)
+  // Local filtering (price only, since search and brand are handled by backend)
   const displayedProducts = allProducts.filter(product => {
-    // 1. Search Query Filter
-    if (debouncedSearch && !product.name.toLowerCase().includes(debouncedSearch)) {
-      return false;
-    }
-    
-    // 2. Price Filter
+    // Price Filter
     if (priceFilter === 'all') return true;
     const price = parseFloat(product.price);
     if (priceFilter === 'under_500') return price < 500;
