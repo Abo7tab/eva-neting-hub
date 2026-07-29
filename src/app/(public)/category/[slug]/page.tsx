@@ -13,8 +13,16 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
 
-export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function CategoryPage({ 
+  params,
+  searchParams,
+}: { 
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ q?: string }>;
+}) {
   const resolvedParams = use(params);
+  const resolvedSearchParams = use(searchParams);
+  const searchQuery = (resolvedSearchParams.q || '').toLowerCase();
   const [sortBy, setSortBy] = useState<'newest' | 'price_asc' | 'price_desc' | 'popular'>('newest');
   const [selectedBrand, setSelectedBrand] = useState<string | undefined>();
   const [priceFilter, setPriceFilter] = useState<'all' | 'under_500' | '500_1000' | '1000_2000' | 'over_2000'>('all');
@@ -32,8 +40,14 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   
   const allProducts = infiniteData?.pages.flatMap(page => page.data) || [];
   
-  // Local price filtering
+  // Local filtering (price and search query)
   const displayedProducts = allProducts.filter(product => {
+    // 1. Search Query Filter
+    if (searchQuery && !product.name.toLowerCase().includes(searchQuery)) {
+      return false;
+    }
+    
+    // 2. Price Filter
     if (priceFilter === 'all') return true;
     const price = parseFloat(product.price);
     if (priceFilter === 'under_500') return price < 500;
@@ -137,7 +151,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
               </h1>
             )}
             <p className="text-sm text-slate-500 mt-0.5">
-              {isLoading ? '...' : `${productCount} منتج`}
+              {isLoading ? '...' : `${productCount} منتج`} {searchQuery && <span className="text-primary font-bold">للبحث عن "{resolvedSearchParams.q}"</span>}
             </p>
           </div>
 

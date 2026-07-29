@@ -202,7 +202,30 @@ export const Header = () => {
                       placeholder="ابحث عن منتج..."
                       className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-inner lg:shadow-none"
                       autoFocus
-                      onBlur={() => setIsSearchOpen(false)}
+                      onBlur={(e) => {
+                        // Prevent closing immediately if they click the button
+                        setTimeout(() => setIsSearchOpen(false), 200);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const q = e.currentTarget.value.trim();
+                          if (q) {
+                            if (pathname.includes('/category/')) {
+                              router.push(`${pathname}?q=${encodeURIComponent(q)}`);
+                            } else {
+                              router.push(`/products?q=${encodeURIComponent(q)}`);
+                            }
+                          } else {
+                            if (pathname.includes('/category/')) {
+                              router.push(pathname);
+                            } else {
+                              router.push('/products');
+                            }
+                          }
+                          setIsSearchOpen(false);
+                        }
+                      }}
                     />
                   </motion.div>
                 )}

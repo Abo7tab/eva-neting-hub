@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import { motion } from 'framer-motion';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { AnimatedBackground } from '@/features/storefront/components/shared/animated-background';
@@ -13,9 +13,15 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
 
-export default function ProductsPage() {
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+export default function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const resolvedSearchParams = use(searchParams);
+  const initialQuery = resolvedSearchParams.q || '';
+  const [search, setSearch] = useState(initialQuery);
+  const [debouncedSearch, setDebouncedSearch] = useState(initialQuery);
   const [sortBy, setSortBy] = useState<'newest' | 'price_asc' | 'price_desc' | 'popular'>('newest');
 
   // Simple debounce
