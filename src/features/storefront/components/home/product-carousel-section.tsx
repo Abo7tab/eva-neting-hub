@@ -14,7 +14,6 @@ export const ProductCarouselSection = ({ title, hook }: ProductCarouselSectionPr
   const { data: products, isLoading, isError } = hook();
 
   if (isError) return null;
-  if (!isLoading && (!products || products.length === 0)) return null;
 
   return (
     <section className="py-16 container mx-auto px-4">
@@ -28,6 +27,10 @@ export const ProductCarouselSection = ({ title, hook }: ProductCarouselSectionPr
 
       {isLoading ? (
         <ProductGridSkeleton />
+      ) : (!products || products.length === 0) ? (
+        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-10 text-center flex flex-col items-center justify-center">
+          <p className="text-slate-500 font-medium">لا توجد منتجات في هذا القسم حالياً.</p>
+        </div>
       ) : (
         <motion.div 
           initial="hidden"
@@ -43,7 +46,7 @@ export const ProductCarouselSection = ({ title, hook }: ProductCarouselSectionPr
           // Mobile: Horizontal Scroll (snap), Desktop: Grid 4 cols
           className="flex overflow-x-auto pb-8 snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0 gap-4 md:gap-6 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0"
         >
-          {products!.slice(0, 8).map((product) => (
+          {products.slice(0, 8).map((product) => (
             <div
               key={product.uuid}
               className="w-[75vw] sm:w-[45vw] shrink-0 snap-center lg:w-auto"

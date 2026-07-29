@@ -114,6 +114,15 @@ export const Header = () => {
           {/* RIGHT SIDE: Logo + Site Name */}
           <div className="flex-none flex justify-start">
             <Link href="/" className="flex items-center gap-2 shrink-0">
+              <img 
+                src={
+                  activeTheme === 'women' ? '/logos/logowoman.svg' : 
+                  activeTheme === 'men' ? '/logos/logoman.svg' : 
+                  '/logos/logomain.svg'
+                } 
+                alt="Eva Beauty Hub" 
+                className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 object-contain" 
+              />
               <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tighter" style={{ color: 'var(--primary)' }}>
                 Eva <span className="font-light">Beauty Hub</span>
               </span>
@@ -159,8 +168,6 @@ export const Header = () => {
                 )}
               </AnimatePresence>
             </div>
-            
-            <Link href="/brands" className="font-bold text-slate-700 hover:text-primary transition-colors">الماركات</Link>
           </nav>
 
           {/* LEFT SIDE: Gender Tabs + Icons */}
@@ -285,7 +292,6 @@ export const Header = () => {
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>الرئيسية</Link>
                 <Link href="/products" onClick={() => setIsMobileMenuOpen(false)}>المنتجات</Link>
                 <Link href="/categories" onClick={() => setIsMobileMenuOpen(false)}>الأقسام</Link>
-                <Link href="/brands" onClick={() => setIsMobileMenuOpen(false)}>الماركات</Link>
               </div>
             </motion.div>
           )}
