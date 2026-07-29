@@ -3,14 +3,20 @@
 import { use, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { ShoppingCart, Share2, Heart, Check, ChevronRight, ChevronLeft, ShieldCheck, Truck } from 'lucide-react';
-import { usePublicProduct, useCheckout } from '@/features/storefront/hooks/use-storefront';
+import { ShoppingCart, ChevronRight, ChevronLeft, ShieldCheck, Truck } from 'lucide-react';
+import { usePublicProduct, useCheckout, usePublicProducts } from '@/features/storefront/hooks/use-storefront';
+import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { useCartStore } from '@/features/storefront/store/use-cart-store';
 import { toast } from 'sonner';
 
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
   const { data: product, isLoading } = usePublicProduct(resolvedParams.slug);
+  const { data: relatedProducts, isLoading: isRelatedLoading } = usePublicProducts({
+    category_uuid: product?.category?.uuid,
+    sort_by: 'popular',
+    per_page: 9,
+  });
   const addItem = useCartStore(state => state.addItem);
   const checkoutMutation = useCheckout();
   
@@ -48,6 +54,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     product.cover_image_url || '/placeholder.png',
     ...(product.images?.map(i => i.image_url) || [])
   ];
+  const suggestions = (relatedProducts?.data || [])
+    .filter((item) => item.uuid !== product.uuid)
+    .slice(0, 8);
 
   const handleAddToCart = () => {
     addItem({
@@ -222,6 +231,49 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           
         </div>
       </div>
+
+      <section className="mt-20 border-t border-slate-100 pt-12">
+        <div className="mb-8 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wider text-primary">
+              {product.category?.name || 'منتجات'}
+            </p>
+            <h2 className="mt-2 text-2xl md:text-3xl font-black text-slate-900">
+              منتجات مقترحة لك
+            </h2>
+          </div>
+        </div>
+
+        {isRelatedLoading ? (
+          <ProductGridSkeleton />
+        ) : suggestions.length > 0 ? (
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            variants={{
+              visible: { transition: { staggerChildren: 0.06 } },
+            }}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
+          >
+            {suggestions.map((item) => (
+              <motion.div
+                key={item.uuid}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+              >
+                <ProductCard product={item} />
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <div className="rounded-2xl border border-slate-100 bg-white/70 p-8 text-center text-slate-500">
+            لا توجد اقتراحات متاحة حاليا
+          </div>
+        )}
+      </section>
     </div>
   );
 }
