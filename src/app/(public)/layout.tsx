@@ -22,16 +22,16 @@ export async function generateMetadata(): Promise<Metadata> {
         default: settingsMap['site_name'] || "Eva Beauty Hub",
         template: `%s | ${settingsMap['site_name'] || "Eva Beauty Hub"}`,
       },
-      description: settingsMap['seo_meta_description'] || "منصتك الأولى لمنتجات التجميل",
-      keywords: settingsMap['seo_meta_keywords'] || "تجميل, مكياج, عطور, عناية",
+      description: settingsMap['seo_meta_description'] || "اكتشفي عالمك من الجمال مع إيفا بيوتي هب. نحن نقدم لك أفضل وأجود منتجات العناية والتجميل بأسعار لا تقبل المنافسة وبضمان الجودة والأصالة.",
+      keywords: settingsMap['seo_meta_keywords'] || "تجميل, مكياج, عطور, عناية بالبشرة, عناية بالشعر, إيفا بيوتي هب, مستحضرات تجميل, ماركات عالمية أصلية, تسوق أونلاين, منتجات نسائية, منتجات رجالية, عروض وخصومات, Eva Beauty Hub, أفضل منتجات العناية",
       openGraph: {
         title: settingsMap['seo_meta_title'] || settingsMap['site_name'] || "Eva Beauty Hub",
         description: settingsMap['seo_meta_description'] || "منصتك الأولى لمنتجات التجميل",
-        url: 'https://evabeauty.com',
+        url: 'https://eva-netting-hub.vercel.app',
         siteName: settingsMap['site_name'] || "Eva Beauty Hub",
         images: [
           {
-            url: settingsMap['site_logo_url'] || '/logos/main.svg',
+            url: settingsMap['site_logo_url'] || 'https://eva-netting-hub.vercel.app/logos/logomain.svg',
             width: 800,
             height: 600,
           },
@@ -46,7 +46,8 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (error) {
     return {
       title: "Eva Beauty Hub",
-      description: "منصتك الأولى لمنتجات التجميل",
+      description: "اكتشفي عالمك من الجمال مع إيفا بيوتي هب. نحن نقدم لك أفضل وأجود منتجات العناية والتجميل.",
+      keywords: "تجميل, مكياج, عطور, عناية بالبشرة, عناية بالشعر, إيفا بيوتي هب, مستحضرات تجميل, ماركات عالمية أصلية, تسوق أونلاين, منتجات نسائية, منتجات رجالية, عروض وخصومات, Eva Beauty Hub, أفضل منتجات العناية",
       verification: {
         google: 'IhX2U9bzob2dTAvxoqXQtyq6tqe9uD2o649TpL4oOKs',
       },

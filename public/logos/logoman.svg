@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <circle cx="200" cy="200" r="195" fill="#ffffff" stroke="#e0f2fe" stroke-width="2" />
+  
+  <g transform="translate(145, 90) scale(2.2)">
+    <path d="M10,25 C10,0 25,0 25,0 L25,48 C17,48 10,40 10,25 Z" fill="#1E3A8A" />
+    <path d="M25,0 C25,0 40,0 40,25 C40,40 33,48 25,48 Z" fill="#38BDF8" opacity="0.9" />
+    <rect x="14" y="51" width="22" height="10" rx="3" fill="#64748B" />
+  </g>
+  
+  <text x="200" y="290" font-family="'Segoe UI', Roboto, sans-serif" font-size="46" font-weight="900" fill="#1E3A8A" text-anchor="middle" letter-spacing="-1">
+    Eva <tspan fill="#38BDF8">Beauty</tspan>
+  </text>
+  <text x="200" y="340" font-family="'Segoe UI', Roboto, sans-serif" font-size="30" font-weight="600" fill="#64748B" text-anchor="middle" letter-spacing="5">
+    HUB
+  </text>
+</svg>

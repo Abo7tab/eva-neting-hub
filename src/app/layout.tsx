@@ -18,10 +18,10 @@ export const metadata: Metadata = {
   description: "اكتشفي عالمك من الجمال مع إيفا بيوتي هب",
   icons: {
     icon: [
-      { url: '/logos/main.svg', type: 'image/svg+xml' },
+      { url: '/logos/logomain.svg', type: 'image/svg+xml' },
     ],
-    shortcut: '/logos/main.svg',
-    apple: '/logos/main.svg',
+    shortcut: '/logos/logomain.svg',
+    apple: '/logos/logomain.svg',
   },
 };
 

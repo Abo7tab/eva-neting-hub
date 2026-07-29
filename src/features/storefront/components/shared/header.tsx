@@ -51,7 +51,20 @@ export const Header = () => {
     }
   }, [totalItems, shouldReduceMotion]);
 
-  const siteName = settings['site_name'] || 'إيفا نيتنج هاب';
+  // Dynamic Favicon
+  useEffect(() => {
+    const favicon = document.querySelector("link[rel='icon']");
+    const appleIcon = document.querySelector("link[rel='apple-touch-icon']");
+    
+    let iconPath = '/logos/logomain.svg';
+    if (activeTheme === 'women') iconPath = '/logos/logowoman.svg';
+    if (activeTheme === 'men') iconPath = '/logos/logoman.svg';
+
+    if (favicon) favicon.setAttribute("href", iconPath);
+    if (appleIcon) appleIcon.setAttribute("href", iconPath);
+  }, [activeTheme]);
+
+  const siteName = settings['site_name'] || 'إيفا بيوتي هاب';
   const logoUrl = settings['site_logo_url'];
 
   const handleTabClick = (slug: string) => {
