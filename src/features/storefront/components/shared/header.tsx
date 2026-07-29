@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Search, Menu, X, ChevronDown } from 'lucide-react';
 import { useStorefrontContext } from '../providers/storefront-provider';
@@ -23,6 +23,7 @@ export const Header = () => {
   
   const cartIconRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
   const shouldReduceMotion = useReducedMotion();
 
   const { data: categories } = usePublicCategories();
@@ -40,6 +41,19 @@ export const Header = () => {
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Sync active tab with current URL
+  useEffect(() => {
+    if (!pathname) return;
+    const match = pathname.match(/\/category\/([^\/]+)/);
+    if (match) {
+      const slug = decodeURIComponent(match[1]);
+      if (activeTab !== slug) {
+        setActiveTab(slug);
+        localStorage.setItem('eva-active-category', slug);
+      }
+    }
+  }, [pathname, activeTab]);
 
   // Cart bounce effect
   useEffect(() => {
