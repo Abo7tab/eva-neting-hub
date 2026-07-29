@@ -11,7 +11,7 @@ export const Footer = () => {
   const logoUrl = settings['site_logo_url'];
   const siteName = (settings['site_name'] || 'إيفا بيوتي هاب').replace('نيتنج', 'بيوتي');
   const about = (settings['content_footer_about_ar'] || 'اكتشفي عالمك من الجمال مع إيفا بيوتي هاب. نحن نقدم لكِ أفضل وأجود منتجات العناية والتجميل بأسعار لا تقبل المنافسة وبضمان الجودة والأصالة.').replace('نيتنج', 'بيوتي');
-  const copyright = (settings['copyright_text_ar'] || `© ${new Date().getFullYear()} إيفا بيوتي هاب. جميع الحقوق محفوظة.`).replace('نيتنج', 'بيوتي');
+  const copyright = `© ${new Date().getFullYear()} إيفا بيوتي هاب. جميع الحقوق محفوظة.`;
 
   return (
     <footer 
