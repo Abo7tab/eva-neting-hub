@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { usePublicCategory, usePublicInfiniteProducts, usePublicBrands } from '@/features/storefront/hooks/use-storefront';
 import { AnimatedBackground } from '@/features/storefront/components/shared/animated-background';
-import { Filter, ChevronDown, SlidersHorizontal, X } from 'lucide-react';
+import { Filter, ChevronDown, SlidersHorizontal, X, Search } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,11 +22,19 @@ export default function CategoryPage({
 }) {
   const resolvedParams = use(params);
   const resolvedSearchParams = use(searchParams);
-  const searchQuery = (resolvedSearchParams.q || '').toLowerCase();
+  const initialSearchQuery = (resolvedSearchParams.q || '').toLowerCase();
+  const [search, setSearch] = useState(initialSearchQuery);
+  const [debouncedSearch, setDebouncedSearch] = useState(initialSearchQuery);
   const [sortBy, setSortBy] = useState<'newest' | 'price_asc' | 'price_desc' | 'popular'>('newest');
   const [selectedBrand, setSelectedBrand] = useState<string | undefined>();
   const [priceFilter, setPriceFilter] = useState<'all' | 'under_500' | '500_1000' | '1000_2000' | 'over_2000'>('all');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+  // Simple debounce
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setTimeout(() => setDebouncedSearch(e.target.value.toLowerCase()), 500);
+  };
 
   const { data: category, isLoading: isCategoryLoading } = usePublicCategory(resolvedParams.slug);
   const { data: infiniteData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isProductsLoading } = usePublicInfiniteProducts({
@@ -43,7 +51,7 @@ export default function CategoryPage({
   // Local filtering (price and search query)
   const displayedProducts = allProducts.filter(product => {
     // 1. Search Query Filter
-    if (searchQuery && !product.name.toLowerCase().includes(searchQuery)) {
+    if (debouncedSearch && !product.name.toLowerCase().includes(debouncedSearch)) {
       return false;
     }
     
@@ -151,7 +159,7 @@ export default function CategoryPage({
               </h1>
             )}
             <p className="text-sm text-slate-500 mt-0.5">
-              {isLoading ? '...' : `${productCount} منتج`} {searchQuery && <span className="text-primary font-bold">للبحث عن "{resolvedSearchParams.q}"</span>}
+              {isLoading ? '...' : `${productCount} منتج`} {debouncedSearch && <span className="text-primary font-bold">للبحث عن "{debouncedSearch}"</span>}
             </p>
           </div>
 
@@ -176,15 +184,23 @@ export default function CategoryPage({
 
           {/* Main content */}
           <div className="flex-1 min-w-0">
-            {/* Sort bar */}
-            <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm border border-slate-100 mb-6">
-              <div className="flex items-center gap-2 text-slate-600 font-bold text-sm">
-                <Filter size={16} className="text-primary" />
-                <span>ترتيب حسب:</span>
+            {/* Search and Filters Bar */}
+            <div className="flex flex-col md:flex-row items-center justify-between bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mb-6 gap-4">
+              <div className="relative w-full md:w-96">
+                <input
+                  type="text"
+                  placeholder="ابحث عن منتج في هذا القسم..."
+                  value={search}
+                  onChange={handleSearchChange}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
               </div>
+
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold outline-none border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors text-primary">
-                  {sortLabel}
+                <DropdownMenuTrigger className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 px-4 py-3 rounded-xl text-slate-700 transition-colors font-bold outline-none w-full md:w-auto justify-center">
+                  <Filter size={18} className="text-primary" />
+                  ترتيب: {sortLabel}
                   <ChevronDown size={14} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-52 rounded-xl">

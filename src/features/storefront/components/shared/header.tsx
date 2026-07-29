@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Search, Menu, X, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Menu, X, ChevronDown } from 'lucide-react';
 import { useStorefrontContext } from '../providers/storefront-provider';
 import { useCartStore } from '../../store/use-cart-store';
 import { CartDrawer } from './cart-drawer';
@@ -18,7 +18,6 @@ export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCategoriesDropdownOpen, setIsCategoriesDropdownOpen] = useState(false);
   
   const cartIconRef = useRef<HTMLButtonElement>(null);
@@ -185,58 +184,6 @@ export const Header = () => {
                 ))}
               </div>
             )}
-
-            {/* Search Bar + Icon (Mobile & Desktop) */}
-            <div className="flex items-center">
-              <AnimatePresence>
-                {isSearchOpen && (
-                  <motion.div
-                    initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? "100%" : "200px", opacity: 1 }}
-                    exit={{ width: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden mr-2 absolute lg:relative right-12 lg:right-auto left-4 lg:left-auto top-1/2 -translate-y-1/2 lg:translate-y-0 z-50 lg:z-auto bg-white lg:bg-transparent py-2 lg:py-0 shadow-lg lg:shadow-none rounded-full"
-                  >
-                    <input 
-                      type="text" 
-                      placeholder="ابحث عن منتج..."
-                      className="w-full bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-inner lg:shadow-none"
-                      autoFocus
-                      onBlur={(e) => {
-                        // Prevent closing immediately if they click the button
-                        setTimeout(() => setIsSearchOpen(false), 200);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          const q = e.currentTarget.value.trim();
-                          if (q) {
-                            if (pathname.includes('/category/')) {
-                              router.push(`${pathname}?q=${encodeURIComponent(q)}`);
-                            } else {
-                              router.push(`/products?q=${encodeURIComponent(q)}`);
-                            }
-                          } else {
-                            if (pathname.includes('/category/')) {
-                              router.push(pathname);
-                            } else {
-                              router.push('/products');
-                            }
-                          }
-                          setIsSearchOpen(false);
-                        }
-                      }}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <button 
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-2 text-slate-700 hover:text-primary transition-colors z-50 lg:z-auto relative"
-              >
-                <Search size={22} />
-              </button>
-            </div>
 
             {/* Cart Icon */}
             <button
