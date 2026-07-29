@@ -114,19 +114,9 @@ export const Header = () => {
           {/* RIGHT SIDE: Logo + Site Name */}
           <div className="flex-none flex justify-start">
             <Link href="/" className="flex items-center gap-2 shrink-0">
-              {logoUrl ? (
-                <img src={logoUrl} alt={siteName} className="h-10 sm:h-12 lg:h-20 w-auto object-contain" />
-              ) : (
-                <img 
-                  src={
-                    activeTheme === 'women' ? '/logos/women.svg' : 
-                    activeTheme === 'men' ? '/logos/men.svg' : 
-                    '/logos/main.svg'
-                  } 
-                  alt={siteName} 
-                  className="h-10 sm:h-12 lg:h-20 w-auto object-contain" 
-                />
-              )}
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tighter" style={{ color: 'var(--primary)' }}>
+                Eva <span className="font-light">Beauty Hub</span>
+              </span>
             </Link>
           </div>
 

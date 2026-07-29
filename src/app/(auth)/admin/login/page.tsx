@@ -48,14 +48,9 @@ export default function LoginPage() {
               transition={{ delay: 0.1, duration: 0.4 }}
               className="mx-auto"
             >
-              <Image
-                src="/logos/main.svg"
-                alt="Eva Beauty Hub"
-                width={80}
-                height={80}
-                priority
-                className="mx-auto object-contain w-auto h-[40px]"
-              />
+              <div className="flex items-center justify-center mx-auto w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-2">
+                <span className="text-4xl font-black">E</span>
+              </div>
             </motion.div>
 
             {/* Welcome text */}

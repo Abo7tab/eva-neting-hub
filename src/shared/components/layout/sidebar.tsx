@@ -18,14 +18,9 @@ export function Sidebar({ onItemClick }: SidebarProps) {
       {/* Logo Section - CRITICAL: no text wrapping */}
       <div className="px-5 py-5 shrink-0">
         <Link href="/admin/dashboard" className="flex items-center gap-3">
-          <Image
-            src="/logos/main.svg"
-            alt="Eva Beauty Hub"
-            width={40}
-            height={40}
-            priority
-            className="shrink-0"
-          />
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary shrink-0">
+            <span className="text-xl font-black">E</span>
+          </div>
           <div className="min-w-0 flex-1">
             <h1 className="text-base font-bold text-slate-900 truncate whitespace-nowrap">
               Eva Beauty Hub
