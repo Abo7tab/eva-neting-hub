@@ -160,6 +160,7 @@ export const Header = () => {
               </AnimatePresence>
             </div>
             
+            <Link href="/brands" className="font-bold text-slate-700 hover:text-primary transition-colors">الماركات</Link>
           </nav>
 
           {/* LEFT SIDE: Gender Tabs + Icons */}
@@ -284,6 +285,7 @@ export const Header = () => {
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>الرئيسية</Link>
                 <Link href="/products" onClick={() => setIsMobileMenuOpen(false)}>المنتجات</Link>
                 <Link href="/categories" onClick={() => setIsMobileMenuOpen(false)}>الأقسام</Link>
+                <Link href="/brands" onClick={() => setIsMobileMenuOpen(false)}>الماركات</Link>
               </div>
             </motion.div>
           )}
