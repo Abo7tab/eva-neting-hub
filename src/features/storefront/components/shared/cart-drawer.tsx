@@ -5,7 +5,8 @@ import { ShoppingBag, X, Plus, Minus, Trash2, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 import { useCartStore } from '../../store/use-cart-store';
 import { useState } from 'react';
-import { useCheckout } from '../../hooks/use-storefront';
+import { useCheckout, useTrendingProducts } from '../../hooks/use-storefront';
+import { ProductCard } from './product-card';
 import { toast } from 'sonner';
 
 interface CartDrawerProps {
@@ -19,6 +20,8 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+
+  const { data: suggestedProducts } = useTrendingProducts();
 
   const subtotal = getSubtotal();
 
@@ -142,6 +145,20 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                     </div>
                   </motion.div>
                 ))
+              )}
+
+              {/* Suggested Products Section */}
+              {suggestedProducts && suggestedProducts.length > 0 && (
+                <div className="pt-6 border-t border-slate-100">
+                  <h3 className="font-bold text-slate-800 mb-4">قد يعجبك أيضاً</h3>
+                  <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scrollbar-hide -mx-6 px-6">
+                    {suggestedProducts.map(product => (
+                      <div key={product.uuid} className="w-[180px] shrink-0 snap-center">
+                        <ProductCard product={product} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
 

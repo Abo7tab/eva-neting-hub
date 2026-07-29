@@ -4,6 +4,7 @@ import { use, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { usePublicCategory, usePublicInfiniteProducts, usePublicBrands } from '@/features/storefront/hooks/use-storefront';
+import { AnimatedBackground } from '@/features/storefront/components/shared/animated-background';
 import { Filter, ChevronDown, SlidersHorizontal, X } from 'lucide-react';
 import {
   DropdownMenu,
@@ -119,7 +120,8 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   );
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#fafafa' }}>
+    <div className="relative min-h-screen pb-20">
+      <AnimatedBackground />
       <div className="container mx-auto px-4 pt-10 relative z-10">
         
 
