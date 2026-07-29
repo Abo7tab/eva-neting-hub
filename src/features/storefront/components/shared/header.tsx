@@ -134,40 +134,6 @@ export const Header = () => {
             <Link href="/" className="font-bold text-slate-700 hover:text-primary transition-colors">الرئيسية</Link>
             <Link href="/products" className="font-bold text-slate-700 hover:text-primary transition-colors">المنتجات</Link>
             
-            <div 
-              className="relative group cursor-pointer flex flex-col justify-center h-full"
-              onMouseEnter={() => setIsCategoriesDropdownOpen(true)}
-              onMouseLeave={() => setIsCategoriesDropdownOpen(false)}
-            >
-              <div className="flex items-center gap-1 font-bold text-slate-700 hover:text-primary transition-colors py-4">
-                <Link href="/categories">الأقسام</Link>
-                <ChevronDown size={14} className="group-hover:rotate-180 transition-transform" />
-              </div>
-              
-              {/* Dropdown Menu */}
-              <AnimatePresence>
-                {isCategoriesDropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute top-[100%] right-0 w-64 bg-white shadow-xl rounded-2xl border border-slate-100 overflow-hidden z-50 pt-2 pb-2"
-                  >
-                    {parentCategories.map(cat => (
-                      <Link 
-                        key={cat.uuid}
-                        href={`/category/${cat.slug}`}
-                        className="block px-4 py-2 hover:bg-slate-50 hover:text-primary font-bold text-sm transition-colors text-slate-700"
-                        onClick={() => setIsCategoriesDropdownOpen(false)}
-                      >
-                        {cat.name}
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
           </nav>
 
           {/* LEFT SIDE: Gender Tabs + Icons */}
@@ -291,7 +257,6 @@ export const Header = () => {
               <div className="flex flex-col p-4 gap-4 font-bold text-slate-700">
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>الرئيسية</Link>
                 <Link href="/products" onClick={() => setIsMobileMenuOpen(false)}>المنتجات</Link>
-                <Link href="/categories" onClick={() => setIsMobileMenuOpen(false)}>الأقسام</Link>
               </div>
             </motion.div>
           )}
