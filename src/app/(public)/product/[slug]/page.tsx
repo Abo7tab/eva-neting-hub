@@ -58,6 +58,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     .filter((item) => item.uuid !== product.uuid)
     .slice(0, 8);
 
+  const hasDiscount = product.compare_at_price && parseFloat(product.compare_at_price) > parseFloat(product.price);
+
   const handleAddToCart = () => {
     addItem({
       product_uuid: product.uuid,
@@ -108,7 +110,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               </motion.div>
             </AnimatePresence>
             
-            {product.compare_at_price && (
+            {hasDiscount && (
               <div className="absolute top-4 right-4 bg-primary text-primary-foreground font-bold px-3 py-1.5 rounded-full shadow-lg">
                 تخفيض
               </div>
@@ -153,7 +155,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               <span className="text-4xl font-black text-primary">
                 {product.price} ج.م
               </span>
-              {product.compare_at_price && (
+              {hasDiscount && (
                 <span className="text-2xl text-slate-400 line-through mb-1">
                   {product.compare_at_price} ج.م
                 </span>
