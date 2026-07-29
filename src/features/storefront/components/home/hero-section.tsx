@@ -19,7 +19,7 @@ const TRUST_ITEMS = [
 export const HeroSection = ({ settings, isLoading }: HeroSectionProps) => {
   if (isLoading) return <HeroSkeleton />;
 
-  const siteName = settings['site_name'] || 'إيفا نيتنج هاب';
+  const siteName = settings['site_name'] || 'إيفا بيوتي هاب';
   const title = settings['content_home_hero_title_default_ar'] || 'اكتشفي عالمك من الجمال الأصيل';
   const subtitle = settings['content_home_hero_subtitle_default_ar'] || 'أكبر تشكيلة من منتجات التجميل الأصلية بأسعار لا تُقاوم';
 
