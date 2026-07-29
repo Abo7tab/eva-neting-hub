@@ -17,10 +17,7 @@ export const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('eva-active-category');
-  });
+  const [activeTab, setActiveTab] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCategoriesDropdownOpen, setIsCategoriesDropdownOpen] = useState(false);
   
@@ -34,6 +31,13 @@ export const Header = () => {
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
+    
+    // Initialize activeTab from localStorage on client side
+    const savedTab = localStorage.getItem('eva-active-category');
+    if (savedTab) {
+      setActiveTab(savedTab);
+    }
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
