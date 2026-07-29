@@ -64,7 +64,6 @@ const detectThemeFromCategory = (
 
 export const StorefrontProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeTheme, setActiveThemeState] = useState<'default' | 'women' | 'men'>('default');
-  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
 
   const { data: settingsData, isLoading: isSettingsLoading } = usePublicSettings();
@@ -73,7 +72,6 @@ export const StorefrontProvider = ({ children }: { children: React.ReactNode }) 
 
   // Detect theme from URL or fallback to localStorage
   useEffect(() => {
-    setIsMounted(true);
     if (!pathname) return;
 
     const match = pathname.match(/\/category\/([^\/]+)/);
@@ -108,7 +106,7 @@ export const StorefrontProvider = ({ children }: { children: React.ReactNode }) 
   }, {} as Record<string, string | null>);
 
   const themeConfig: ThemeApiResponse | null = themeData || null;
-  const isLoading = isSettingsLoading || isThemeLoading || !isMounted;
+  const isLoading = isSettingsLoading || isThemeLoading;
 
   // Inject CSS variables whenever themeConfig changes
   useEffect(() => {

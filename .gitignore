@@ -6,3 +6,15 @@ node_modules
 .vercel
 *.log
 .DS_Store
+
+# test files
+test.js
+test2.js
+test_*.js
+test_*.ts
+test_*.php
+home.html
+vercel_html.txt
+audit.txt
+temp.css
+scratch/

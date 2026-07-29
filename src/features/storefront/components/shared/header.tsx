@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Search, Menu, X, Sparkles, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X, ChevronDown } from 'lucide-react';
 import { useStorefrontContext } from '../providers/storefront-provider';
 import { useCartStore } from '../../store/use-cart-store';
 import { CartDrawer } from './cart-drawer';
@@ -17,7 +17,10 @@ export const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem('eva-active-category');
+  });
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCategoriesDropdownOpen, setIsCategoriesDropdownOpen] = useState(false);
   
@@ -32,11 +35,6 @@ export const Header = () => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('eva-active-category');
-    if (saved) setActiveTab(saved);
   }, []);
 
   // Cart bounce effect

@@ -5,8 +5,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingBag } from 'lucide-react';
 import { Product } from '@/features/products/types/product.types';
+import { ProductCardSkeleton } from './skeletons/product-card-skeleton';
 import { useCartStore } from '../../store/use-cart-store';
 import { toast } from 'sonner';
+import type { CSSProperties } from 'react';
 
 interface ProductCardProps {
   product: Product;
@@ -42,7 +44,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       }}
       whileHover={{ y: -8, transition: { duration: 0.3 } }}
       className="group relative flex flex-col bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden transition-shadow duration-300 hover:shadow-2xl"
-      style={{ '--hover-glow': 'color-mix(in srgb, var(--primary) 30%, transparent)' } as any}
+      style={{ '--hover-glow': 'color-mix(in srgb, var(--primary) 30%, transparent)' } as CSSProperties}
     >
       <style jsx>{`
         .group:hover {
@@ -130,7 +132,6 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 };
 
 export const ProductGridSkeleton = () => {
-  const { ProductCardSkeleton } = require('./skeletons/product-card-skeleton');
   return (
     <div className="flex overflow-x-auto pb-8 snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0 gap-4 md:gap-6 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0">
       {[1, 2, 3, 4].map(i => (
@@ -141,4 +142,3 @@ export const ProductGridSkeleton = () => {
     </div>
   );
 };
-

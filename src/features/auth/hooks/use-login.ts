@@ -1,11 +1,12 @@
 "use client";
 
-import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { loginRequest } from '../api/auth.api';
-import { useAuthStore } from '@/shared/stores/auth.store';
-import type { LoginPayload } from '@/shared/types/auth.types';
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { loginRequest } from "../api/auth.api";
+import { useAuthStore } from "@/shared/stores/auth.store";
+import type { LoginPayload } from "@/shared/types/auth.types";
+import type { ApiError } from "@/shared/types/api.types";
 
 export function useLogin() {
   const router = useRouter();
@@ -15,11 +16,11 @@ export function useLogin() {
     mutationFn: (payload: LoginPayload) => loginRequest(payload),
     onSuccess: (data) => {
       setAuth(data.admin, data.token);
-      toast.success('تم تسجيل الدخول بنجاح');
-      router.push('/admin/dashboard');
+      toast.success("تم تسجيل الدخول بنجاح");
+      router.push("/admin/dashboard");
     },
-    onError: (error: any) => {
-      const message = error?.message || 'فشل تسجيل الدخول';
+    onError: (error: ApiError) => {
+      const message = error.message || "فشل تسجيل الدخول";
       toast.error(message);
     },
   });

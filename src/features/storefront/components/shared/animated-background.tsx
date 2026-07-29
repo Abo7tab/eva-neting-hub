@@ -1,7 +1,17 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useStorefrontContext } from '../providers/storefront-provider';
+import { useMemo } from "react";
+import { useStorefrontContext } from "../providers/storefront-provider";
+
+type AnimatedBlob = {
+  id: number;
+  color: string;
+  left: string;
+  top: string;
+  animationName: string;
+  animationDuration: string;
+  animationDelay: string;
+};
 
 export const AnimatedBackground = () => {
   const { themeConfig } = useStorefrontContext();
@@ -12,20 +22,19 @@ export const AnimatedBackground = () => {
   const speed = themeConfig?.background?.animation_speed ?? 50;
   const duration = 30 - (speed / 100) * 25;
 
-  const [blobs, setBlobs] = useState<any[]>([]);
-
-  useEffect(() => {
-    const generated = Array.from({ length: count }).map((_, i) => ({
-      id: i,
-      color: i % 2 === 0 ? 'var(--eva-bg-1, var(--primary))' : 'var(--eva-bg-2, var(--secondary))',
-      left: `${10 + (i * 25) % 70}%`,
-      top: `${10 + (i * 30) % 60}%`,
-      animationName: `blob-${i % 4}`,
-      animationDuration: `${duration + (i * 2)}s`,
-      animationDelay: `-${i * 4}s`,
-    }));
-    setBlobs(generated);
-  }, [count, duration]);
+  const blobs = useMemo<AnimatedBlob[]>(
+    () =>
+      Array.from({ length: count }).map((_, i) => ({
+        id: i,
+        color: i % 2 === 0 ? "var(--eva-bg-1, var(--primary))" : "var(--eva-bg-2, var(--secondary))",
+        left: `${10 + (i * 25) % 70}%`,
+        top: `${10 + (i * 30) % 60}%`,
+        animationName: `blob-${i % 4}`,
+        animationDuration: `${duration + i * 2}s`,
+        animationDelay: `-${i * 4}s`,
+      })),
+    [count, duration]
+  );
 
   return (
     <>
@@ -52,10 +61,9 @@ export const AnimatedBackground = () => {
         }
       `}</style>
 
-      {/* Fixed background: always white base + blobs on top */}
       <div
         className="fixed inset-0 pointer-events-none"
-        style={{ zIndex: 0, backgroundColor: '#ffffff' }}
+        style={{ zIndex: 0, backgroundColor: "#ffffff" }}
       >
         <div
           className="absolute inset-0 w-full h-full overflow-hidden"
@@ -66,22 +74,21 @@ export const AnimatedBackground = () => {
               key={blob.id}
               className="absolute rounded-full"
               style={{
-                width: '45vw',
-                height: '45vw',
-                minWidth: '320px',
-                minHeight: '320px',
+                width: "45vw",
+                height: "45vw",
+                minWidth: "320px",
+                minHeight: "320px",
                 backgroundColor: blob.color,
                 left: blob.left,
                 top: blob.top,
-                opacity: opacity,
+                opacity,
                 animation: `${blob.animationName} ${blob.animationDuration} infinite ease-in-out`,
                 animationDelay: blob.animationDelay,
               }}
             />
           ))}
         </div>
-        {/* White overlay for readability */}
-        <div className="absolute inset-0" style={{ backgroundColor: 'rgba(255,255,255,0.65)' }} />
+        <div className="absolute inset-0" style={{ backgroundColor: "rgba(255,255,255,0.65)" }} />
       </div>
     </>
   );

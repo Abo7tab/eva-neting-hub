@@ -1,9 +1,10 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { fetchAllThemeSettings, updateThemeSettings, uploadLogo } from '../api/theme.api';
-import type { ThemeConfig, ThemeName } from '../types/theme.types';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { fetchAllThemeSettings, updateThemeSettings, uploadLogo } from "../api/theme.api";
+import type { ApiError } from "@/shared/types/api.types";
+import type { ThemeConfig, ThemeName } from "../types/theme.types";
 
-export const THEME_SETTINGS_QUERY_KEY = ['theme-settings'];
+export const THEME_SETTINGS_QUERY_KEY = ["theme-settings"];
 
 export function useThemeSettings() {
   return useQuery({
@@ -20,11 +21,11 @@ export function useUpdateTheme() {
       return updateThemeSettings(themeName, config);
     },
     onSuccess: () => {
-      toast.success('تم حفظ إعدادات الثيم بنجاح');
+      toast.success("تم حفظ إعدادات الثيم بنجاح");
       queryClient.invalidateQueries({ queryKey: THEME_SETTINGS_QUERY_KEY });
     },
-    onError: (error: any) => {
-      toast.error(error?.message || 'حدث خطأ أثناء حفظ الإعدادات');
+    onError: (error: ApiError) => {
+      toast.error(error.message || "حدث خطأ أثناء حفظ الإعدادات");
     },
   });
 }
@@ -34,8 +35,8 @@ export function useUploadLogo() {
     mutationFn: async (file: File) => {
       return uploadLogo(file);
     },
-    onError: (error: any) => {
-      toast.error(error?.message || 'حدث خطأ أثناء رفع اللوجو');
+    onError: (error: ApiError) => {
+      toast.error(error.message || "حدث خطأ أثناء رفع اللوجو");
     },
   });
 }

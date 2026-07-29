@@ -13,7 +13,7 @@ interface ThemeControlsPanelProps {
 }
 
 export function ThemeControlsPanel({ config, onChange, disabled }: ThemeControlsPanelProps) {
-  const handleChange = (key: keyof ThemeConfig, value: any) => {
+  const handleChange = <K extends keyof ThemeConfig>(key: K, value: ThemeConfig[K]) => {
     onChange({ ...config, [key]: value });
   };
 

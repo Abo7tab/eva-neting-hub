@@ -1,8 +1,9 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { getToken, useAuthStore } from "@/shared/stores/auth.store";
-import type { ApiMeta } from "@/shared/types/api.types";
+import type { ApiError, ApiMeta } from "@/shared/types/api.types";
 
-declare module 'axios' {
+declare module "axios" {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   export interface AxiosResponse<T = any, D = any> {
     data: T;
     meta?: ApiMeta;
@@ -10,8 +11,19 @@ declare module 'axios' {
   }
 }
 
+type ApiEnvelope<T = unknown> = {
+  success: boolean;
+  data: T;
+  meta?: ApiMeta;
+  message?: string;
+};
+
+function isApiEnvelope(value: unknown): value is ApiEnvelope {
+  return Boolean(value && typeof value === "object" && "success" in value);
+}
+
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://beauty.alwaysdata.net/api/v1',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://beauty.alwaysdata.net/api/v1",
   timeout: 15000,
   headers: {
     "Content-Type": "application/json",
@@ -30,11 +42,10 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 apiClient.interceptors.response.use(
   (response) => {
     const envelope = response.data;
-    // If it's our standard envelope format
-    if (envelope && typeof envelope === 'object' && 'success' in envelope) {
+    if (isApiEnvelope(envelope)) {
       response.data = envelope.data;
-      (response as any).meta = envelope.meta;
-      (response as any).message = envelope.message;
+      response.meta = envelope.meta;
+      response.message = envelope.message;
     }
     return response;
   },
@@ -51,12 +62,15 @@ apiClient.interceptors.response.use(
   }
 );
 
-export function extractError(error: any) {
+export function extractError(error: unknown): ApiError {
   if (axios.isAxiosError(error) && error.response?.data) {
-    return error.response.data;
+    return error.response.data as ApiError;
   }
+
+  const message = error instanceof Error ? error.message : "An unexpected error occurred";
+
   return {
     success: false,
-    message: error.message || "An unexpected error occurred",
+    message,
   };
 }

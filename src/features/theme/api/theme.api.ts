@@ -1,13 +1,14 @@
 import { apiClient } from '@/shared/lib/api-client';
 import type { AllThemesConfig, ThemeConfig, ThemeName, UpdateThemePayload } from '../types/theme.types';
+import type { SiteSetting } from '@/features/settings/types/settings.types';
 
 export const fetchAllThemeSettings = async (): Promise<AllThemesConfig> => {
-  const response = await apiClient.get<any[]>('/admin/settings');
+  const response = await apiClient.get<SiteSetting[]>('/admin/settings');
   const settings = response.data; // Unwrapped by interceptor
 
   const extractTheme = (themeName: ThemeName): ThemeConfig => {
     const getVal = (key: string, def: string | number | null) => {
-      const found = settings.find((s: any) => s.setting_key === `theme_${themeName}_${key}`);
+      const found = settings.find((s) => s.setting_key === `theme_${themeName}_${key}`);
       return found ? found.setting_value : def;
     };
 

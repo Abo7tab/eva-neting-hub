@@ -22,7 +22,7 @@ export function ThemeTabs({ initialConfigs }: ThemeTabsProps) {
 
   // Reset local state if initial data changes (e.g. after save refetch)
   useEffect(() => {
-    setConfigs(initialConfigs);
+    queueMicrotask(() => setConfigs(initialConfigs));
   }, [initialConfigs]);
 
   const handleConfigChange = (theme: ThemeName, newConfig: ThemeConfig) => {
