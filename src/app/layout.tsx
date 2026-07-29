@@ -46,6 +46,12 @@ export const metadata: Metadata = {
     shortcut: '/logos/logomain.svg',
     apple: '/logos/logomain.svg',
   },
+  openGraph: {
+    siteName: 'إيفا بيوتي هاب | Eva Beauty Hub',
+    title: 'إيفا بيوتي هاب | Eva Beauty Hub',
+    description: 'الوجهة الأولى لبيع مستحضرات التجميل والعناية بالبشرة',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({
@@ -60,6 +66,19 @@ export default function RootLayout({
       className={`${tajawal.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        {/* Schema.org markup for Google to understand the true Site Name */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Eva Beauty Hub",
+              "alternateName": ["إيفا بيوتي هاب"],
+              "url": "https://eva-beauty-hub.vercel.app/"
+            })
+          }}
+        />
         <QueryProvider>
           <TooltipProvider>
             {children}
