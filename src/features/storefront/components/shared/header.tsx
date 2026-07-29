@@ -143,10 +143,10 @@ export const Header = () => {
               />
               <span className="flex flex-col items-start justify-center" style={{ color: 'var(--primary)' }}>
                 <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tighter leading-none mb-1">
-                  Eva <span className="font-light">Beauty Hub</span>
+                  Eva <span className="font-light">Beauty</span>
                 </span>
                 <span className="text-[10px] sm:text-xs font-bold opacity-90 tracking-normal leading-none pr-1">
-                  جملة بيوتي - Gomla Beauty
+                  إيفا بيوتي
                 </span>
               </span>
             </Link>
