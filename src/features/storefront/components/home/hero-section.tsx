@@ -2,7 +2,7 @@
 
 import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
-import { Shield, Truck, RotateCcw, Star } from 'lucide-react';
+import { Shield, Truck, Wallet, Star } from 'lucide-react';
 
 interface HeroSectionProps {
   settings: Record<string, string | null>;
@@ -12,7 +12,7 @@ interface HeroSectionProps {
 const TRUST_ITEMS = [
   { icon: Shield, text: 'منتجات أصلية 100%' },
   { icon: Truck, text: 'توصيل سريع' },
-  { icon: RotateCcw, text: 'استرجاع 14 يوم' },
+  { icon: Wallet, text: 'الدفع عند الاستلام' },
   { icon: Star, text: 'آلاف العملاء' },
 ];
 
