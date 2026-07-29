@@ -9,9 +9,9 @@ export const Footer = () => {
   const { settings } = useStorefrontContext();
 
   const logoUrl = settings['site_logo_url'];
-  const siteName = settings['site_name'] || 'إيفا بيوتي هاب';
-  const about = settings['content_footer_about_ar'] || 'اكتشفي عالمك من الجمال مع إيفا بيوتي هاب. نحن نقدم لكِ أفضل وأجود منتجات العناية والتجميل بأسعار لا تقبل المنافسة وبضمان الجودة والأصالة.';
-  const copyright = settings['copyright_text_ar'] || `© ${new Date().getFullYear()} إيفا بيوتي هاب. جميع الحقوق محفوظة.`;
+  const siteName = (settings['site_name'] || 'إيفا بيوتي هاب').replace('نيتنج', 'بيوتي');
+  const about = (settings['content_footer_about_ar'] || 'اكتشفي عالمك من الجمال مع إيفا بيوتي هاب. نحن نقدم لكِ أفضل وأجود منتجات العناية والتجميل بأسعار لا تقبل المنافسة وبضمان الجودة والأصالة.').replace('نيتنج', 'بيوتي');
+  const copyright = (settings['copyright_text_ar'] || `© ${new Date().getFullYear()} إيفا بيوتي هاب. جميع الحقوق محفوظة.`).replace('نيتنج', 'بيوتي');
 
   return (
     <footer 
@@ -38,9 +38,9 @@ export const Footer = () => {
           <div className="flex flex-col gap-6">
             <h4 className="font-black text-xl">روابط سريعة</h4>
             <ul className="space-y-4">
-              {['الرئيسية', 'كل المنتجات', 'الأقسام', 'الماركات العالمية'].map((link, i) => (
+              {['الرئيسية', 'كل المنتجات', 'الأقسام'].map((link, i) => (
                 <li key={i}>
-                  <Link href={i === 0 ? '/' : i === 1 ? '/products' : i === 2 ? '/categories' : '/brands'} className="opacity-80 hover:opacity-100 transition-colors font-medium flex items-center gap-2 group">
+                  <Link href={i === 0 ? '/' : i === 1 ? '/products' : '/categories'} className="opacity-80 hover:opacity-100 transition-colors font-medium flex items-center gap-2 group">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground/50 group-hover:bg-primary-foreground transition-colors" />
                     {link}
                   </Link>
@@ -78,10 +78,10 @@ export const Footer = () => {
           <div className="flex flex-col gap-6">
             <h4 className="font-black text-xl">تابعنا</h4>
             <div className="flex flex-wrap items-center gap-4">
-              {settings['social_facebook'] && (
+              {(settings['social_facebook'] || 'https://www.facebook.com/GomlaBeauty/') && (
                 <motion.a 
                   whileHover={{ scale: 1.1, y: -4 }}
-                  href={settings['social_facebook']} 
+                  href={settings['social_facebook'] || 'https://www.facebook.com/GomlaBeauty/'} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors backdrop-blur-sm"
