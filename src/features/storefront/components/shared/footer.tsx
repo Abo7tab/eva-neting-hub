@@ -9,9 +9,9 @@ export const Footer = () => {
   const { settings } = useStorefrontContext();
 
   const logoUrl = settings['site_logo_url'];
-  const siteName = (settings['site_name'] || 'إيفا بيوتي هاب').replace('نيتنج', 'بيوتي');
-  const about = (settings['content_footer_about_ar'] || 'اكتشفي عالمك من الجمال مع إيفا بيوتي هاب. نحن نقدم لكِ أفضل وأجود منتجات العناية والتجميل بأسعار لا تقبل المنافسة وبضمان الجودة والأصالة.').replace('نيتنج', 'بيوتي');
-  const copyright = `© ${new Date().getFullYear()} إيفا بيوتي هاب. جميع الحقوق محفوظة.`;
+  const siteName = settings['site_name'] || 'إيفا بيوتي هاب';
+  const about = settings['content_footer_about_ar'] || 'اكتشفي عالمك من الجمال مع إيفا بيوتي هاب. نحن نقدم لكِ أفضل وأجود منتجات العناية والتجميل بأسعار لا تقبل المنافسة وبضمان الجودة والأصالة.';
+  const copyright = settings['copyright_text_ar'] || `© ${new Date().getFullYear()} إيفا بيوتي هاب. جميع الحقوق محفوظة.`;
 
   return (
     <footer 
@@ -78,10 +78,10 @@ export const Footer = () => {
           <div className="flex flex-col gap-6">
             <h4 className="font-black text-xl">تابعنا</h4>
             <div className="flex flex-wrap items-center gap-4">
-              {(settings['social_facebook'] || 'https://www.facebook.com/GomlaBeauty/') && (
+              {settings['social_facebook'] && (
                 <motion.a 
                   whileHover={{ scale: 1.1, y: -4 }}
-                  href={settings['social_facebook'] || 'https://www.facebook.com/GomlaBeauty/'} 
+                  href={settings['social_facebook']} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors backdrop-blur-sm"
