@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { storefrontApi } from '@/features/storefront/api/storefront.api';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://evabeauty.com';
+  const baseUrl = 'https://eva-beauty-hub.vercel.app';
 
   try {
     const products = await storefrontApi.getProducts();

@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/'],
     },
-    sitemap: 'https://evabeauty.com/sitemap.xml',
+    sitemap: 'https://eva-beauty-hub.vercel.app/sitemap.xml',
   };
 }
