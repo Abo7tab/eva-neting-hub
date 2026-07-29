@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { Cairo } from "next/font/google";
+import { Tajawal } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/shared/components/ui/sonner";
 import { TooltipProvider } from "@/shared/components/ui/tooltip";
 import { QueryProvider } from "@/shared/components/providers/query-provider";
 
-const cairo = Cairo({
-  variable: "--font-cairo",
+const tajawal = Tajawal({
+  variable: "--font-tajawal",
   subsets: ["arabic", "latin"],
+  weight: ["300", "400", "500", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -34,7 +35,7 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`${cairo.variable} h-full antialiased`}
+      className={`${tajawal.variable} h-full antialiased`}
     >
       <head>
         <link rel="icon" type="image/svg+xml" href="/logos/main.svg" />
@@ -49,7 +50,7 @@ export default function RootLayout({
               position="top-center"
               dir="rtl"
               toastOptions={{
-                style: { fontFamily: 'var(--font-cairo)' },
+                style: { fontFamily: 'var(--font-tajawal)' },
               }}
             />
           </TooltipProvider>

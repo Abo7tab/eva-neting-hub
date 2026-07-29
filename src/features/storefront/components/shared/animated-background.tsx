@@ -18,7 +18,7 @@ export const AnimatedBackground = () => {
 
   const count = themeConfig?.background?.animation_blobs_count ?? 4;
   const blur = themeConfig?.background?.animation_blur ?? 80;
-  const opacity = (themeConfig?.background?.animation_opacity ?? 30) / 100;
+  const opacity = (themeConfig?.background?.animation_opacity ?? 60) / 100;
   const speed = themeConfig?.background?.animation_speed ?? 50;
   const duration = 30 - (speed / 100) * 25;
 
@@ -88,7 +88,7 @@ export const AnimatedBackground = () => {
             />
           ))}
         </div>
-        <div className="absolute inset-0" style={{ backgroundColor: "rgba(255,255,255,0.65)" }} />
+        <div className="absolute inset-0" style={{ backgroundColor: "rgba(255,255,255,0.4)" }} />
       </div>
     </>
   );

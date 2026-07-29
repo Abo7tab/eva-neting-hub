@@ -19,7 +19,7 @@ html {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-cairo), ui-sans-serif, system-ui, sans-serif,
+  --font-sans: var(--font-tajawal), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --animate-border-beam: border-beam calc(var(--duration) * 1s) infinite linear;
   --font-mono: var(--font-geist-mono);
