@@ -59,10 +59,6 @@ export default function RootLayout({
       dir="rtl"
       className={`${tajawal.variable} h-full antialiased`}
     >
-      <head>
-        <link rel="icon" type="image/svg+xml" href="/logos/main.svg" />
-        <link rel="apple-touch-icon" href="/logos/main.svg" />
-      </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <QueryProvider>
           <TooltipProvider>
