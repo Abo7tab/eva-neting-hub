@@ -12,10 +12,10 @@ const cairo = Cairo({
 
 export const metadata: Metadata = {
   title: {
-    default: "Eva Neting Hub — Admin Panel",
-    template: "%s | Eva Neting Hub Admin",
+    default: "Eva Beauty Hub",
+    template: "%s | Eva Beauty Hub",
   },
-  description: "لوحة تحكم إدارة متجر إيفا بيوتي هب",
+  description: "اكتشفي عالمك من الجمال مع إيفا بيوتي هب",
   icons: {
     icon: [
       { url: '/logos/main.svg', type: 'image/svg+xml' },

@@ -1,6 +1,15 @@
 import { Suspense } from 'react';
 import { AuthGuard } from '@/features/auth/components/auth-guard';
 import { AdminShell } from '@/shared/components/layout/admin-shell';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: {
+    default: "لوحة التحكم | Eva Beauty Hub",
+    template: "%s | لوحة تحكم Eva Beauty Hub",
+  },
+  description: "لوحة تحكم إدارة متجر إيفا بيوتي هب",
+};
 
 export default function AdminLayout({
   children,

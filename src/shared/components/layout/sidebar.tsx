@@ -20,7 +20,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
         <Link href="/admin/dashboard" className="flex items-center gap-3">
           <Image
             src="/logos/main.svg"
-            alt="Eva Neting Hub"
+            alt="Eva Beauty Hub"
             width={40}
             height={40}
             priority
@@ -28,7 +28,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
           />
           <div className="min-w-0 flex-1">
             <h1 className="text-base font-bold text-slate-900 truncate whitespace-nowrap">
-              Eva Neting Hub
+              Eva Beauty Hub
             </h1>
             <p className="text-xs text-slate-500 truncate">لوحة التحكم</p>
           </div>

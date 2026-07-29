@@ -31,7 +31,7 @@ export function Logo({
   return (
     <Image
       src={`/logos/${variant}.svg`}
-      alt={`Eva Neting Hub ${variant} logo`}
+      alt={`Eva Beauty Hub ${variant} logo`}
       width={dimension * 4.375} // Scale width correctly for aspect ratio 350x80
       height={dimension}
       priority={priority}

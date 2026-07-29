@@ -50,7 +50,7 @@ export default function LoginPage() {
             >
               <Image
                 src="/logos/main.svg"
-                alt="Eva Neting Hub"
+                alt="Eva Beauty Hub"
                 width={80}
                 height={80}
                 priority
@@ -68,7 +68,7 @@ export default function LoginPage() {
                 مرحباً بك
               </h1>
               <p className="text-sm text-slate-500 mt-1">
-                سجل دخولك للوحة تحكم إيفا نيتنج هاب
+                سجل دخولك للوحة تحكم إيفا بيوتي هاب
               </p>
             </motion.div>
           </CardHeader>
@@ -85,7 +85,7 @@ export default function LoginPage() {
           transition={{ delay: 0.6 }}
           className="text-center text-xs text-slate-600 mt-6"
         >
-          © 2026 Eva Neting Hub. جميع الحقوق محفوظة.
+          © 2026 Eva Beauty Hub. جميع الحقوق محفوظة.
         </motion.p>
       </motion.div>
     </div>
