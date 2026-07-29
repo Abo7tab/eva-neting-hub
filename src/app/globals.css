@@ -63,12 +63,12 @@ html {
 }
 
 :root {
-  --eva-primary: #F97316;
+  --eva-primary: #C2185B;
   --eva-secondary: #FFFFFF;
-  --eva-accent: #FED7AA;
+  --eva-accent: #FBCFE8;
   --eva-text: #1F2937;
-  --eva-bg-1: #F97316;
-  --eva-bg-2: #FB923C;
+  --eva-bg-1: #C2185B;
+  --eva-bg-2: #E91E63;
   --eva-primary-foreground: #FFFFFF;
   --eva-accent-foreground: #0F172A;
   --eva-anim-speed: 50;

@@ -15,7 +15,7 @@ export const Footer = () => {
 
   return (
     <footer 
-      className="pt-20 pb-8 mt-24 bg-primary text-primary-foreground"
+      className="pt-20 pb-8 mt-24 bg-primary text-primary-foreground relative z-10"
     >
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
@@ -116,8 +116,19 @@ export const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 border-t border-primary-foreground/20 flex flex-col md:flex-row items-center justify-center text-center">
+        <div className="pt-8 border-t border-primary-foreground/20 flex flex-col items-center justify-center text-center gap-6">
           <p className="opacity-60 font-medium">{copyright}</p>
+          
+          {/* SEO Hidden Keywords Section */}
+          <div className="text-[10px] opacity-40 max-w-4xl mx-auto leading-relaxed text-justify">
+            <p>
+              إيفا بيوتي هاب (Eva Beauty Hub) - المعروفة سابقاً بإسم <strong>جملة بيوتي (Gomla Beauty)</strong> هي وجهتك الأولى والموثوقة في مصر والشرق الأوسط لبيع <strong>مستحضرات تجميل</strong> أصلية ومضمونة 100%. 
+              نحن متخصصون في توفير كافة احتياجاتك من <strong>المكياج</strong>، <strong>العناية بالبشرة</strong>، <strong>العناية بالشعر</strong>، و<strong>البرفانات الأصلية</strong> من أشهر الماركات العالمية والمحلية.
+              عشان إحنا الأصل في "جملة بيوتي"، بنقدم لعملائنا الكرام أقوى <strong>خصومات مستحضرات التجميل</strong> التي تصل إلى <strong>25% أو 30% أو 10%</strong> وأكثر، وده طبعاً بيتحدد على حسب المنتج وعلى حسب الكمية اللي بتشتريها!
+              سواء كنتي بتجهزي نفسك لمناسبة، أو بتدوري على روتين العناية اليومي، أو حتى لو كنتي صاحبة صالون تجميل أو بيوتي سنتر وعايزة تشتري <strong>مستحضرات تجميل بالجملة</strong>، إيفا بيوتي هاب (جملة بيوتي) هي الاختيار الأوفر والأضمن ليكي.
+              اشتري دلوقتي واستفيدي بأسعار لا تقبل المنافسة، عروض حصرية، وتوصيل سريع لكل المحافظات.
+            </p>
+          </div>
         </div>
       </div>
     </footer>

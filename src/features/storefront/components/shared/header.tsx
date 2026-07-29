@@ -127,8 +127,13 @@ export const Header = () => {
                 alt="Eva Beauty Hub" 
                 className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 object-contain" 
               />
-              <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tighter" style={{ color: 'var(--primary)' }}>
-                Eva <span className="font-light">Beauty Hub</span>
+              <span className="flex flex-col items-start justify-center" style={{ color: 'var(--primary)' }}>
+                <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tighter leading-none mb-1">
+                  Eva <span className="font-light">Beauty Hub</span>
+                </span>
+                <span className="text-[10px] sm:text-xs font-bold opacity-90 tracking-normal leading-none pr-1">
+                  جملة بيوتي - Gomla Beauty
+                </span>
               </span>
             </Link>
           </div>
