@@ -97,7 +97,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Content */}
         <div className="p-3 sm:p-4 flex flex-col flex-1 bg-white">
-          <h3 className="font-semibold text-sm sm:text-base text-slate-800 line-clamp-1 mb-1 group-hover:text-primary transition-colors">
+          <h3 className="font-semibold text-sm sm:text-base text-slate-800 line-clamp-2 mb-1 group-hover:text-primary transition-colors" title={product.name}>
             {product.name}
           </h3>
           <p className="text-[10px] sm:text-xs text-slate-500 line-clamp-1 mb-2 sm:mb-3 font-medium">
