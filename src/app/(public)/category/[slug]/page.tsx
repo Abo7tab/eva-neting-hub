@@ -2,6 +2,7 @@
 
 import { use, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { usePublicCategory, usePublicInfiniteProducts, usePublicBrands } from '@/features/storefront/hooks/use-storefront';
 import { AnimatedBackground } from '@/features/storefront/components/shared/animated-background';
@@ -73,6 +74,24 @@ export default function CategoryPage({
         تصفية المنتجات
       </h3>
       <div className="space-y-4">
+        {category?.children && category.children.length > 0 && (
+          <>
+            <h4 className="font-bold text-slate-600 text-sm uppercase tracking-wider">الأقسام الفرعية</h4>
+            <div className="space-y-2">
+              {category.children.map(child => (
+                <Link
+                  key={child.uuid}
+                  href={`/category/${child.slug}`}
+                  className="flex items-center gap-3 cursor-pointer group py-1.5 px-2 rounded-xl hover:bg-slate-50 transition-colors"
+                >
+                  <span className="text-slate-700 font-medium text-sm group-hover:text-primary transition-colors">{child.name}</span>
+                </Link>
+              ))}
+            </div>
+            <hr className="border-slate-100" />
+          </>
+        )}
+
         <h4 className="font-bold text-slate-600 text-sm uppercase tracking-wider">الماركة</h4>
         <div className="space-y-2 max-h-64 overflow-y-auto">
           <label className="flex items-center gap-3 cursor-pointer group py-1.5 px-2 rounded-xl hover:bg-slate-50 transition-colors">
