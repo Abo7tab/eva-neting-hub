@@ -4,6 +4,7 @@ import { use, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { ShoppingCart, ChevronRight, ChevronLeft, ShieldCheck, Truck, X, Maximize2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { usePublicProduct, useCheckout, usePublicProducts } from '@/features/storefront/hooks/use-storefront';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { useCartStore } from '@/features/storefront/store/use-cart-store';
@@ -15,10 +16,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const { data: relatedProducts, isLoading: isRelatedLoading } = usePublicProducts({
     category_uuid: product?.category?.uuid,
     sort_by: 'popular',
-    per_page: 9,
+    per_page: 5,
   });
   const addItem = useCartStore(state => state.addItem);
   const checkoutMutation = useCheckout();
+  const router = useRouter();
   
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
@@ -57,7 +59,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   ];
   const suggestions = (relatedProducts?.data || [])
     .filter((item) => item.uuid !== product.uuid)
-    .slice(0, 8);
+    .slice(0, 4);
 
   const hasDiscount = product.compare_at_price && parseFloat(product.compare_at_price) > parseFloat(product.price);
 
@@ -84,6 +86,14 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
   return (
     <div className="container mx-auto px-4 py-10 pt-24">
+      <button 
+        onClick={() => router.back()}
+        className="mb-8 flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-bold w-fit bg-white/50 px-4 py-2 rounded-xl backdrop-blur-sm border border-slate-100 shadow-sm"
+      >
+        <ChevronRight size={20} />
+        الرجوع للتسوق
+      </button>
+
       <div className="flex flex-col md:flex-row gap-10 lg:gap-16">
         
         {/* Images Gallery */}
