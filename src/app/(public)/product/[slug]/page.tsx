@@ -3,7 +3,7 @@
 import { use, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { ShoppingCart, ChevronRight, ChevronLeft, ShieldCheck, Truck } from 'lucide-react';
+import { ShoppingCart, ChevronRight, ChevronLeft, ShieldCheck, Truck, X, Maximize2 } from 'lucide-react';
 import { usePublicProduct, useCheckout, usePublicProducts } from '@/features/storefront/hooks/use-storefront';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { useCartStore } from '@/features/storefront/store/use-cart-store';
@@ -22,6 +22,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -90,7 +91,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative aspect-square w-full rounded-3xl overflow-hidden bg-slate-50 border border-slate-100 shadow-sm"
+            className="relative aspect-square w-full rounded-3xl overflow-hidden bg-slate-50 border border-slate-100 shadow-sm cursor-pointer group"
+            onClick={() => setIsLightboxOpen(true)}
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -115,6 +117,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 تخفيض
               </div>
             )}
+            
+            <div className="absolute bottom-4 right-4 bg-black/40 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+              <Maximize2 size={20} />
+            </div>
           </motion.div>
 
           {images.length > 1 && (
@@ -276,6 +282,43 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           </div>
         )}
       </section>
+
+      {/* Fullscreen Lightbox */}
+      <AnimatePresence>
+        {isLightboxOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 sm:p-10 cursor-zoom-out backdrop-blur-sm"
+            onClick={() => setIsLightboxOpen(false)}
+          >
+            <button
+              className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"
+              onClick={() => setIsLightboxOpen(false)}
+            >
+              <X size={36} />
+            </button>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", bounce: 0.3 }}
+              className="relative w-full h-full max-w-5xl rounded-2xl overflow-hidden cursor-default shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={images[activeImage]}
+                alt={product.name}
+                fill
+                className="object-contain"
+                sizes="100vw"
+                quality={100}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
