@@ -164,7 +164,7 @@ export const Header = () => {
             {/* Gender Pill Tabs (Desktop) */}
             {parentCategories.length > 0 && (
               <div className="hidden lg:flex items-center gap-1 bg-slate-100 rounded-full p-1 border border-slate-200">
-                {parentCategories.slice(0, 3).map((cat) => (
+                {parentCategories.map((cat) => (
                   <button
                     key={cat.uuid}
                     onClick={() => handleTabClick(cat.slug)}
@@ -219,12 +219,15 @@ export const Header = () => {
         {/* Mobile Gender Tabs (Shows below header on mobile if exists) */}
         {parentCategories.length > 0 && (
           <div className="lg:hidden container mx-auto px-4 mt-2 mb-4">
-            <div className="flex items-center w-full gap-3 sm:gap-4">
-              {parentCategories.slice(0, 3).map((cat) => (
+            <div className="flex items-center w-full gap-2 sm:gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              <style dangerouslySetInnerHTML={{__html: `
+                .overflow-x-auto::-webkit-scrollbar { display: none; }
+              `}} />
+              {parentCategories.map((cat) => (
                 <button
                   key={cat.uuid}
                   onClick={() => handleTabClick(cat.slug)}
-                  className="flex-1 text-center py-2 rounded-xl text-xs sm:text-sm font-bold border-2 transition-all shadow-sm active:scale-95"
+                  className="flex-1 min-w-[80px] shrink-0 text-center py-2 rounded-xl text-xs sm:text-sm font-bold border-2 transition-all shadow-sm active:scale-95"
                   style={{
                     backgroundColor: activeTab === cat.slug ? primaryColor : 'transparent',
                     borderColor: primaryColor,
