@@ -2,7 +2,6 @@
 
 import { use, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { usePublicCategory, usePublicInfiniteProducts, usePublicBrands } from '@/features/storefront/hooks/use-storefront';
 import { AnimatedBackground } from '@/features/storefront/components/shared/animated-background';
@@ -26,6 +25,7 @@ export default function CategoryPage({
   const initialSearchQuery = (resolvedSearchParams.q || '').toLowerCase();
   const [search, setSearch] = useState(initialSearchQuery);
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearchQuery);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | undefined>();
   const [sortBy, setSortBy] = useState<'newest' | 'price_asc' | 'price_desc' | 'popular'>('newest');
   const [selectedBrand, setSelectedBrand] = useState<string | undefined>();
   const [priceFilter, setPriceFilter] = useState<'all' | 'under_500' | '500_1000' | '1000_2000' | 'over_2000'>('all');
@@ -39,7 +39,7 @@ export default function CategoryPage({
 
   const { data: category, isLoading: isCategoryLoading } = usePublicCategory(resolvedParams.slug);
   const { data: infiniteData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isProductsLoading } = usePublicInfiniteProducts({
-    category_uuid: category?.uuid,
+    category_uuid: selectedSubcategory || category?.uuid,
     brand_uuid: selectedBrand,
     sort_by: sortBy,
     search: debouncedSearch || undefined,
@@ -77,15 +77,29 @@ export default function CategoryPage({
         {category?.children && category.children.length > 0 && (
           <>
             <h4 className="font-bold text-slate-600 text-sm uppercase tracking-wider">الأقسام الفرعية</h4>
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              <label className="flex items-center gap-3 cursor-pointer group py-1.5 px-2 rounded-xl hover:bg-slate-50 transition-colors">
+                <input
+                  type="radio"
+                  name="subcategory-filter"
+                  className="w-4 h-4 border-slate-300 accent-primary"
+                  checked={!selectedSubcategory}
+                  onChange={() => setSelectedSubcategory(undefined)}
+                />
+                <span className="text-slate-700 font-medium text-sm group-hover:text-slate-900 transition-colors">الكل</span>
+              </label>
               {category.children.map(child => (
-                <Link
-                  key={child.uuid}
-                  href={`/category/${child.slug}`}
-                  className="flex items-center gap-3 cursor-pointer group py-1.5 px-2 rounded-xl hover:bg-slate-50 transition-colors"
-                >
-                  <span className="text-slate-700 font-medium text-sm group-hover:text-primary transition-colors">{child.name}</span>
-                </Link>
+                <label key={child.uuid} className="flex items-center gap-3 cursor-pointer group py-1.5 px-2 rounded-xl hover:bg-slate-50 transition-colors">
+                  <input
+                    type="radio"
+                    name="subcategory-filter"
+                    value={child.uuid}
+                    checked={selectedSubcategory === child.uuid}
+                    onChange={(e) => setSelectedSubcategory(e.target.value)}
+                    className="w-4 h-4 border-slate-300 accent-primary"
+                  />
+                  <span className="text-slate-700 font-medium text-sm group-hover:text-slate-900 transition-colors">{child.name}</span>
+                </label>
               ))}
             </div>
             <hr className="border-slate-100" />
@@ -141,9 +155,10 @@ export default function CategoryPage({
           ))}
         </div>
 
-        {(selectedBrand || priceFilter !== 'all') && (
+        {(selectedSubcategory || selectedBrand || priceFilter !== 'all') && (
           <button
             onClick={() => {
+              setSelectedSubcategory(undefined);
               setSelectedBrand(undefined);
               setPriceFilter('all');
             }}
@@ -242,9 +257,10 @@ export default function CategoryPage({
                 </div>
                 <h3 className="text-xl font-black text-slate-700 mb-2">لا توجد منتجات</h3>
                 <p className="text-slate-500 max-w-xs mx-auto text-sm">جرب تغيير خيارات التصفية أو البحث</p>
-                {(selectedBrand || priceFilter !== 'all') && (
+                {(selectedSubcategory || selectedBrand || priceFilter !== 'all') && (
                   <button
                     onClick={() => {
+                      setSelectedSubcategory(undefined);
                       setSelectedBrand(undefined);
                       setPriceFilter('all');
                     }}
