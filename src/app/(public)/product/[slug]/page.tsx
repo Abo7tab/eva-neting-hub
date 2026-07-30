@@ -300,12 +300,15 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 sm:p-10 cursor-zoom-out backdrop-blur-sm"
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 sm:p-10 cursor-zoom-out backdrop-blur-sm"
             onClick={() => setIsLightboxOpen(false)}
           >
             <button
-              className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"
-              onClick={() => setIsLightboxOpen(false)}
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/50 hover:text-white transition-colors p-4 z-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLightboxOpen(false);
+              }}
             >
               <X size={36} />
             </button>
@@ -314,8 +317,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", bounce: 0.3 }}
-              className="relative w-full h-full max-w-5xl rounded-2xl overflow-hidden cursor-default shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
+              className="relative w-full h-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl"
+              onClick={() => setIsLightboxOpen(false)} // Clicking the image now closes it
             >
               <Image
                 src={images[activeImage]}
@@ -324,6 +327,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 className="object-contain"
                 sizes="100vw"
                 quality={100}
+                priority
               />
             </motion.div>
           </motion.div>
