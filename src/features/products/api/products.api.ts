@@ -12,7 +12,7 @@ export async function fetchProducts(params: ProductsListParams = {}): Promise<{ 
       active_status: params.active_status,
       sort_by: params.sort_by || 'newest',
       page: params.page || 1,
-      per_page: params.per_page || 20,
+      per_page: params.per_page || 12,
     },
   });
   return {
