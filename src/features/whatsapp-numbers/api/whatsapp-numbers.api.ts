@@ -6,7 +6,7 @@ import type {
   UpdateWhatsAppNumberPayload 
 } from '../types/whatsapp-number.types';
 
-export async function fetchWhatsAppNumbers(page = 1, perPage = 20): Promise<PaginatedResponse<WhatsAppNumber>> {
+export async function fetchWhatsAppNumbers(page = 1, perPage = 12): Promise<PaginatedResponse<WhatsAppNumber>> {
   const response = await apiClient.get('/admin/whatsapp-numbers', {
     params: { page, per_page: perPage },
   });

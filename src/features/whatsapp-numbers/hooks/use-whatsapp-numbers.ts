@@ -11,7 +11,7 @@ import type { PaginatedResponse } from '@/shared/types/api.types';
 
 const WHATSAPP_NUMBERS_KEY = 'whatsapp-numbers';
 
-export function useWhatsAppNumbersList(page = 1, perPage = 20) {
+export function useWhatsAppNumbersList(page = 1, perPage = 12) {
   return useQuery({
     queryKey: [WHATSAPP_NUMBERS_KEY, page, perPage],
     queryFn: () => fetchWhatsAppNumbers(page, perPage),
