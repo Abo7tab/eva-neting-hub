@@ -12,7 +12,7 @@ import { PaginationBar } from '@/shared/components/data/pagination-bar';
 export default function BrandsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-  const perPage = 20;
+  const perPage = 12;
   
   const { data: paginatedBrands, isLoading, isError } = useBrands({ 
     search: searchTerm,

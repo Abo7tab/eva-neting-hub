@@ -6,7 +6,7 @@ export async function fetchBrands(params: BrandsListParams = {}): Promise<{ data
     params: {
       search: params.search,
       page: params.page || 1,
-      per_page: params.per_page || 20,
+      per_page: params.per_page || 12,
     },
   });
   return {

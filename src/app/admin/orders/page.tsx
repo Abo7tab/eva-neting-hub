@@ -12,7 +12,7 @@ import { EmptyState } from '@/shared/components/data/empty-state';
 import { PaginationBar } from '@/shared/components/data/pagination-bar';
 
 export default function OrdersPage() {
-  const [filters, setFilters] = useState<OrdersListParams>({ page: 1, per_page: 20 });
+  const [filters, setFilters] = useState<OrdersListParams>({ page: 1, per_page: 12 });
   
   const { data: paginatedOrders, isLoading, isError } = useOrdersList(filters);
 
@@ -63,7 +63,7 @@ export default function OrdersPage() {
               currentPage={paginatedOrders.meta.current_page ?? 1}
               totalPages={paginatedOrders.meta.last_page ?? 1}
               total={paginatedOrders.meta.total ?? 0}
-              perPage={paginatedOrders.meta.per_page ?? 20}
+              perPage={paginatedOrders.meta.per_page ?? 12}
               onPageChange={(p) => setFilters(prev => ({ ...prev, page: p }))}
               itemName="طلب"
             />

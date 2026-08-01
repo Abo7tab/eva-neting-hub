@@ -18,7 +18,7 @@ export default function UsersPage() {
   const { data: paginatedAdmins, isLoading, isError } = useAdminsList({
     search,
     page,
-    per_page: 20,
+    per_page: 12,
   });
 
   return (
@@ -67,7 +67,7 @@ export default function UsersPage() {
               currentPage={paginatedAdmins.meta.current_page ?? 1}
               totalPages={paginatedAdmins.meta.last_page ?? 1}
               total={paginatedAdmins.meta.total ?? 0}
-              perPage={paginatedAdmins.meta.per_page ?? 20}
+              perPage={paginatedAdmins.meta.per_page ?? 12}
               onPageChange={setPage}
               itemName="مسؤول"
             />
