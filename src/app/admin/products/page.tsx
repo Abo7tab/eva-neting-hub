@@ -26,7 +26,7 @@ export default function ProductsPage() {
   const [categoryUuid, setCategoryUuid] = useState<string | undefined>();
   const [status, setStatus] = useState<string | undefined>();
   const [page, setPage] = useState(1);
-  const perPage = 20;
+  const perPage = 12;
 
   // Debounced search
   const debouncedSearch = useDebounce(search, 500);
