@@ -86,6 +86,32 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
   return (
     <div className="container mx-auto px-4 py-10 pt-24">
+      {/* SEO: Product Structured Data to force Google to index images */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            "name": product.name,
+            "image": images,
+            "description": product.short_description || product.description || product.name,
+            "sku": product.sku || product.uuid,
+            "brand": {
+              "@type": "Brand",
+              "name": product.brand?.name || "إيفا بيوتي هاب"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": `https://eva-beauty-hub.vercel.app/product/${product.slug}`,
+              "priceCurrency": "EGP",
+              "price": product.price,
+              "availability": "https://schema.org/InStock"
+            }
+          })
+        }}
+      />
+
       <button 
         onClick={() => router.back()}
         className="mb-8 flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-bold w-fit bg-white/50 px-4 py-2 rounded-xl backdrop-blur-sm border border-slate-100 shadow-sm"
