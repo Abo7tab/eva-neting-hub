@@ -43,13 +43,13 @@ export const ProductCarouselSection = ({ title, hook }: ProductCarouselSectionPr
               transition: { staggerChildren: 0.1 }
             }
           }}
-          // Mobile: Horizontal Scroll (snap), Desktop: Grid 4 cols
-          className="flex overflow-x-auto pb-8 snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0 gap-4 md:gap-6 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0"
+          // Horizontal Scroll (snap) for all screen sizes
+          className="flex overflow-x-auto pb-8 snap-x snap-mandatory gap-4 md:gap-6 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0"
         >
           {products.slice(0, 8).map((product) => (
             <div
               key={product.uuid}
-              className="w-[75vw] sm:w-[45vw] shrink-0 snap-center lg:w-auto"
+              className="w-[75vw] sm:w-[45vw] shrink-0 snap-center lg:w-[300px] xl:w-[320px]"
             >
               <ProductCard product={product} />
             </div>

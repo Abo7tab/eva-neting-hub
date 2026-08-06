@@ -25,14 +25,14 @@ export default function HomePage() {
         <HeroSection settings={settings} isLoading={isLoading} />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
-          <ProductCarouselSection 
-            title={settings['content_home_featured_title'] || 'منتجات مميزة'}
-            hook={useFeaturedProducts} 
-          />
-
           <CategoriesSection 
             title={settings['content_home_categories_title'] || 'تسوق حسب القسم'}
             hook={usePublicCategories} 
+          />
+
+          <ProductCarouselSection 
+            title={settings['content_home_featured_title'] || 'منتجات مميزة'}
+            hook={useFeaturedProducts} 
           />
 
           <ProductCarouselSection 

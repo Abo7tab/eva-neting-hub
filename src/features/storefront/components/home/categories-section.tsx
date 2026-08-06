@@ -28,6 +28,9 @@ export const CategoriesSection = ({ title, hook }: CategoriesSectionProps) => {
         <div 
           className="h-1 w-20 rounded-full bg-primary"
         />
+        <p className="text-slate-500 mt-4 text-center max-w-md">
+          اضغط على القسم لتشاهد جميع المنتجات الخاصة به
+        </p>
       </div>
 
       {isLoading ? (
