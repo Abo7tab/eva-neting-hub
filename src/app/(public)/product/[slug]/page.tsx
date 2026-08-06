@@ -16,7 +16,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const { data: relatedProducts, isLoading: isRelatedLoading } = usePublicProducts({
     category_uuid: product?.category?.uuid,
     sort_by: 'popular',
-    per_page: 5,
+    per_page: 8,
+  });
+  const { data: fallbackProducts, isLoading: isFallbackLoading } = usePublicProducts({
+    sort_by: 'popular',
+    per_page: 8,
   });
   const addItem = useCartStore(state => state.addItem);
   const checkoutMutation = useCheckout();
@@ -60,6 +64,13 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const suggestions = (relatedProducts?.data || [])
     .filter((item) => item.uuid !== product.uuid)
     .slice(0, 4);
+
+  const fallbackSuggestions = (fallbackProducts?.data || [])
+    .filter((item) => item.uuid !== product.uuid)
+    .slice(0, 5);
+
+  const displayedSuggestions = suggestions.length > 0 ? suggestions : fallbackSuggestions;
+  const isLoadingSuggestions = isRelatedLoading || (suggestions.length === 0 && isFallbackLoading);
 
   const hasDiscount = product.compare_at_price && parseFloat(product.compare_at_price) > parseFloat(product.price);
 
@@ -120,10 +131,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         الرجوع للتسوق
       </button>
 
+      {/* Layout: image RIGHT, details LEFT in RTL */}
       <div className="flex flex-col md:flex-row gap-6 lg:gap-10">
         
-        {/* Images Gallery */}
-        <div className="w-full md:w-1/2 flex flex-col gap-4">
+        {/* Image on right (RTL: shows visually on right side) */}
+        <div className="w-full md:w-5/12 flex flex-col gap-3 md:order-2">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -176,8 +188,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           )}
         </div>
 
-        {/* Product Details */}
-        <div className="w-full md:w-1/2 space-y-8">
+        {/* Product Details - left side (RTL: visually left) */}
+        <div className="w-full md:w-7/12 md:order-1 flex flex-col justify-center space-y-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -218,7 +230,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-100"
+            className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100"
           >
             <div className="flex items-center justify-between sm:justify-start bg-slate-50 rounded-2xl p-2 border border-slate-200">
               <button 
@@ -276,21 +288,18 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         </div>
       </div>
 
-      <section className="mt-10 border-t border-slate-100 pt-8">
-        <div className="mb-8 flex items-end justify-between gap-4">
+      <section className="mt-8 border-t border-slate-100 pt-6">
+        <div className="mb-4 flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wider text-primary">
-              {product.category?.name || 'منتجات'}
-            </p>
-            <h2 className="mt-2 text-2xl md:text-3xl font-black text-slate-900">
-              منتجات مقترحة لك
+            <h2 className="text-base font-bold text-slate-900">
+              {suggestions.length > 0 ? 'منتجات من نفس القسم' : 'قد يعجبك أيضاً'}
             </h2>
           </div>
         </div>
 
-        {isRelatedLoading ? (
+        {isLoadingSuggestions ? (
           <ProductGridSkeleton />
-        ) : suggestions.length > 0 ? (
+        ) : displayedSuggestions.length > 0 ? (
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -300,7 +309,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             }}
             className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"
           >
-            {suggestions.map((item) => (
+            {displayedSuggestions.map((item) => (
               <motion.div
                 key={item.uuid}
                 variants={{

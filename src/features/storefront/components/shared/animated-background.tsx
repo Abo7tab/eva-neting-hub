@@ -30,7 +30,7 @@ export const AnimatedBackground = () => {
             top: '-10%',
             left: '-25%',
             background: 'radial-gradient(circle, var(--primary) 0%, transparent 70%)',
-            opacity: 0.12,
+            opacity: 0.22,
             filter: 'blur(40px)',
           }}
         />
@@ -43,7 +43,7 @@ export const AnimatedBackground = () => {
             bottom: '-10%',
             right: '-25%',
             background: 'radial-gradient(circle, var(--secondary, var(--primary)) 0%, transparent 70%)',
-            opacity: 0.10,
+            opacity: 0.18,
             filter: 'blur(50px)',
           }}
         />
