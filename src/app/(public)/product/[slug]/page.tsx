@@ -27,7 +27,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   // Find parent uuid (رجالي/حريمي) and sibling category uuids
   const parentUuid = useMemo(() => {
     if (!product?.category || !allCategories) return null;
-    const currentCat = allCategories.find(c => c.uuid === product.category!.uuid);
+    const currentCat = allCategories.find(c => c.uuid === product.category?.uuid);
     return currentCat?.parent_uuid ?? null;
   }, [product, allCategories]);
 
@@ -40,10 +40,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
   // Only fetch siblings if we have a parent but same-category products are not enough (less than 6)
   const sameCatCount = sameCatProducts?.data?.filter(p => p.uuid !== product?.uuid)?.length || 0;
-  const needsMoreProducts = sameCatCount < 6;
+  const needsMoreProducts = !isRelatedLoading && sameCatCount < 6;
   const firstSiblingUuid = siblingCategoryUuids[0];
   
-  const { data: siblingProducts } = usePublicProducts({
+  const { data: siblingProducts, isLoading: isSiblingLoading } = usePublicProducts({
     category_uuid: firstSiblingUuid,
     sort_by: 'popular',
     per_page: 12,
@@ -51,7 +51,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
   // Broad fallback: only fetch if siblings + same category are still less than 6
   const siblingCount = siblingProducts?.data?.filter(p => p.uuid !== product?.uuid)?.length || 0;
-  const stillNeedsMore = (sameCatCount + siblingCount) < 6;
+  const stillNeedsMore = !isRelatedLoading && !isSiblingLoading && (sameCatCount + siblingCount) < 6;
   const { data: broadFallback, isLoading: isFallbackLoading } = usePublicProducts({
     sort_by: 'popular',
     per_page: 12,
@@ -114,7 +114,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     push(siblingProducts?.data);
     push(broadFallback?.data);
     return result;
-  }, [product, sameCatProducts, siblingProducts, broadFallback]);
+  }, [product, sameCatProducts?.data, siblingProducts?.data, broadFallback?.data]);
 
   const visibleSuggestions = showAll ? displayedSuggestions : displayedSuggestions.slice(0, 6);
   const isLoadingSuggestions = isRelatedLoading || (displayedSuggestions.length === 0 && isFallbackLoading);
