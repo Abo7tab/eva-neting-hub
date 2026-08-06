@@ -18,11 +18,11 @@ export const ProductCarouselSection = ({ title, hook, viewAllLink }: ProductCaro
   if (isError) return null;
 
   return (
-    <section className="py-16 container mx-auto px-4">
+    <section className="py-2 w-full">
       {/* Title & Underline */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex flex-col items-start">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">{title}</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-800 mb-3">{title}</h2>
           <div className="h-1 w-20 rounded-full bg-primary" />
         </div>
         
@@ -65,7 +65,7 @@ export const ProductCarouselSection = ({ title, hook, viewAllLink }: ProductCaro
             {[...products.slice(0, 10), ...products.slice(0, 10)].map((product, idx) => (
               <div
                 key={`${product.uuid}-${idx}`}
-                className="w-[160px] sm:w-[200px] lg:w-[240px] shrink-0"
+                className="w-[140px] sm:w-[160px] md:w-[180px] lg:w-[200px] shrink-0"
               >
                 <HomeProductCard product={product} />
               </div>
