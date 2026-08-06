@@ -105,15 +105,26 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </p>
 
           <div className="mt-auto flex items-center justify-between">
+            {/* Price block - Eva style: new price + old price side by side */}
             <div className="flex flex-col">
-              <span className="text-lg sm:text-xl font-black text-primary leading-tight">
-                {product.price} <span className="text-[10px] sm:text-xs font-bold">ج.م</span>
-              </span>
-              {hasDiscount && (
-                <span className="hidden md:inline-block text-[10px] sm:text-xs text-slate-400 line-through mt-0.5">
-                  {product.compare_at_price} ج.م
+              <div className="flex items-baseline gap-2 flex-wrap">
+                <span
+                  className="text-base sm:text-lg font-bold text-primary leading-tight"
+                  style={{ fontFamily: 'var(--font-montserrat, sans-serif)' }}
+                >
+                  {parseFloat(product.price).toFixed(2)}
+                  <span className="text-[9px] sm:text-[10px] font-semibold mr-0.5" style={{ fontFamily: 'var(--font-tajawal, sans-serif)' }}> ج.م</span>
                 </span>
-              )}
+                {hasDiscount && (
+                  <span
+                    className="text-[10px] sm:text-xs text-slate-400 line-through"
+                    style={{ fontFamily: 'var(--font-montserrat, sans-serif)' }}
+                  >
+                    {parseFloat(product.compare_at_price!).toFixed(2)}
+                    <span className="text-[9px]" style={{ fontFamily: 'var(--font-tajawal, sans-serif)' }}> ج.م</span>
+                  </span>
+                )}
+              </div>
             </div>
             
             {/* Mobile Add to Cart Button (Visible on all sizes, but mainly for mobile) */}
