@@ -89,11 +89,25 @@ export default function RootLayout({
           <TooltipProvider>
             {children}
             <Toaster 
-              richColors 
               position="top-center"
               dir="rtl"
+              duration={1500}
               toastOptions={{
-                style: { fontFamily: 'var(--font-tajawal)' },
+                style: {
+                  fontFamily: 'var(--font-tajawal)',
+                  fontSize: '13px',
+                  padding: '8px 14px',
+                  minHeight: 'unset',
+                  background: 'var(--primary)',
+                  color: 'var(--primary-foreground)',
+                  border: 'none',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                  borderRadius: '6px',
+                  maxWidth: '220px',
+                },
+                classNames: {
+                  description: 'hidden',
+                },
               }}
             />
           </TooltipProvider>

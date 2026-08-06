@@ -26,9 +26,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       quantity: 1,
       image: product.cover_image_url || '/placeholder.png',
     });
-    toast.success('تمت الإضافة للسلة', {
-      description: product.name,
-    });
+    toast.success('تمت الإضافة');
   };
 
   const hasDiscount = product.compare_at_price && parseFloat(product.compare_at_price) > parseFloat(product.price);

@@ -82,7 +82,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
       quantity,
       image: images[0]
     });
-    toast.success('تم الإضافة بنجاح', { description: product.name });
+    toast.success('تمت الإضافة');
   };
 
   const handleBuyNow = () => {
