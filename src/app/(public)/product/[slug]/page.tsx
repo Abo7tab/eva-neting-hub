@@ -4,15 +4,16 @@ import { use, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { ShoppingCart, ChevronRight, ChevronLeft, ShieldCheck, Truck, X, Maximize2, ChevronDown } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { usePublicProduct, useCheckout, usePublicProducts, usePublicCategories } from '@/features/storefront/hooks/use-storefront';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { useCartStore } from '@/features/storefront/store/use-cart-store';
 import { toast } from 'sonner';
 
-export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = use(params);
-  const { data: product, isLoading } = usePublicProduct(resolvedParams.slug);
+export default function ProductPage() {
+  const params = useParams();
+  const slug = params?.slug as string;
+  const { data: product, isLoading } = usePublicProduct(slug);
 
   // All categories — to find siblings under the same parent (gender)
   const { data: allCategories } = usePublicCategories();
