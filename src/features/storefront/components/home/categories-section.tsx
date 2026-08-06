@@ -62,7 +62,7 @@ export const CategoriesSection = ({ title, hook }: CategoriesSectionProps) => {
                 }}
               >
                 <Link href={`/category/${cat.slug}`} className="block">
-                  <div className="bg-white hover:bg-primary border border-slate-200 hover:border-primary shadow-sm hover:shadow-md transition-all duration-300 rounded-full px-6 md:px-8 py-3 flex items-center justify-center gap-3 group">
+                  <div className="bg-gradient-to-br from-white to-pink-50 hover:from-primary hover:to-pink-600 border border-pink-100 hover:border-primary shadow-md hover:shadow-xl transition-all duration-300 rounded-full px-6 md:px-8 py-3 flex items-center justify-center gap-3 group">
                     {cat.cover_image_url && (
                       <div className="w-8 h-8 rounded-full overflow-hidden relative shrink-0 shadow-sm border border-slate-100">
                         <Image 

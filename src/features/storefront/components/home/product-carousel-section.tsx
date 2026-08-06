@@ -1,7 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ProductCard, ProductGridSkeleton } from '../shared/product-card';
+import { ProductGridSkeleton } from '../shared/product-card';
+import { HomeProductCard } from '../shared/home-product-card';
 import { Product } from '@/features/products/types/product.types';
 import Link from 'next/link';
 
@@ -32,29 +33,35 @@ export const ProductCarouselSection = ({ title, hook }: ProductCarouselSectionPr
           <p className="text-slate-500 font-medium">لا توجد منتجات في هذا القسم حالياً.</p>
         </div>
       ) : (
-        <motion.div 
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: { staggerChildren: 0.1 }
+        <div className="relative overflow-hidden -mx-4 lg:mx-0">
+          <style jsx>{`
+            @keyframes marquee {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(50%); }
             }
-          }}
-          // Horizontal Scroll (snap) for all screen sizes
-          className="flex overflow-x-auto pb-8 snap-x snap-mandatory gap-4 md:gap-6 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0"
-        >
-          {products.slice(0, 8).map((product) => (
-            <div
-              key={product.uuid}
-              className="w-[75vw] sm:w-[45vw] shrink-0 snap-center lg:w-[300px] xl:w-[320px]"
-            >
-              <ProductCard product={product} />
-            </div>
-          ))}
-        </motion.div>
+            .animate-marquee {
+              animation: marquee 30s linear infinite;
+              /* Right-to-left scrolling means we translate positively towards the right in RTL layout if flex row is normal, wait:
+                 In RTL, translateX(50%) moves the element to the right, which means the content slides left. 
+                 Let's test this carefully. */
+            }
+            .animate-marquee:hover {
+              animation-play-state: paused;
+            }
+          `}</style>
+          
+          <div className="flex w-max animate-marquee gap-4 px-4 hover:[animation-play-state:paused]">
+            {/* We duplicate the array to allow infinite seamless scrolling */}
+            {[...products.slice(0, 10), ...products.slice(0, 10)].map((product, idx) => (
+              <div
+                key={`${product.uuid}-${idx}`}
+                className="w-[160px] sm:w-[200px] lg:w-[240px] shrink-0"
+              >
+                <HomeProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </section>
   );
