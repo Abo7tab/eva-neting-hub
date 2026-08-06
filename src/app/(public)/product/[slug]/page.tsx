@@ -1,11 +1,11 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { ShoppingCart, ChevronRight, ChevronLeft, ShieldCheck, Truck, X, Maximize2 } from 'lucide-react';
+import { ShoppingCart, ChevronRight, ChevronLeft, ShieldCheck, Truck, X, Maximize2, ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { usePublicProduct, useCheckout, usePublicProducts } from '@/features/storefront/hooks/use-storefront';
+import { usePublicProduct, useCheckout, usePublicProducts, usePublicCategories } from '@/features/storefront/hooks/use-storefront';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { useCartStore } from '@/features/storefront/store/use-cart-store';
 import { toast } from 'sonner';
@@ -13,15 +13,45 @@ import { toast } from 'sonner';
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
   const { data: product, isLoading } = usePublicProduct(resolvedParams.slug);
-  const { data: relatedProducts, isLoading: isRelatedLoading } = usePublicProducts({
+
+  // All categories — to find siblings under the same parent (gender)
+  const { data: allCategories } = usePublicCategories();
+
+  // Products from same sub-category
+  const { data: sameCatProducts, isLoading: isRelatedLoading } = usePublicProducts({
     category_uuid: product?.category?.uuid,
     sort_by: 'popular',
-    per_page: 8,
+    per_page: 12,
   });
-  const { data: fallbackProducts, isLoading: isFallbackLoading } = usePublicProducts({
+
+  // Find parent uuid (رجالي/حريمي) and sibling category uuids
+  const parentUuid = useMemo(() => {
+    if (!product?.category || !allCategories) return null;
+    const currentCat = allCategories.find(c => c.uuid === product.category!.uuid);
+    return currentCat?.parent_uuid ?? null;
+  }, [product, allCategories]);
+
+  const siblingCategoryUuids = useMemo(() => {
+    if (!parentUuid || !allCategories) return [];
+    return allCategories
+      .filter(c => c.parent_uuid === parentUuid && c.uuid !== product?.category?.uuid)
+      .map(c => c.uuid);
+  }, [parentUuid, allCategories, product]);
+
+  // First sibling category for fallback
+  const firstSiblingUuid = siblingCategoryUuids[0];
+  const { data: siblingProducts } = usePublicProducts({
+    category_uuid: firstSiblingUuid,
     sort_by: 'popular',
-    per_page: 8,
+    per_page: 12,
   });
+
+  // Broad fallback: products from parent gender (no category filter) — for when nothing else works
+  const { data: broadFallback, isLoading: isFallbackLoading } = usePublicProducts({
+    sort_by: 'popular',
+    per_page: 20,
+  });
+
   const addItem = useCartStore(state => state.addItem);
   const checkoutMutation = useCheckout();
   const router = useRouter();
@@ -29,6 +59,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [showAll, setShowAll] = useState(false);
 
   if (isLoading) {
     return (
@@ -61,16 +92,34 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     product.cover_image_url || '/placeholder.png',
     ...(product.images?.map(i => i.image_url) || [])
   ];
-  const suggestions = (relatedProducts?.data || [])
-    .filter((item) => item.uuid !== product.uuid)
-    .slice(0, 4);
+  // Build merged list: same-cat first, then siblings, then broad fallback
+  const displayedSuggestions = useMemo(() => {
+    if (!product) return [];
+    const seen = new Set<string>([product.uuid]);
+    const result: typeof product[] = [];
+    const push = (arr: typeof product[] | undefined) => {
+      (arr || []).forEach(p => {
+        if (!seen.has(p.uuid) && result.length < 12) {
+          seen.add(p.uuid);
+          result.push(p);
+        }
+      });
+    };
+    push(sameCatProducts?.data);
+    push(siblingProducts?.data);
+    push(broadFallback?.data);
+    return result;
+  }, [product, sameCatProducts, siblingProducts, broadFallback]);
 
-  const fallbackSuggestions = (fallbackProducts?.data || [])
-    .filter((item) => item.uuid !== product.uuid)
-    .slice(0, 5);
+  const visibleSuggestions = showAll ? displayedSuggestions : displayedSuggestions.slice(0, 6);
+  const isLoadingSuggestions = isRelatedLoading || (displayedSuggestions.length === 0 && isFallbackLoading);
 
-  const displayedSuggestions = suggestions.length > 0 ? suggestions : fallbackSuggestions;
-  const isLoadingSuggestions = isRelatedLoading || (suggestions.length === 0 && isFallbackLoading);
+  const sectionLabel = useMemo(() => {
+    const sameCatCount = (sameCatProducts?.data || []).filter(p => p.uuid !== product?.uuid).length;
+    if (sameCatCount >= 4) return 'منتجات من نفس القسم';
+    if (parentUuid) return 'منتجات قد تعجبك';
+    return 'منتجات مقترحة';
+  }, [sameCatProducts, parentUuid, product]);
 
   const hasDiscount = product.compare_at_price && parseFloat(product.compare_at_price) > parseFloat(product.price);
 
@@ -96,7 +145,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   };
 
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-4 pt-16">
+    <div className="container mx-auto px-4 py-4 pt-16">
       {/* SEO: Product Structured Data to force Google to index images */}
       <script
         type="application/ld+json"
@@ -290,39 +339,45 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
       <section className="mt-8 border-t border-slate-100 pt-6">
         <div className="mb-4 flex items-center justify-between gap-4">
-          <div>
-            <h2 className="text-base font-bold text-slate-900">
-              {suggestions.length > 0 ? 'منتجات من نفس القسم' : 'قد يعجبك أيضاً'}
-            </h2>
-          </div>
+          <h2 className="text-base font-bold text-slate-900">{sectionLabel}</h2>
         </div>
 
         {isLoadingSuggestions ? (
           <ProductGridSkeleton />
-        ) : displayedSuggestions.length > 0 ? (
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-80px' }}
-            variants={{
-              visible: { transition: { staggerChildren: 0.06 } },
-            }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"
-          >
-            {displayedSuggestions.map((item) => (
-              <motion.div
-                key={item.uuid}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-              >
-                <ProductCard product={item} />
-              </motion.div>
-            ))}
-          </motion.div>
+        ) : visibleSuggestions.length > 0 ? (
+          <>
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-80px' }}
+              variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3"
+            >
+              {visibleSuggestions.map((item) => (
+                <motion.div
+                  key={item.uuid}
+                  variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                >
+                  <ProductCard product={item} />
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Show More / Show Less */}
+            {displayedSuggestions.length > 6 && (
+              <div className="mt-6 text-center">
+                <button
+                  onClick={() => setShowAll(!showAll)}
+                  className="inline-flex items-center gap-2 px-6 py-2 text-sm font-bold text-primary border border-primary rounded-sm hover:bg-primary hover:text-primary-foreground transition-all"
+                >
+                  {showAll ? 'عرض أقل' : `عرض المزيد (${displayedSuggestions.length - 6}+)`}
+                  <ChevronDown size={16} className={`transition-transform ${showAll ? 'rotate-180' : ''}`} />
+                </button>
+              </div>
+            )}
+          </>
         ) : (
-          <div className="rounded-2xl border border-slate-100 bg-white/70 p-8 text-center text-slate-500">
+          <div className="rounded-sm border border-slate-100 bg-white/70 p-8 text-center text-slate-500">
             لا توجد اقتراحات متاحة حاليا
           </div>
         )}
