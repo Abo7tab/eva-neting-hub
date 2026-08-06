@@ -181,7 +181,7 @@ export default function CategoryPage() {
               <div className="h-7 w-32 bg-slate-200 rounded animate-pulse" />
             ) : (
               <h1 className="text-2xl font-black text-slate-800">
-                {category?.name || resolvedParams.slug}
+                {category?.name || slug}
               </h1>
             )}
             <p className="text-sm text-slate-500 mt-0.5">
