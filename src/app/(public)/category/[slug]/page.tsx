@@ -1,6 +1,7 @@
 'use client';
 
-import { use, useState } from 'react';
+import { useState } from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProductCard, ProductGridSkeleton } from '@/features/storefront/components/shared/product-card';
 import { usePublicCategory, usePublicInfiniteProducts, usePublicBrands } from '@/features/storefront/hooks/use-storefront';
@@ -13,16 +14,11 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
 
-export default function CategoryPage({ 
-  params,
-  searchParams,
-}: { 
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ q?: string }>;
-}) {
-  const resolvedParams = use(params);
-  const resolvedSearchParams = use(searchParams);
-  const initialSearchQuery = (resolvedSearchParams.q || '').toLowerCase();
+export default function CategoryPage() {
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const slug = params?.slug as string;
+  const initialSearchQuery = (searchParams?.get('q') || '').toLowerCase();
   const [search, setSearch] = useState(initialSearchQuery);
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearchQuery);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | undefined>();
@@ -37,7 +33,7 @@ export default function CategoryPage({
     setTimeout(() => setDebouncedSearch(e.target.value.toLowerCase()), 500);
   };
 
-  const { data: category, isLoading: isCategoryLoading } = usePublicCategory(resolvedParams.slug);
+  const { data: category, isLoading: isCategoryLoading } = usePublicCategory(slug);
   const { data: infiniteData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isProductsLoading } = usePublicInfiniteProducts({
     category_uuid: selectedSubcategory || category?.uuid,
     brand_uuid: selectedBrand,
