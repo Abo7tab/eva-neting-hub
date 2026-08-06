@@ -12,7 +12,7 @@ export default function CategoriesPage() {
     <div className="relative min-h-screen pb-20">
       <AnimatedBackground />
 
-      <div className="container mx-auto px-4 pt-16 relative z-10">
+      <div className="container mx-auto px-4 py-4 relative z-10">
         <h1 className="text-lg font-bold text-slate-700 mb-4">كل الأقسام</h1>
 
         <div className="flex flex-wrap justify-center gap-6 md:gap-10">
