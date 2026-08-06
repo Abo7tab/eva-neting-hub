@@ -9,9 +9,10 @@ import Link from 'next/link';
 interface ProductCarouselSectionProps {
   title: string;
   hook: () => { data?: Product[]; isLoading: boolean; isError: boolean };
+  viewAllLink?: string;
 }
 
-export const ProductCarouselSection = ({ title, hook }: ProductCarouselSectionProps) => {
+export const ProductCarouselSection = ({ title, hook, viewAllLink }: ProductCarouselSectionProps) => {
   const { data: products, isLoading, isError } = hook();
 
   if (isError) return null;
@@ -19,11 +20,20 @@ export const ProductCarouselSection = ({ title, hook }: ProductCarouselSectionPr
   return (
     <section className="py-16 container mx-auto px-4">
       {/* Title & Underline */}
-      <div className="flex flex-col items-start mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">{title}</h2>
-        <div
-          className="h-1 w-20 rounded-full bg-primary" 
-        />
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col items-start">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">{title}</h2>
+          <div className="h-1 w-20 rounded-full bg-primary" />
+        </div>
+        
+        {viewAllLink && (
+          <Link href={viewAllLink} className="text-primary font-medium text-sm md:text-base hover:underline flex items-center gap-1 transition-all">
+            عرض الكل
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </Link>
+        )}
       </div>
 
       {isLoading ? (
