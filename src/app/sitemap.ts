@@ -1,11 +1,13 @@
 import { MetadataRoute } from 'next';
 import { storefrontApi } from '@/features/storefront/api/storefront.api';
 
+export const dynamic = 'force-dynamic';
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://eva-beauty-hub.vercel.app';
 
   try {
-    const products = await storefrontApi.getProducts();
+    const products = await storefrontApi.getProducts({ per_page: 1000 });
     const categories = await storefrontApi.getCategories();
 
     const productUrls = (products.data || []).map((product) => ({
