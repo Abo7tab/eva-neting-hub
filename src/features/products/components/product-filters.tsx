@@ -35,7 +35,7 @@ export function ProductFilters({
   status,
   onStatusChange,
   brands,
-  categories,
+  categories: rawCategories,
   onResetFilters,
   hasActiveFilters,
 }: ProductFiltersProps) {
@@ -53,6 +53,29 @@ export function ProductFilters({
     'popular': 'الأكثر مشاهدة',
   };
 
+  const getHierarchicalCategories = (cats: any[]) => {
+    const map = new Map<string, any[]>();
+    const roots: any[] = [];
+    cats.forEach(c => {
+      if (c.parent_uuid) {
+        if (!map.has(c.parent_uuid)) map.set(c.parent_uuid, []);
+        map.get(c.parent_uuid)!.push(c);
+      } else {
+        roots.push(c);
+      }
+    });
+
+    const result: any[] = [];
+    const traverse = (node: any, level: number) => {
+      result.push({ ...node, level });
+      const children = map.get(node.uuid) || [];
+      children.forEach(child => traverse(child, level + 1));
+    };
+    roots.forEach(root => traverse(root, 0));
+    return result;
+  };
+
+  const categories = getHierarchicalCategories(rawCategories);
   const selectedBrand = brands.find((b) => b.uuid === brandUuid);
   const selectedCategory = categories.find((c) => c.uuid === categoryUuid);
 
@@ -84,9 +107,9 @@ export function ProductFilters({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">كل الأقسام</SelectItem>
-            {categories.map((c) => (
+            {categories.map((c: any) => (
               <SelectItem key={c.uuid} value={c.uuid}>
-                {c.name}
+                {'\u00A0\u00A0\u00A0\u00A0'.repeat(c.level || 0)}{c.level > 0 ? '— ' : ''}{c.name}
               </SelectItem>
             ))}
           </SelectContent>
