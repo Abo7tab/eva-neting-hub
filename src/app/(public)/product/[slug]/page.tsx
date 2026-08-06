@@ -96,7 +96,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   };
 
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-6 pt-20">
+    <div className="container mx-auto max-w-6xl px-4 py-4 pt-16">
       {/* SEO: Product Structured Data to force Google to index images */}
       <script
         type="application/ld+json"

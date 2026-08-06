@@ -174,7 +174,7 @@ export default function CategoryPage({
   return (
     <div className="relative min-h-screen pb-20">
       <AnimatedBackground />
-      <div className="container mx-auto px-4 pt-10 relative z-10">
+      <div className="container mx-auto px-4 pt-16 relative z-10">
         
 
 

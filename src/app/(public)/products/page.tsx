@@ -43,7 +43,7 @@ export default function ProductsPage({
 
 
 
-      <div className="container mx-auto max-w-7xl px-4 pt-20 pb-20 relative z-10">
+      <div className="container mx-auto max-w-7xl px-4 pt-16 pb-20 relative z-10">
         <h1 className="text-lg font-bold text-slate-700 mb-3">كل المنتجات</h1>
 
         {/* Search and Filters Bar */}
