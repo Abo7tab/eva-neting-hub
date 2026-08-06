@@ -1,94 +1,39 @@
 "use client";
 
-import { useMemo } from "react";
-import { useStorefrontContext } from "../providers/storefront-provider";
-
-type AnimatedBlob = {
-  id: number;
-  color: string;
-  left: string;
-  top: string;
-  animationName: string;
-  animationDuration: string;
-  animationDelay: string;
-};
-
 export const AnimatedBackground = () => {
-  const { themeConfig } = useStorefrontContext();
-
-  const count = themeConfig?.background?.animation_blobs_count ?? 4;
-  const blur = themeConfig?.background?.animation_blur ?? 80;
-  const opacity = (themeConfig?.background?.animation_opacity ?? 60) / 100;
-  const speed = themeConfig?.background?.animation_speed ?? 50;
-  const duration = 30 - (speed / 100) * 25;
-
-  const blobs = useMemo<AnimatedBlob[]>(
-    () =>
-      Array.from({ length: count }).map((_, i) => ({
-        id: i,
-        color: i % 2 === 0 ? "var(--eva-bg-1, var(--primary))" : "var(--eva-bg-2, var(--secondary))",
-        left: `${10 + (i * 25) % 70}%`,
-        top: `${10 + (i * 30) % 60}%`,
-        animationName: `blob-${i % 4}`,
-        animationDuration: `${duration + i * 2}s`,
-        animationDelay: `-${i * 4}s`,
-      })),
-    [count, duration]
-  );
-
   return (
     <>
       <style>{`
-        @keyframes blob-0 {
-          0%,100% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(40px, -60px) scale(1.15); }
-          66% { transform: translate(-30px, 30px) scale(0.9); }
+        @keyframes gradientMove {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
         }
-        @keyframes blob-1 {
-          0%,100% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(-50px, 40px) scale(1.1); }
-          66% { transform: translate(30px, -30px) scale(0.95); }
-        }
-        @keyframes blob-2 {
-          0%,100% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(50px, 50px) scale(1.2); }
-          66% { transform: translate(-50px, -40px) scale(0.85); }
-        }
-        @keyframes blob-3 {
-          0%,100% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(-40px, -50px) scale(0.9); }
-          66% { transform: translate(60px, 40px) scale(1.1); }
+        
+        .premium-animated-bg {
+          background: linear-gradient(
+            -45deg, 
+            rgba(255, 255, 255, 1) 0%, 
+            var(--primary) 30%, 
+            rgba(255, 255, 255, 1) 60%, 
+            var(--secondary) 100%
+          );
+          background-size: 400% 400%;
+          animation: gradientMove 20s ease-in-out infinite;
+          opacity: 0.15; /* Keep it subtle and elegant */
         }
       `}</style>
 
       <div
-        className="fixed inset-0 pointer-events-none"
-        style={{ zIndex: 0, backgroundColor: "#ffffff" }}
+        className="fixed inset-0 pointer-events-none z-0 bg-white"
       >
-        <div
-          className="absolute inset-0 w-full h-full overflow-hidden"
-          style={{ filter: `blur(${blur}px)` }}
-        >
-          {blobs.map((blob) => (
-            <div
-              key={blob.id}
-              className="absolute rounded-full"
-              style={{
-                width: "45vw",
-                height: "45vw",
-                minWidth: "320px",
-                minHeight: "320px",
-                backgroundColor: blob.color,
-                left: blob.left,
-                top: blob.top,
-                opacity,
-                animation: `${blob.animationName} ${blob.animationDuration} infinite ease-in-out`,
-                animationDelay: blob.animationDelay,
-              }}
-            />
-          ))}
-        </div>
-        <div className="absolute inset-0" style={{ backgroundColor: "rgba(255,255,255,0.4)" }} />
+        <div className="absolute inset-0 premium-animated-bg w-full h-full" />
       </div>
     </>
   );
