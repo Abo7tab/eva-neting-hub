@@ -70,23 +70,23 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
             className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-slate-100">
+            <div className="flex items-center justify-between p-4 border-b border-slate-100">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center">
-                  <ShoppingBag size={20} />
+                <div className="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center">
+                  <ShoppingBag size={16} />
                 </div>
-                <h2 className="text-xl font-bold text-slate-800">سلة المشتريات</h2>
+                <h2 className="text-lg font-bold text-slate-800">سلة المشتريات</h2>
               </div>
               <button
                 onClick={onClose}
-                className="w-10 h-10 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-500 transition-colors"
+                className="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-500 transition-colors"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
             {/* Items */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-4">
                   <ShoppingBag size={64} className="opacity-20" />
@@ -97,9 +97,9 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                   <motion.div 
                     layout
                     key={item.product_uuid}
-                    className="flex gap-4 bg-slate-50 rounded-2xl p-3 border border-slate-100"
+                    className="flex gap-3 bg-slate-50 rounded-xl p-2.5 border border-slate-100"
                   >
-                    <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-white shrink-0">
+                    <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-white shrink-0">
                       <Image
                         src={item.image}
                         alt={item.name}
@@ -108,38 +108,40 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                       />
                     </div>
                     
-                    <div className="flex-1 flex flex-col">
-                      <h4 className="font-bold text-slate-800 text-sm line-clamp-2 leading-tight">
-                        {item.name}
-                      </h4>
-                      <p className="text-primary font-black mt-1">
-                        {item.price} ج.م
-                      </p>
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div>
+                        <h4 className="font-bold text-slate-800 text-xs line-clamp-2 leading-tight">
+                          {item.name}
+                        </h4>
+                        <p className="text-primary font-black text-sm mt-0.5">
+                          {item.price} ج.م
+                        </p>
+                      </div>
                       
-                      <div className="mt-auto flex items-center justify-between">
-                        <div className="flex items-center gap-3 bg-white rounded-lg border border-slate-200 px-2 py-1">
+                      <div className="mt-2 flex items-center justify-between">
+                        <div className="flex items-center gap-2 bg-white rounded-md border border-slate-200 px-1.5 py-0.5">
                           <button
                             onClick={() => updateQuantity(item.product_uuid, Math.max(1, item.quantity - 1))}
-                            className="text-slate-500 hover:text-primary transition-colors"
+                            className="text-slate-500 hover:text-primary transition-colors p-1"
                           >
-                            <Minus size={14} />
+                            <Minus size={12} />
                           </button>
-                          <span className="font-bold text-sm w-4 text-center">
+                          <span className="font-bold text-xs w-4 text-center">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateQuantity(item.product_uuid, item.quantity + 1)}
-                            className="text-slate-500 hover:text-primary transition-colors"
+                            className="text-slate-500 hover:text-primary transition-colors p-1"
                           >
-                            <Plus size={14} />
+                            <Plus size={12} />
                           </button>
                         </div>
                         
                         <button
                           onClick={() => removeItem(item.product_uuid)}
-                          className="text-slate-400 hover:text-rose-500 transition-colors p-1"
+                          className="text-slate-400 hover:text-rose-500 transition-colors p-1.5"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </div>
@@ -149,11 +151,11 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
 
               {/* Suggested Products Section */}
               {suggestedProducts && suggestedProducts.length > 0 && (
-                <div className="pt-6 border-t border-slate-100">
-                  <h3 className="font-bold text-slate-800 mb-4">قد يعجبك أيضاً</h3>
-                  <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scrollbar-hide -mx-6 px-6">
+                <div className="pt-4 border-t border-slate-100 mt-2">
+                  <h3 className="font-bold text-slate-800 text-sm mb-3">قد يعجبك أيضاً</h3>
+                  <div className="flex overflow-x-auto gap-3 pb-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4">
                     {suggestedProducts.map(product => (
-                      <div key={product.uuid} className="w-[180px] shrink-0 snap-center">
+                      <div key={product.uuid} className="w-[140px] shrink-0 snap-center">
                         <ProductCard product={product} />
                       </div>
                     ))}
@@ -164,27 +166,27 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
 
             {/* Footer */}
             {items.length > 0 && (
-              <div className="p-6 bg-slate-50 border-t border-slate-100 space-y-4">
-                <div className="space-y-3">
+              <div className="p-4 bg-slate-50 border-t border-slate-100 space-y-3">
+                <div className="space-y-2">
                   <input
                     type="text"
                     placeholder="الاسم (اختياري)"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-white"
+                    className="w-full px-3 py-2.5 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-white"
                   />
                   <input
                     type="tel"
                     placeholder="رقم الهاتف (اختياري)"
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-white"
+                    className="w-full px-3 py-2.5 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-white"
                   />
                 </div>
                 
-                <div className="flex items-center justify-between py-2">
-                  <span className="text-slate-500 font-bold">المجموع:</span>
-                  <span className="text-2xl font-black text-slate-800">
+                <div className="flex items-center justify-between py-1">
+                  <span className="text-slate-500 font-bold text-sm">المجموع:</span>
+                  <span className="text-xl font-black text-slate-800">
                     {subtotal.toFixed(2)} ج.م
                   </span>
                 </div>
@@ -192,14 +194,14 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                 <button
                   onClick={handleCheckout}
                   disabled={checkoutMutation.isPending}
-                  className="w-full bg-[#25D366] hover:bg-[#1DA851] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors disabled:opacity-70 shadow-lg shadow-[#25D366]/20"
+                  className="w-full bg-[#25D366] hover:bg-[#1DA851] text-white font-bold py-3 text-sm rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-70 shadow-lg shadow-[#25D366]/20"
                 >
                   {checkoutMutation.isPending ? (
                     <span className="animate-pulse">جاري التحويل...</span>
                   ) : (
                     <>
                       <span>إتمام الطلب عبر واتساب</span>
-                      <ArrowLeft size={20} />
+                      <ArrowLeft size={18} />
                     </>
                   )}
                 </button>

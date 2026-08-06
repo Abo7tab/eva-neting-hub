@@ -22,7 +22,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     category_uuid: product?.category?.uuid,
     sort_by: 'popular',
     per_page: 12,
-  });
+  }, !!product?.category?.uuid);
 
   // Find parent uuid (رجالي/حريمي) and sibling category uuids
   const parentUuid = useMemo(() => {
@@ -38,19 +38,24 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
       .map(c => c.uuid);
   }, [parentUuid, allCategories, product]);
 
-  // First sibling category for fallback
+  // Only fetch siblings if we have a parent but same-category products are not enough (less than 6)
+  const sameCatCount = sameCatProducts?.data?.filter(p => p.uuid !== product?.uuid)?.length || 0;
+  const needsMoreProducts = sameCatCount < 6;
   const firstSiblingUuid = siblingCategoryUuids[0];
+  
   const { data: siblingProducts } = usePublicProducts({
     category_uuid: firstSiblingUuid,
     sort_by: 'popular',
     per_page: 12,
-  });
+  }, !!firstSiblingUuid && needsMoreProducts);
 
-  // Broad fallback: products from parent gender (no category filter) — for when nothing else works
+  // Broad fallback: only fetch if siblings + same category are still less than 6
+  const siblingCount = siblingProducts?.data?.filter(p => p.uuid !== product?.uuid)?.length || 0;
+  const stillNeedsMore = (sameCatCount + siblingCount) < 6;
   const { data: broadFallback, isLoading: isFallbackLoading } = usePublicProducts({
     sort_by: 'popular',
-    per_page: 20,
-  });
+    per_page: 12,
+  }, stillNeedsMore);
 
   const addItem = useCartStore(state => state.addItem);
   const checkoutMutation = useCheckout();

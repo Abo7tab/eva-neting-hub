@@ -37,10 +37,11 @@ export const usePublicCategory = (slug: string) => {
   });
 };
 
-export const usePublicProducts = (params?: ProductsListParams) => {
+export const usePublicProducts = (params?: ProductsListParams, enabled: boolean = true) => {
   return useQuery({
     queryKey: ['public-products', params],
     queryFn: () => storefrontApi.getProducts(params),
+    enabled,
   });
 };
 
