@@ -16,7 +16,7 @@ export const HomeProductCard = ({ product }: HomeProductCardProps) => {
     : 0;
 
   return (
-    <Link href={`/product/${product.slug}`} className="block relative group w-full overflow-hidden rounded-2xl shadow-sm border border-slate-100 bg-white">
+    <Link href={`/product/${product.slug}`} className="block relative group w-full overflow-hidden rounded-sm shadow-sm border border-slate-100 bg-white">
       <motion.div
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.3 }}
@@ -35,20 +35,20 @@ export const HomeProductCard = ({ product }: HomeProductCardProps) => {
 
         {/* Discount Badge */}
         {hasDiscount && (
-          <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg z-10 flex items-center">
+          <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-sm shadow-lg z-10 flex items-center">
             {discountPercent}% خصم
           </div>
         )}
 
         {/* Price Tag (Pink) */}
-        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between z-10">
-          <div className="bg-primary text-primary-foreground font-bold text-sm md:text-base px-4 py-2 rounded-full shadow-lg whitespace-nowrap">
+        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-10">
+          <div className="bg-primary text-primary-foreground font-bold text-sm md:text-base px-3 py-1.5 rounded-sm shadow-lg whitespace-nowrap">
             {parseFloat(product.price).toFixed(2)} ج.م
           </div>
           
           {hasDiscount && (
-            <span className="text-white/80 line-through text-xs font-medium bg-black/30 px-2 py-1 rounded-full backdrop-blur-sm">
-              {parseFloat(product.compare_at_price!).toFixed(2)} ج.م
+            <span className="hidden md:inline-block text-white/80 line-through text-xs font-medium bg-black/40 px-2 py-1 rounded-sm backdrop-blur-sm">
+              {parseFloat(product.compare_at_price!).toFixed(2)}
             </span>
           )}
         </div>

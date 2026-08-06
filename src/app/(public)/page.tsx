@@ -23,7 +23,7 @@ export default function HomePage() {
         transition={{ duration: 0.5 }}
         className="relative z-10"
       >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-0 pb-12 space-y-12 md:space-y-16">
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-0 pb-12 space-y-8 md:space-y-10">
           <ProductCarouselSection 
             title={settings['content_home_trending_title'] || 'الأكثر مبيعاً'}
             hook={useTrendingProducts} 

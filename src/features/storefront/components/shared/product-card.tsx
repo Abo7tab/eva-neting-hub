@@ -43,7 +43,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         visible: { opacity: 1, y: 0 }
       }}
       whileHover={{ y: -8, transition: { duration: 0.3 } }}
-      className="group relative flex flex-col bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden transition-shadow duration-300 hover:shadow-2xl"
+      className="group relative flex flex-col bg-white rounded-sm shadow-sm border border-slate-100 overflow-hidden transition-shadow duration-300 hover:shadow-2xl"
       style={{ '--hover-glow': 'color-mix(in srgb, var(--primary) 30%, transparent)' } as CSSProperties}
     >
       <style jsx>{`
@@ -65,15 +65,15 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           />
           
           {/* Top Badges */}
-          <div className="absolute top-3 right-3 flex flex-col gap-2 z-20">
+          <div className="absolute top-2 right-2 flex flex-col gap-2 z-20">
             {hasDiscount && (
-              <div className="bg-primary text-primary-foreground text-xs font-black px-3 py-1.5 rounded-full shadow-md">
+              <div className="bg-primary text-primary-foreground text-xs font-black px-2 py-1 rounded-sm shadow-md">
                 خصم {discountPercent}%
               </div>
             )}
             {product.is_trending && (
               <div 
-                className="bg-primary text-primary-foreground text-xs font-black px-3 py-1.5 rounded-full shadow-md"
+                className="bg-primary text-primary-foreground text-xs font-black px-2 py-1 rounded-sm shadow-md"
               >
                 الأكثر مبيعاً
               </div>
@@ -87,7 +87,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 400 }}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-primary-foreground font-bold text-sm shadow-lg bg-primary"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-sm text-primary-foreground font-bold text-sm shadow-lg bg-primary"
             >
               <ShoppingBag size={16} />
               أضف للسلة
@@ -110,7 +110,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                 {product.price} <span className="text-[10px] sm:text-xs font-bold">ج.م</span>
               </span>
               {hasDiscount && (
-                <span className="text-[10px] sm:text-xs text-slate-400 line-through mt-0.5">
+                <span className="hidden md:inline-block text-[10px] sm:text-xs text-slate-400 line-through mt-0.5">
                   {product.compare_at_price} ج.م
                 </span>
               )}
