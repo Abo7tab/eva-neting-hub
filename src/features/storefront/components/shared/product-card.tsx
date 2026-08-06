@@ -29,9 +29,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     toast.success('تمت الإضافة');
   };
 
-  const hasDiscount = product.compare_at_price && parseFloat(product.compare_at_price) > parseFloat(product.price);
+  const compareAtPrice = parseFloat(product.compare_at_price || '0');
+  const price = parseFloat(product.price || '0');
+  const hasDiscount = compareAtPrice > price && compareAtPrice > 0;
   const discountPercent = hasDiscount
-    ? Math.round(((parseFloat(product.compare_at_price!) - parseFloat(product.price)) / parseFloat(product.compare_at_price!)) * 100)
+    ? Math.round(((compareAtPrice - price) / compareAtPrice) * 100)
     : 0;
 
   return (

@@ -19,7 +19,7 @@ type ApiEnvelope<T = unknown> = {
 };
 
 function isApiEnvelope(value: unknown): value is ApiEnvelope {
-  return Boolean(value && typeof value === "object" && "success" in value);
+  return Boolean(value && typeof value === "object" && ("success" in value || "data" in value));
 }
 
 export const apiClient = axios.create({

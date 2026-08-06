@@ -126,7 +126,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     return 'منتجات مقترحة';
   }, [sameCatProducts, parentUuid, product]);
 
-  const hasDiscount = product.compare_at_price && parseFloat(product.compare_at_price) > parseFloat(product.price);
+  const compareAtPrice = parseFloat(product.compare_at_price || '0');
+  const currentPrice = parseFloat(product.price || '0');
+  const hasDiscount = compareAtPrice > currentPrice && compareAtPrice > 0;
 
   const handleAddToCart = () => {
     addItem({
