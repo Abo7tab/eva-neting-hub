@@ -15,7 +15,31 @@ import type { ProductFormData } from '../../schemas/product.schema';
 export function StepBasicInfo() {
   const { register, setValue, watch, formState: { errors } } = useFormContext<ProductFormData>();
   const { data: brands = [] } = useBrandsList();
-  const { data: categories = [] } = useCategoriesList();
+  const { data: rawCategories = [] } = useCategoriesList();
+
+  const getHierarchicalCategories = (cats: any[]) => {
+    const map = new Map<string, any[]>();
+    const roots: any[] = [];
+    cats.forEach(c => {
+      if (c.parent_uuid) {
+        if (!map.has(c.parent_uuid)) map.set(c.parent_uuid, []);
+        map.get(c.parent_uuid)!.push(c);
+      } else {
+        roots.push(c);
+      }
+    });
+
+    const result: any[] = [];
+    const traverse = (node: any, level: number) => {
+      result.push({ ...node, level });
+      const children = map.get(node.uuid) || [];
+      children.forEach(child => traverse(child, level + 1));
+    };
+    roots.forEach(root => traverse(root, 0));
+    return result;
+  };
+
+  const categories = getHierarchicalCategories(rawCategories);
 
   console.log('Brands loaded:', brands);
   console.log('Categories loaded:', categories);
@@ -68,7 +92,9 @@ export function StepBasicInfo() {
               </SelectTrigger>
               <SelectContent>
                 {categories.map((c: any) => (
-                  <SelectItem key={c.uuid} value={c.uuid}>{c.name}</SelectItem>
+                  <SelectItem key={c.uuid} value={c.uuid}>
+                    {'\u00A0\u00A0\u00A0\u00A0'.repeat(c.level || 0)}{c.level > 0 ? '— ' : ''}{c.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
