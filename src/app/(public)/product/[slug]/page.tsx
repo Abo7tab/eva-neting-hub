@@ -85,7 +85,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   };
 
   return (
-    <div className="container mx-auto px-4 py-10 pt-24">
+    <div className="container mx-auto max-w-6xl px-4 py-6 pt-20">
       {/* SEO: Product Structured Data to force Google to index images */}
       <script
         type="application/ld+json"
@@ -114,20 +114,20 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
       <button 
         onClick={() => router.back()}
-        className="mb-8 flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-bold w-fit bg-white/50 px-4 py-2 rounded-xl backdrop-blur-sm border border-slate-100 shadow-sm"
+        className="mb-4 flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-bold w-fit bg-white/50 px-3 py-1.5 rounded-sm backdrop-blur-sm border border-slate-100 shadow-sm text-sm"
       >
         <ChevronRight size={20} />
         الرجوع للتسوق
       </button>
 
-      <div className="flex flex-col md:flex-row gap-10 lg:gap-16">
+      <div className="flex flex-col md:flex-row gap-6 lg:gap-10">
         
         {/* Images Gallery */}
         <div className="w-full md:w-1/2 flex flex-col gap-4">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative aspect-square w-full rounded-3xl overflow-hidden bg-slate-50 border border-slate-100 shadow-sm cursor-pointer group"
+            className="relative aspect-[4/5] w-full rounded-sm overflow-hidden bg-slate-50 border border-slate-100 shadow-sm cursor-pointer group"
             onClick={() => setIsLightboxOpen(true)}
           >
             <AnimatePresence mode="wait">
@@ -160,12 +160,12 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           </motion.div>
 
           {images.length > 1 && (
-            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
               {images.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveImage(idx)}
-                  className={`relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all ${
+                  className={`relative w-14 h-14 rounded-sm overflow-hidden shrink-0 border-2 transition-all ${
                     activeImage === idx ? 'border-primary shadow-md' : 'border-transparent opacity-70 hover:opacity-100'
                   }`}
                 >
@@ -189,17 +189,17 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               </span>
             )}
             
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 leading-tight">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-black text-slate-900 leading-snug">
               {product.name}
             </h1>
             
-            <div className="flex items-end gap-4">
-              <span className="text-4xl font-black text-primary">
-                {product.price} ج.م
+            <div className="flex items-baseline gap-3">
+              <span className="text-2xl font-black text-primary" style={{ fontFamily: 'var(--font-montserrat, sans-serif)' }}>
+                {product.price} <span className="text-sm" style={{ fontFamily: 'var(--font-tajawal, sans-serif)' }}>ج.م</span>
               </span>
               {hasDiscount && (
-                <span className="text-2xl text-slate-400 line-through mb-1">
-                  {product.compare_at_price} ج.م
+                <span className="text-base text-slate-400 line-through" style={{ fontFamily: 'var(--font-montserrat, sans-serif)' }}>
+                  {product.compare_at_price} <span className="text-xs" style={{ fontFamily: 'var(--font-tajawal, sans-serif)' }}>ج.م</span>
                 </span>
               )}
             </div>
@@ -209,7 +209,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="prose prose-slate max-w-none text-slate-600 text-lg"
+            className="text-slate-600 text-sm leading-relaxed"
           >
             {product.description || product.short_description}
           </motion.div>
@@ -238,16 +238,16 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
             <button
               onClick={handleAddToCart}
-              className="flex-1 bg-primary text-primary-foreground font-bold py-4 px-8 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg hover:opacity-90"
+              className="flex-1 bg-primary text-primary-foreground font-bold py-3 px-6 rounded-sm flex items-center justify-center gap-2 transition-all shadow-lg hover:opacity-90 text-sm"
             >
-              <ShoppingCart size={20} />
+              <ShoppingCart size={18} />
               أضف للسلة
             </button>
             
             <button
               onClick={handleBuyNow}
               disabled={checkoutMutation.isPending}
-              className="flex-1 bg-[#25D366] hover:bg-[#1DA851] text-white font-bold py-4 px-8 rounded-2xl flex items-center justify-center gap-2 transition-all disabled:opacity-70 shadow-lg shadow-[#25D366]/20"
+              className="flex-1 bg-[#25D366] hover:bg-[#1DA851] text-white font-bold py-3 px-6 rounded-sm flex items-center justify-center gap-2 transition-all disabled:opacity-70 shadow-lg shadow-[#25D366]/20 text-sm"
             >
               {checkoutMutation.isPending ? 'جاري التحويل...' : 'اطلب عبر واتساب'}
             </button>
@@ -276,7 +276,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         </div>
       </div>
 
-      <section className="mt-20 border-t border-slate-100 pt-12">
+      <section className="mt-10 border-t border-slate-100 pt-8">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
             <p className="text-sm font-bold uppercase tracking-wider text-primary">
@@ -298,7 +298,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             variants={{
               visible: { transition: { staggerChildren: 0.06 } },
             }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"
           >
             {suggestions.map((item) => (
               <motion.div

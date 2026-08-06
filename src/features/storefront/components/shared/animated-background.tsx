@@ -4,36 +4,49 @@ export const AnimatedBackground = () => {
   return (
     <>
       <style>{`
-        @keyframes gradientMove {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
+        @keyframes driftLeft {
+          0%, 100% { transform: translateX(0%) scale(1); }
+          50% { transform: translateX(-15%) scale(1.08); }
         }
-        
-        .premium-animated-bg {
-          background: linear-gradient(
-            -45deg, 
-            rgba(255, 255, 255, 1) 0%, 
-            var(--primary) 30%, 
-            rgba(255, 255, 255, 1) 60%, 
-            var(--secondary) 100%
-          );
-          background-size: 400% 400%;
-          animation: gradientMove 20s ease-in-out infinite;
-          opacity: 0.15; /* Keep it subtle and elegant */
+        @keyframes driftRight {
+          0%, 100% { transform: translateX(0%) scale(1); }
+          50% { transform: translateX(15%) scale(1.08); }
+        }
+        .bg-blob-left {
+          animation: driftLeft 18s ease-in-out infinite;
+        }
+        .bg-blob-right {
+          animation: driftRight 22s ease-in-out infinite;
         }
       `}</style>
 
-      <div
-        className="fixed inset-0 pointer-events-none z-0 bg-white"
-      >
-        <div className="absolute inset-0 premium-animated-bg w-full h-full" />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-white overflow-hidden">
+        {/* Left blob - primary color */}
+        <div
+          className="bg-blob-left absolute rounded-full"
+          style={{
+            width: '70vw',
+            height: '70vw',
+            top: '-10%',
+            left: '-25%',
+            background: 'radial-gradient(circle, var(--primary) 0%, transparent 70%)',
+            opacity: 0.12,
+            filter: 'blur(40px)',
+          }}
+        />
+        {/* Right blob - secondary color */}
+        <div
+          className="bg-blob-right absolute rounded-full"
+          style={{
+            width: '70vw',
+            height: '70vw',
+            bottom: '-10%',
+            right: '-25%',
+            background: 'radial-gradient(circle, var(--secondary, var(--primary)) 0%, transparent 70%)',
+            opacity: 0.10,
+            filter: 'blur(50px)',
+          }}
+        />
       </div>
     </>
   );
