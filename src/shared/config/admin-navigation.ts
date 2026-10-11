@@ -1,6 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import {
   LayoutDashboard,
+  Activity,
   Package,
   Tag,
   FolderTree,
@@ -24,6 +25,11 @@ export const adminNavItems: NavItem[] = [
     title: 'لوحة التحكم',
     href: '/admin/dashboard',
     icon: LayoutDashboard,
+  },
+  {
+    title: 'مراقبة الخادم والضغط',
+    href: '/admin/monitor',
+    icon: Activity,
   },
   {
     title: 'المنتجات',
