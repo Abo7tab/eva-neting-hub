@@ -4,8 +4,8 @@ export function getQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 60 * 1000, // 1 minute
-        gcTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: 5 * 60 * 1000, // 5 minutes (eliminates repeated requests during browsing)
+        gcTime: 15 * 60 * 1000, // 15 minutes in memory cache
         refetchOnWindowFocus: false,
         retry: 1,
       },
