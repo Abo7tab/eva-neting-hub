@@ -13,17 +13,42 @@ import {
   RefreshCw,
   Cpu,
   Layers,
-  ArrowUpRight,
-  TrendingUp,
+  RotateCcw,
+  Trash2,
+  Calendar,
+  BarChart3,
+  HelpCircle,
 } from 'lucide-react';
-import { useServerHealth } from '@/features/monitor/hooks/use-monitor';
+import {
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  Legend,
+} from 'recharts';
+import {
+  useServerHealth,
+  useResetHealthCounters,
+  useClearServerCache,
+} from '@/features/monitor/hooks/use-monitor';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/components/ui/card';
 import { Button } from '@/shared/components/ui/button';
 import { Badge } from '@/shared/components/ui/badge';
 import { Skeleton } from '@/shared/components/ui/skeleton';
+import { Switch } from '@/shared/components/ui/switch';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/shared/components/ui/tabs';
 
 export default function ServerMonitorPage() {
-  const { data, isLoading, isError, refetch, isFetching, dataUpdatedAt } = useServerHealth();
+  const [autoRefresh, setAutoRefresh] = useState<boolean>(false);
+  const { data, isLoading, isError, refetch, isFetching, dataUpdatedAt } = useServerHealth(autoRefresh, 30000);
+  const resetMutation = useResetHealthCounters();
+  const clearCacheMutation = useClearServerCache();
+
   const [lastUpdatedText, setLastUpdatedText] = useState<string>('جاري التحديث...');
 
   useEffect(() => {
@@ -44,8 +69,8 @@ export default function ServerMonitorPage() {
 
   return (
     <div className="space-y-6 p-1 sm:p-2">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+      {/* Top Header & Control Center */}
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary">
@@ -56,33 +81,77 @@ export default function ServerMonitorPage() {
                 مراقبة أداء الخادم والحمل الإعلاني
               </h1>
               <p className="text-xs sm:text-sm text-slate-500">
-                متابعة حية للطلبات المتزامنة ومعدلات تجاوز الليمت والضغط
+                متابعة حية وتحليلات بالساعات والأيام للطلبات والضغط وتجاوز الليمت
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 self-end sm:self-auto">
-          <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200/60 text-xs text-slate-600">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span>تحديث تلقائي (كل 10 ثوانٍ)</span>
-            <span className="text-slate-400">|</span>
-            <span className="font-mono text-slate-700">{lastUpdatedText}</span>
+        {/* Action Controls */}
+        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
+          {/* Auto Refresh Toggle - OFF by default to save 100% server resources */}
+          <div className="flex items-center gap-2.5 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200/60 text-xs">
+            <Switch
+              checked={autoRefresh}
+              onCheckedChange={setAutoRefresh}
+              id="auto-refresh-toggle"
+            />
+            <label
+              htmlFor="auto-refresh-toggle"
+              className="cursor-pointer font-medium text-slate-700 select-none flex items-center gap-1.5"
+            >
+              <span>تحديث تلقائي (30ث)</span>
+              {autoRefresh ? (
+                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+              ) : (
+                <span className="text-[10px] text-slate-400">(مطفأ لتوفير الموارد)</span>
+              )}
+            </label>
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            disabled={isFetching}
-            className="rounded-xl gap-2 text-xs font-semibold h-9"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin text-primary' : ''}`} />
-            تحديث فوري
-          </Button>
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => refetch()}
+              disabled={isFetching}
+              className="rounded-xl gap-2 text-xs font-semibold h-9"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin text-primary' : ''}`} />
+              تحديث يدوي
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                if (confirm('هل تريد تصفير عدادات الضغط وتجاوز الليمت لليوم الحالي؟')) {
+                  resetMutation.mutate();
+                }
+              }}
+              disabled={resetMutation.isPending}
+              className="rounded-xl gap-1.5 text-xs font-semibold h-9 text-slate-700 hover:text-amber-600 hover:border-amber-200"
+            >
+              <RotateCcw className={`w-3.5 h-3.5 ${resetMutation.isPending ? 'animate-spin' : ''}`} />
+              تصفير العدادات
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                if (confirm('تنبيه: سيتم تفريغ كاش السيرفر بالكامل وإعادة بناءه. هل تود المتابعة؟')) {
+                  clearCacheMutation.mutate();
+                }
+              }}
+              disabled={clearCacheMutation.isPending}
+              className="rounded-xl gap-1.5 text-xs font-semibold h-9 text-slate-700 hover:text-red-600 hover:border-red-200"
+            >
+              <Trash2 className={`w-3.5 h-3.5 ${clearCacheMutation.isPending ? 'animate-spin' : ''}`} />
+              تفريغ الكاش
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -91,9 +160,7 @@ export default function ServerMonitorPage() {
           <Skeleton className="h-44 rounded-2xl" />
           <Skeleton className="h-44 rounded-2xl" />
           <Skeleton className="h-44 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-80 md:col-span-3 rounded-2xl" />
         </div>
       ) : isError ? (
         <Card className="border-red-100 bg-red-50/50 rounded-2xl p-6 text-center">
@@ -101,7 +168,7 @@ export default function ServerMonitorPage() {
             <AlertTriangle className="w-10 h-10 text-red-500 mx-auto" />
             <h3 className="text-base font-bold text-red-900">تعذر جلب بيانات الخادم</h3>
             <p className="text-sm text-red-600">
-              تأكد من تطبيق التحديثات على السيرفر وتشغيل الباك إند بنجاح.
+              تأكد من سحب التحديثات في السيرفر وتفعيل كاش المسارات بنجاح.
             </p>
             <Button onClick={() => refetch()} className="rounded-xl mt-2">
               إعادة المحاولة
@@ -110,7 +177,7 @@ export default function ServerMonitorPage() {
         </Card>
       ) : (
         <>
-          {/* Row 1: The 3 Core Safety Metrics */}
+          {/* Row 1: The 3 Core Safety Metric Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Metric 1: In-Flight Concurrency Meter */}
             <motion.div
@@ -131,7 +198,7 @@ export default function ServerMonitorPage() {
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-bold text-slate-700">
-                      الطلبات المتزامنة الآن
+                      الطلبات المتزامنة الحالية
                     </CardTitle>
                     <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
                       <Cpu className="w-4 h-4" />
@@ -177,7 +244,7 @@ export default function ServerMonitorPage() {
                     />
                   </div>
                   <p className="text-[11px] text-slate-500">
-                    نظام Admission Control يضمن عدم تجاوز السقف لحماية المعالج.
+                    نظام Admission Control يضمن عدم تجاوز السقف لحماية المعالج من السقوط.
                   </p>
                 </CardContent>
               </Card>
@@ -240,7 +307,7 @@ export default function ServerMonitorPage() {
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-bold text-slate-700">
-                      ذروة الضغط المعزولة (Load Shedding)
+                      ذروة الضغط المحمية (Load Shedding)
                     </CardTitle>
                     <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
                       <Layers className="w-4 h-4" />
@@ -264,7 +331,7 @@ export default function ServerMonitorPage() {
                   <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-600 space-y-1">
                     <div className="flex justify-between">
                       <span className="text-slate-500">حالة السيرفر:</span>
-                      <span className="font-bold text-emerald-600">محمي من السقوط بنسبة 100%</span>
+                      <span className="font-bold text-emerald-600">محمي من السقوط 100%</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-500">إعادة المحاولة:</span>
@@ -276,7 +343,166 @@ export default function ServerMonitorPage() {
             </motion.div>
           </div>
 
-          {/* Row 2: Secondary Indicators */}
+          {/* Row 2: Traffic History Analytics (Hourly & Daily) */}
+          <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
+            <CardHeader className="pb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-primary" />
+                    <CardTitle className="text-base font-bold text-slate-900">
+                      تحليل الضغط والترافيك (بالساعات والأيام)
+                    </CardTitle>
+                  </div>
+                  <CardDescription className="text-xs text-slate-500">
+                    مخزن في كاش الذاكرة بدون أي استهلاك لقاعدة البيانات أو الهارد
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-2">
+              <Tabs defaultValue="hourly" className="w-full">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                  <TabsList className="bg-slate-100/80 p-1 rounded-xl">
+                    <TabsTrigger value="hourly" className="rounded-lg text-xs font-bold gap-1.5 px-4 py-1.5">
+                      <Clock className="w-3.5 h-3.5" />
+                      آخر 24 ساعة (بالساعات)
+                    </TabsTrigger>
+                    <TabsTrigger value="daily" className="rounded-lg text-xs font-bold gap-1.5 px-4 py-1.5">
+                      <Calendar className="w-3.5 h-3.5" />
+                      آخر 7 أيام (بالأيام)
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <div className="hidden sm:flex items-center gap-4 text-xs font-semibold">
+                    <div className="flex items-center gap-1.5 text-slate-600">
+                      <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                      الطلبات المخدومة
+                    </div>
+                    <div className="flex items-center gap-1.5 text-slate-600">
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                      تجاوز الليمت (429)
+                    </div>
+                    <div className="flex items-center gap-1.5 text-slate-600">
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                      ذروة الضغط (503)
+                    </div>
+                  </div>
+                </div>
+
+                {/* Hourly Tab */}
+                <TabsContent value="hourly" className="space-y-4">
+                  <div className="h-64 sm:h-72 w-full pt-2" dir="ltr">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={data?.hourly_history || []}
+                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                      >
+                        <defs>
+                          <linearGradient id="colorServed" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
+                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
+                          </linearGradient>
+                          <linearGradient id="colorLimited" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.5} />
+                            <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                        <XAxis dataKey="time" tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                        <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: '#ffffff',
+                            borderRadius: '12px',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                            border: '1px solid #f1f5f9',
+                            fontSize: '12px',
+                            direction: 'rtl',
+                          }}
+                          labelFormatter={(val, items) => {
+                            const date = items?.[0]?.payload?.date || '';
+                            return `الساعة ${val} (${date})`;
+                          }}
+                          formatter={(value: any, name: any) => {
+                            if (name === 'served') return [value, 'طلبات ناجحة'];
+                            if (name === 'rate_limited') return [value, 'تجاوز ليمت (429)'];
+                            if (name === 'shed_503') return [value, 'ضغط زائد (503)'];
+                            return [value, name];
+                          }}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="served"
+                          stroke="#3b82f6"
+                          strokeWidth={2}
+                          fillOpacity={1}
+                          fill="urlColorServed"
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="rate_limited"
+                          stroke="#f59e0b"
+                          strokeWidth={2}
+                          fillOpacity={1}
+                          fill="urlColorLimited"
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="shed_503"
+                          stroke="#ef4444"
+                          strokeWidth={2}
+                          fill="#ef4444"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </TabsContent>
+
+                {/* Daily Tab */}
+                <TabsContent value="daily" className="space-y-4">
+                  <div className="h-64 sm:h-72 w-full pt-2" dir="ltr">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={data?.daily_history || []}
+                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                        <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                        <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: '#ffffff',
+                            borderRadius: '12px',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                            border: '1px solid #f1f5f9',
+                            fontSize: '12px',
+                            direction: 'rtl',
+                          }}
+                          labelFormatter={(val, items) => {
+                            const day = items?.[0]?.payload?.day_name || '';
+                            const full = items?.[0]?.payload?.full_date || '';
+                            return `${day} (${full})`;
+                          }}
+                          formatter={(value: any, name: any) => {
+                            if (name === 'served') return [value, 'طلبات مخدومة'];
+                            if (name === 'rate_limited') return [value, 'تجاوز ليمت'];
+                            if (name === 'shed_503') return [value, 'ضغط معزول'];
+                            return [value, name];
+                          }}
+                        />
+                        <Bar dataKey="served" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+                        <Bar dataKey="rate_limited" fill="#f59e0b" radius={[6, 6, 0, 0]} />
+                        <Bar dataKey="shed_503" fill="#ef4444" radius={[6, 6, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+
+          {/* Row 3: Secondary Indicators */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Card 4: Total Requests Served */}
             <Card className="rounded-2xl border-slate-100 shadow-sm p-5 flex items-center gap-4">
@@ -333,9 +559,7 @@ export default function ServerMonitorPage() {
                     : 'لا يوجد بعد'}
                 </h4>
                 <p className="text-[11px] text-slate-400">
-                  {data?.last_request_at
-                    ? new Date(data.last_request_at).toLocaleDateString('ar-EG')
-                    : 'في انتظار الزيارات'}
+                  آخر تحديث للصفحة: {lastUpdatedText}
                 </p>
               </div>
             </Card>
@@ -345,9 +569,9 @@ export default function ServerMonitorPage() {
           <Card className="rounded-2xl border-slate-100 shadow-sm bg-gradient-to-br from-slate-50/70 to-white">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
-                <Server className="w-5 h-5 text-primary" />
+                <HelpCircle className="w-5 h-5 text-primary" />
                 <CardTitle className="text-base font-bold text-slate-800">
-                  دليل قراءة المؤشرات أثناء الحملة الإعلانية
+                  دليل التحكم والحفاظ على الموارد
                 </CardTitle>
               </div>
             </CardHeader>
@@ -356,30 +580,30 @@ export default function ServerMonitorPage() {
                 <div className="bg-white p-3.5 rounded-xl border border-slate-100 space-y-1">
                   <div className="flex items-center gap-1.5 font-bold text-slate-800">
                     <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    الطلبات المتزامنة (Concurrency)
+                    التحديث التلقائي مطفأ افتراضياً
                   </div>
                   <p>
-                    طالما الرقم أقل من 15، السيرفر يعمل بأقصى سرعة واستجابة سريعة جداً. إذا وصل 20 يتدخل نظام الحماية تلقائياً لرفض الفائض فوراً دون سقوط السيرفر.
+                    حرصاً على عدم استهلاك الـ CPU، التحديث التلقائي مطفأ. يمكنك تشغيله يدوياً وقت متابعة الإعلان وإيقافه عند الانتهاء.
                   </p>
                 </div>
 
                 <div className="bg-white p-3.5 rounded-xl border border-slate-100 space-y-1">
                   <div className="flex items-center gap-1.5 font-bold text-slate-800">
                     <span className="w-2 h-2 rounded-full bg-amber-500" />
-                    تجاوز الليمت (429 Rate Limit)
+                    أزرار التحكم والتصفير السريع
                   </div>
                   <p>
-                    هؤلاء زوار أرسلوا أكثر من 200 طلب/دقيقة من نفس الـ IP. تم حظرهم مؤقتاً لمدة 30 ثانية لحماية المتجر من البوتات واستنزاف الذاكرة.
+                    زر "تصفير العدادات" يمكنك من بدء إحصائية جديدة لحملتك. زر "تفريغ الكاش" ينعش الذاكرة فوراً إذا أحسست بأي بطء.
                   </p>
                 </div>
 
                 <div className="bg-white p-3.5 rounded-xl border border-slate-100 space-y-1">
                   <div className="flex items-center gap-1.5 font-bold text-slate-800">
                     <span className="w-2 h-2 rounded-full bg-blue-500" />
-                    ذروة الضغط (503 Load Shedding)
+                    تحليلات الساعات والأيام
                   </div>
                   <p>
-                    تحدث فقط إذا دخل أكثر من 20 زائر في نفس الجزء من الثانية. الفرونت إند مبرمج ليعيد المحاولة تلقائياً بعد ثانية ونصف دون إزعاج الزائر.
+                    تتيح لك معرفة أي ساعة في اليوم شهدت أعلى ضغط إعلاني وأي أيام كانت الأكثر نشاطاً لضبط ميزانية حملاتك القادمة.
                   </p>
                 </div>
               </div>
