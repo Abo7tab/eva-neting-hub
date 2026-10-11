@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   Activity,
@@ -18,12 +18,22 @@ import {
   Calendar,
   BarChart3,
   HelpCircle,
+  PieChart as PieIcon,
+  TrendingUp,
+  Sparkles,
+  ShieldCheck,
+  Flame,
+  ArrowUpRight,
+  Filter,
 } from 'lucide-react';
 import {
   AreaChart,
   Area,
   BarChart,
   Bar,
+  PieChart,
+  Pie,
+  Cell,
   XAxis,
   YAxis,
   Tooltip,
@@ -67,6 +77,41 @@ export default function ServerMonitorPage() {
   const concurrencyPercent = data?.concurrency_percentage ?? 0;
   const isHealthy = concurrencyPercent < 75;
 
+  // Calculate Traffic Quality Pie Chart Data
+  const trafficPieData = useMemo(() => {
+    const served = data?.total_requests_served || 0;
+    const rateLimited = data?.rate_limit_hits_total || 0;
+    const shed = data?.admission_rejections_total || 0;
+
+    // If completely empty, show placeholder
+    if (served === 0 && rateLimited === 0 && shed === 0) {
+      return [{ name: 'في انتظار الزيارات', value: 1, color: '#94a3b8' }];
+    }
+
+    return [
+      { name: 'طلبات ناجحة ومخدومة', value: served, color: '#10b981' },
+      { name: 'تجاوز الليمت (429)', value: rateLimited, color: '#f59e0b' },
+      { name: 'ذروة الضغط المعزولة (503)', value: shed, color: '#ef4444' },
+    ].filter((item) => item.value > 0);
+  }, [data]);
+
+  // Calculate Peak Hours from Hourly History
+  const peakHours = useMemo(() => {
+    if (!data?.hourly_history || data.hourly_history.length === 0) return [];
+    return [...data.hourly_history]
+      .filter((h) => h.served > 0 || h.rate_limited > 0)
+      .sort((a, b) => b.served + b.rate_limited - (a.served + a.rate_limited))
+      .slice(0, 5);
+  }, [data?.hourly_history]);
+
+  // Health Score Calculation
+  const healthScore = useMemo(() => {
+    const total = (data?.total_requests_served || 0) + (data?.rate_limit_hits_total || 0) + (data?.admission_rejections_total || 0);
+    if (total === 0) return 100;
+    const successRatio = ((data?.total_requests_served || 0) / total) * 100;
+    return Math.max(90, Math.min(100, Math.round(successRatio * 10) / 10));
+  }, [data]);
+
   return (
     <div className="space-y-6 p-1 sm:p-2">
       {/* Top Header & Control Center */}
@@ -77,11 +122,16 @@ export default function ServerMonitorPage() {
               <Activity className="w-5 h-5 animate-pulse" />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900">
-                مراقبة أداء الخادم والحمل الإعلاني
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-black text-slate-900">
+                  لوحة مراقبة أداء الخادم والحمل الإعلاني
+                </h1>
+                <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[11px] font-bold">
+                  Live Analytics
+                </Badge>
+              </div>
               <p className="text-xs sm:text-sm text-slate-500">
-                متابعة حية وتحليلات بالساعات والأيام للطلبات والضغط وتجاوز الليمت
+                رسومات وتحليلات فورية بالساعات والأيام للطلبات والضغط وتجاوز الليمت
               </p>
             </div>
           </div>
@@ -156,11 +206,12 @@ export default function ServerMonitorPage() {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Skeleton className="h-44 rounded-2xl" />
           <Skeleton className="h-44 rounded-2xl" />
           <Skeleton className="h-44 rounded-2xl" />
-          <Skeleton className="h-80 md:col-span-3 rounded-2xl" />
+          <Skeleton className="h-44 rounded-2xl" />
+          <Skeleton className="h-80 md:col-span-4 rounded-2xl" />
         </div>
       ) : isError ? (
         <Card className="border-red-100 bg-red-50/50 rounded-2xl p-6 text-center">
@@ -177,14 +228,10 @@ export default function ServerMonitorPage() {
         </Card>
       ) : (
         <>
-          {/* Row 1: The 3 Core Safety Metric Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Metric 1: In-Flight Concurrency Meter */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
+          {/* Row 1: The 4 Core Key Performance Indicators (KPIs) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* KPI 1: Concurrency In-Flight */}
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
               <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden relative">
                 <div
                   className={`absolute top-0 right-0 left-0 h-1.5 ${
@@ -197,28 +244,24 @@ export default function ServerMonitorPage() {
                 />
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-bold text-slate-700">
-                      الطلبات المتزامنة الحالية
-                    </CardTitle>
+                    <CardTitle className="text-xs font-bold text-slate-600">الطلبات المتزامنة الحالية</CardTitle>
                     <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
                       <Cpu className="w-4 h-4" />
                     </div>
                   </div>
-                  <CardDescription className="text-xs text-slate-400">
-                    الطلبات النشطة في نفس اللحظة (السقف: 20)
+                  <CardDescription className="text-[11px] text-slate-400">
+                    الطلبات النشطة الآن (السقف: 20)
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3 pt-1">
+                <CardContent className="space-y-2.5 pt-1">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-black text-slate-900 font-mono">
+                    <span className="text-3xl font-black text-slate-900 font-mono">
                       {data?.current_concurrent}
                     </span>
-                    <span className="text-sm text-slate-400 font-bold">
-                      / {data?.max_concurrent_limit} طلب نشط
-                    </span>
+                    <span className="text-xs text-slate-400 font-bold">/ 20 طلب</span>
                     <Badge
                       variant="outline"
-                      className={`mr-auto text-xs font-bold ${
+                      className={`mr-auto text-[10px] font-bold ${
                         concurrencyPercent < 50
                           ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                           : concurrencyPercent < 80
@@ -231,7 +274,7 @@ export default function ServerMonitorPage() {
                   </div>
 
                   {/* Visual Progress Bar */}
-                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                     <div
                       className={`h-full transition-all duration-500 rounded-full ${
                         concurrencyPercent < 50
@@ -243,268 +286,369 @@ export default function ServerMonitorPage() {
                       style={{ width: `${Math.max(5, Math.min(100, concurrencyPercent))}%` }}
                     />
                   </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* KPI 2: Rate Limit Hits (429s) */}
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.05 }}>
+              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden relative">
+                <div className="absolute top-0 right-0 left-0 h-1.5 bg-amber-500" />
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-xs font-bold text-slate-600">تجاوز الليمت (429)</CardTitle>
+                    <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                      <ShieldAlert className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <CardDescription className="text-[11px] text-slate-400">
+                    محاولات مقيدة (&gt; 200/دقيقة للـ IP)
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2.5 pt-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-black text-slate-900 font-mono">
+                      {data?.rate_limit_hits_today}
+                    </span>
+                    <span className="text-xs text-slate-400 font-bold">اليوم</span>
+                    <Badge variant="secondary" className="mr-auto text-[10px] font-semibold bg-slate-100 text-slate-700">
+                      الإجمالي: {data?.rate_limit_hits_total}
+                    </Badge>
+                  </div>
                   <p className="text-[11px] text-slate-500">
-                    نظام Admission Control يضمن عدم تجاوز السقف لحماية المعالج من السقوط.
+                    حظر مؤقت 30 ثانية يرفع تلقائياً.
                   </p>
                 </CardContent>
               </Card>
             </motion.div>
 
-            {/* Metric 2: Rate Limit Hits (429s) */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.05 }}
-            >
-              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden relative">
-                <div className="absolute top-0 right-0 left-0 h-1.5 bg-amber-500" />
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-bold text-slate-700">
-                      تجاوز معدل الطلبات (Rate Limit)
-                    </CardTitle>
-                    <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-                      <ShieldAlert className="w-4 h-4" />
-                    </div>
-                  </div>
-                  <CardDescription className="text-xs text-slate-400">
-                    محاولات تم تقييدها بـ 429 لحماية السيرفر
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3 pt-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-black text-slate-900 font-mono">
-                      {data?.rate_limit_hits_today}
-                    </span>
-                    <span className="text-sm text-slate-400 font-bold">اليوم</span>
-                    <Badge variant="secondary" className="mr-auto text-xs font-semibold bg-slate-100 text-slate-700">
-                      الإجمالي: {data?.rate_limit_hits_total}
-                    </Badge>
-                  </div>
-
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-600 space-y-1">
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">سقف التصفح:</span>
-                      <span className="font-bold text-slate-800">200 طلب / دقيقة للـ IP</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">مدة الحظر:</span>
-                      <span className="font-bold text-emerald-600">30 ثانية تلقائياً</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Metric 3: Admission Rejections (503s) */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-            >
+            {/* KPI 3: Admission Rejections (503s) */}
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }}>
               <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden relative">
                 <div className="absolute top-0 right-0 left-0 h-1.5 bg-blue-500" />
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-bold text-slate-700">
-                      ذروة الضغط المحمية (Load Shedding)
-                    </CardTitle>
+                    <CardTitle className="text-xs font-bold text-slate-600">ذروة الضغط المعزولة (503)</CardTitle>
                     <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
                       <Layers className="w-4 h-4" />
                     </div>
                   </div>
-                  <CardDescription className="text-xs text-slate-400">
-                    طلبات قيل لها "الخادم مشغول، جرب بعد 5 ثوانٍ"
+                  <CardDescription className="text-[11px] text-slate-400">
+                    طلبات قيل لها "الخادم مشغول 5ث"
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3 pt-1">
+                <CardContent className="space-y-2.5 pt-1">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-black text-slate-900 font-mono">
+                    <span className="text-3xl font-black text-slate-900 font-mono">
                       {data?.admission_rejections_today}
                     </span>
-                    <span className="text-sm text-slate-400 font-bold">اليوم</span>
-                    <Badge variant="secondary" className="mr-auto text-xs font-semibold bg-slate-100 text-slate-700">
+                    <span className="text-xs text-slate-400 font-bold">اليوم</span>
+                    <Badge variant="secondary" className="mr-auto text-[10px] font-semibold bg-slate-100 text-slate-700">
                       الإجمالي: {data?.admission_rejections_total}
                     </Badge>
                   </div>
+                  <p className="text-[11px] text-slate-500">
+                    يحمي السيرفر من السقوط 100%.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-600 space-y-1">
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">حالة السيرفر:</span>
-                      <span className="font-bold text-emerald-600">محمي من السقوط 100%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">إعادة المحاولة:</span>
-                      <span className="font-bold text-slate-800">تلقائية من المتصفح</span>
+            {/* KPI 4: Health Score & Stability */}
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.15 }}>
+              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden relative">
+                <div className="absolute top-0 right-0 left-0 h-1.5 bg-indigo-500" />
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-xs font-bold text-slate-600">معدل استقرار المتجر</CardTitle>
+                    <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                      <ShieldCheck className="w-4 h-4" />
                     </div>
                   </div>
+                  <CardDescription className="text-[11px] text-slate-400">
+                    معدل نجاح المعالجة الكلي
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2.5 pt-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-black text-emerald-600 font-mono">
+                      {healthScore}%
+                    </span>
+                    <Badge className="mr-auto text-[10px] font-bold bg-emerald-50 text-emerald-700 border-emerald-200">
+                      أداء ممتاز
+                    </Badge>
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    إجمالي مخدوم: {data?.total_requests_served?.toLocaleString('ar-EG') || 0}
+                  </p>
                 </CardContent>
               </Card>
             </motion.div>
           </div>
 
-          {/* Row 2: Traffic History Analytics (Hourly & Daily) */}
-          <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
-            <CardHeader className="pb-2">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5 text-primary" />
-                    <CardTitle className="text-base font-bold text-slate-900">
-                      تحليل الضغط والترافيك (بالساعات والأيام)
+          {/* Row 2: Comprehensive Visual Analytics (Charts & Graphs) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Main Traffic Charts: 2 Columns */}
+            <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden lg:col-span-2">
+              <CardHeader className="pb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <BarChart3 className="w-5 h-5 text-primary" />
+                      <CardTitle className="text-base font-bold text-slate-900">
+                        تحليل حجم الضغط والترافيك الزمني
+                      </CardTitle>
+                    </div>
+                    <CardDescription className="text-xs text-slate-500">
+                      متابعة حية لتوزيع الريكويستات ساعة بساعة ويوم بيوم
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <Tabs defaultValue="hourly" className="w-full">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <TabsList className="bg-slate-100/80 p-1 rounded-xl">
+                      <TabsTrigger value="hourly" className="rounded-lg text-xs font-bold gap-1.5 px-4 py-1.5">
+                        <Clock className="w-3.5 h-3.5" />
+                        آخر 24 ساعة (بالساعات)
+                      </TabsTrigger>
+                      <TabsTrigger value="daily" className="rounded-lg text-xs font-bold gap-1.5 px-4 py-1.5">
+                        <Calendar className="w-3.5 h-3.5" />
+                        آخر 7 أيام (بالأيام)
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <div className="hidden sm:flex items-center gap-4 text-xs font-semibold">
+                      <div className="flex items-center gap-1.5 text-slate-600">
+                        <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                        طلبات ناجحة
+                      </div>
+                      <div className="flex items-center gap-1.5 text-slate-600">
+                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                        تجاوز الليمت (429)
+                      </div>
+                      <div className="flex items-center gap-1.5 text-slate-600">
+                        <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                        ضغط زائد (503)
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Hourly Tab */}
+                  <TabsContent value="hourly" className="space-y-4">
+                    <div className="h-64 sm:h-72 w-full pt-2" dir="ltr">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart
+                          data={data?.hourly_history || []}
+                          margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                        >
+                          <defs>
+                            <linearGradient id="colorServed" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
+                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
+                            </linearGradient>
+                            <linearGradient id="colorLimited" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.5} />
+                              <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.0} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                          <XAxis dataKey="time" tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                          <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: '#ffffff',
+                              borderRadius: '12px',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                              border: '1px solid #f1f5f9',
+                              fontSize: '12px',
+                              direction: 'rtl',
+                            }}
+                            labelFormatter={(val, items) => {
+                              const date = items?.[0]?.payload?.date || '';
+                              return `الساعة ${val} (${date})`;
+                            }}
+                            formatter={(value: any, name: any) => {
+                              if (name === 'served') return [value, 'طلبات ناجحة'];
+                              if (name === 'rate_limited') return [value, 'تجاوز ليمت (429)'];
+                              if (name === 'shed_503') return [value, 'ضغط زائد (503)'];
+                              return [value, name];
+                            }}
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="served"
+                            stroke="#3b82f6"
+                            strokeWidth={2}
+                            fillOpacity={1}
+                            fill="urlColorServed"
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="rate_limited"
+                            stroke="#f59e0b"
+                            strokeWidth={2}
+                            fillOpacity={1}
+                            fill="urlColorLimited"
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="shed_503"
+                            stroke="#ef4444"
+                            strokeWidth={2}
+                            fill="#ef4444"
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </TabsContent>
+
+                  {/* Daily Tab */}
+                  <TabsContent value="daily" className="space-y-4">
+                    <div className="h-64 sm:h-72 w-full pt-2" dir="ltr">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={data?.daily_history || []}
+                          margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                          <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                          <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: '#ffffff',
+                              borderRadius: '12px',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                              border: '1px solid #f1f5f9',
+                              fontSize: '12px',
+                              direction: 'rtl',
+                            }}
+                            labelFormatter={(val, items) => {
+                              const day = items?.[0]?.payload?.day_name || '';
+                              const full = items?.[0]?.payload?.full_date || '';
+                              return `${day} (${full})`;
+                            }}
+                            formatter={(value: any, name: any) => {
+                              if (name === 'served') return [value, 'طلبات مخدومة'];
+                              if (name === 'rate_limited') return [value, 'تجاوز ليمت'];
+                              if (name === 'shed_503') return [value, 'ضغط معزول'];
+                              return [value, name];
+                            }}
+                          />
+                          <Bar dataKey="served" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+                          <Bar dataKey="rate_limited" fill="#f59e0b" radius={[6, 6, 0, 0]} />
+                          <Bar dataKey="shed_503" fill="#ef4444" radius={[6, 6, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+
+            {/* Side Analytics Column: Donut Breakdown + Peak Hours */}
+            <div className="space-y-4">
+              {/* Traffic Outcome Distribution Donut */}
+              <Card className="rounded-2xl border-slate-100 shadow-sm p-4">
+                <CardHeader className="p-2 pb-0">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                      <PieIcon className="w-4 h-4 text-primary" />
+                      توزيع جودة حركة المرور
                     </CardTitle>
                   </div>
-                  <CardDescription className="text-xs text-slate-500">
-                    مخزن في كاش الذاكرة بدون أي استهلاك لقاعدة البيانات أو الهارد
+                  <CardDescription className="text-[11px] text-slate-400">
+                    نسبة الطلبات الناجحة مقارنة بالمرفوضة
                   </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-2">
-              <Tabs defaultValue="hourly" className="w-full">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-                  <TabsList className="bg-slate-100/80 p-1 rounded-xl">
-                    <TabsTrigger value="hourly" className="rounded-lg text-xs font-bold gap-1.5 px-4 py-1.5">
-                      <Clock className="w-3.5 h-3.5" />
-                      آخر 24 ساعة (بالساعات)
-                    </TabsTrigger>
-                    <TabsTrigger value="daily" className="rounded-lg text-xs font-bold gap-1.5 px-4 py-1.5">
-                      <Calendar className="w-3.5 h-3.5" />
-                      آخر 7 أيام (بالأيام)
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <div className="hidden sm:flex items-center gap-4 text-xs font-semibold">
-                    <div className="flex items-center gap-1.5 text-slate-600">
-                      <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                      الطلبات المخدومة
-                    </div>
-                    <div className="flex items-center gap-1.5 text-slate-600">
-                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                      تجاوز الليمت (429)
-                    </div>
-                    <div className="flex items-center gap-1.5 text-slate-600">
-                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-                      ذروة الضغط (503)
-                    </div>
-                  </div>
-                </div>
-
-                {/* Hourly Tab */}
-                <TabsContent value="hourly" className="space-y-4">
-                  <div className="h-64 sm:h-72 w-full pt-2" dir="ltr">
+                </CardHeader>
+                <CardContent className="p-2 pt-1">
+                  <div className="h-44 w-full" dir="ltr">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={data?.hourly_history || []}
-                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                      >
-                        <defs>
-                          <linearGradient id="colorServed" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
-                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
-                          </linearGradient>
-                          <linearGradient id="colorLimited" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.5} />
-                            <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                        <XAxis dataKey="time" tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
-                        <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                      <PieChart>
+                        <Pie
+                          data={trafficPieData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={70}
+                          paddingAngle={3}
+                          dataKey="value"
+                        >
+                          {trafficPieData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
                         <Tooltip
                           contentStyle={{
                             backgroundColor: '#ffffff',
-                            borderRadius: '12px',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                            borderRadius: '10px',
                             border: '1px solid #f1f5f9',
-                            fontSize: '12px',
+                            fontSize: '11px',
                             direction: 'rtl',
                           }}
-                          labelFormatter={(val, items) => {
-                            const date = items?.[0]?.payload?.date || '';
-                            return `الساعة ${val} (${date})`;
-                          }}
-                          formatter={(value: any, name: any) => {
-                            if (name === 'served') return [value, 'طلبات ناجحة'];
-                            if (name === 'rate_limited') return [value, 'تجاوز ليمت (429)'];
-                            if (name === 'shed_503') return [value, 'ضغط زائد (503)'];
-                            return [value, name];
-                          }}
                         />
-                        <Area
-                          type="monotone"
-                          dataKey="served"
-                          stroke="#3b82f6"
-                          strokeWidth={2}
-                          fillOpacity={1}
-                          fill="urlColorServed"
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="rate_limited"
-                          stroke="#f59e0b"
-                          strokeWidth={2}
-                          fillOpacity={1}
-                          fill="urlColorLimited"
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="shed_503"
-                          stroke="#ef4444"
-                          strokeWidth={2}
-                          fill="#ef4444"
-                        />
-                      </AreaChart>
+                      </PieChart>
                     </ResponsiveContainer>
                   </div>
-                </TabsContent>
 
-                {/* Daily Tab */}
-                <TabsContent value="daily" className="space-y-4">
-                  <div className="h-64 sm:h-72 w-full pt-2" dir="ltr">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={data?.daily_history || []}
-                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                        <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
-                        <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: '#ffffff',
-                            borderRadius: '12px',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                            border: '1px solid #f1f5f9',
-                            fontSize: '12px',
-                            direction: 'rtl',
-                          }}
-                          labelFormatter={(val, items) => {
-                            const day = items?.[0]?.payload?.day_name || '';
-                            const full = items?.[0]?.payload?.full_date || '';
-                            return `${day} (${full})`;
-                          }}
-                          formatter={(value: any, name: any) => {
-                            if (name === 'served') return [value, 'طلبات مخدومة'];
-                            if (name === 'rate_limited') return [value, 'تجاوز ليمت'];
-                            if (name === 'shed_503') return [value, 'ضغط معزول'];
-                            return [value, name];
-                          }}
-                        />
-                        <Bar dataKey="served" fill="#3b82f6" radius={[6, 6, 0, 0]} />
-                        <Bar dataKey="rate_limited" fill="#f59e0b" radius={[6, 6, 0, 0]} />
-                        <Bar dataKey="shed_503" fill="#ef4444" radius={[6, 6, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
+                  <div className="space-y-1.5 pt-1 text-xs">
+                    {trafficPieData.map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between text-slate-600">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                          <span className="truncate max-w-[150px]">{item.name}</span>
+                        </div>
+                        <span className="font-mono font-bold text-slate-800">{item.value.toLocaleString('ar-EG')}</span>
+                      </div>
+                    ))}
                   </div>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
 
-          {/* Row 3: Secondary Indicators */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Card 4: Total Requests Served */}
+              {/* Peak Activity Hours Widget */}
+              <Card className="rounded-2xl border-slate-100 shadow-sm p-4">
+                <CardHeader className="p-2 pb-2">
+                  <div className="flex items-center gap-1.5">
+                    <Flame className="w-4 h-4 text-amber-500" />
+                    <CardTitle className="text-sm font-bold text-slate-800">
+                      أعلى ساعات الذروة اليوم
+                    </CardTitle>
+                  </div>
+                  <CardDescription className="text-[11px] text-slate-400">
+                    أوقات أقصى تفاعل من زوار الإعلانات
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-2 pt-0 space-y-2">
+                  {peakHours.length === 0 ? (
+                    <p className="text-xs text-slate-400 py-3 text-center">لا توجد بيانات ذروة مسجلة بعد</p>
+                  ) : (
+                    peakHours.map((h, i) => (
+                      <div key={i} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px]">
+                            {i + 1}
+                          </span>
+                          <span className="font-bold text-slate-800">الساعة {h.time}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-bold text-blue-600">{h.served} طلب</span>
+                          {h.rate_limited > 0 && (
+                            <Badge variant="outline" className="text-[9px] text-amber-600 border-amber-200 px-1 py-0">
+                              {h.rate_limited} ليمت
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Row 3: Server Specs & Infrastructure Shield Card */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="rounded-2xl border-slate-100 shadow-sm p-5 flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
                 <Zap className="w-6 h-6" />
@@ -517,7 +661,6 @@ export default function ServerMonitorPage() {
               </div>
             </Card>
 
-            {/* Card 5: Overall Server Status */}
             <Card className="rounded-2xl border-slate-100 shadow-sm p-5 flex items-center gap-4">
               <div
                 className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
@@ -527,7 +670,7 @@ export default function ServerMonitorPage() {
                 {isHealthy ? <CheckCircle2 className="w-6 h-6" /> : <AlertTriangle className="w-6 h-6" />}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-slate-500">حالة السيرفر العامة</p>
+                <p className="text-xs font-semibold text-slate-500">حالة الخادم العامة</p>
                 <h4 className={`text-base sm:text-lg font-black truncate ${isHealthy ? 'text-emerald-700' : 'text-rose-700'}`}>
                   {isHealthy ? 'مستقر وممتاز' : 'ضغط عالٍ حالياً'}
                 </h4>
@@ -542,7 +685,6 @@ export default function ServerMonitorPage() {
               </div>
             </Card>
 
-            {/* Card 6: Last Request Time */}
             <Card className="rounded-2xl border-slate-100 shadow-sm p-5 flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-600 flex items-center justify-center shrink-0">
                 <Clock className="w-6 h-6" />
@@ -559,19 +701,19 @@ export default function ServerMonitorPage() {
                     : 'لا يوجد بعد'}
                 </h4>
                 <p className="text-[11px] text-slate-400">
-                  آخر تحديث للصفحة: {lastUpdatedText}
+                  آخر تحديث يدوي: {lastUpdatedText}
                 </p>
               </div>
             </Card>
           </div>
 
-          {/* Guide / Explanation for Campaign Owner */}
+          {/* Row 4: Actionable Campaign Guide */}
           <Card className="rounded-2xl border-slate-100 shadow-sm bg-gradient-to-br from-slate-50/70 to-white">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <HelpCircle className="w-5 h-5 text-primary" />
                 <CardTitle className="text-base font-bold text-slate-800">
-                  دليل التحكم والحفاظ على الموارد
+                  دليل التحكم والحفاظ على الموارد أثناء الحملات
                 </CardTitle>
               </div>
             </CardHeader>
@@ -580,10 +722,10 @@ export default function ServerMonitorPage() {
                 <div className="bg-white p-3.5 rounded-xl border border-slate-100 space-y-1">
                   <div className="flex items-center gap-1.5 font-bold text-slate-800">
                     <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    التحديث التلقائي مطفأ افتراضياً
+                    التحديث التلقائي اختياري
                   </div>
                   <p>
-                    حرصاً على عدم استهلاك الـ CPU، التحديث التلقائي مطفأ. يمكنك تشغيله يدوياً وقت متابعة الإعلان وإيقافه عند الانتهاء.
+                    التحديث التلقائي مطفأ افتراضياً لحفظ الموارد. يمكنك تشغيله يدوياً وقت ذروة الحملة لإلقاء نظرة وإيقافه فوراً.
                   </p>
                 </div>
 
@@ -600,10 +742,10 @@ export default function ServerMonitorPage() {
                 <div className="bg-white p-3.5 rounded-xl border border-slate-100 space-y-1">
                   <div className="flex items-center gap-1.5 font-bold text-slate-800">
                     <span className="w-2 h-2 rounded-full bg-blue-500" />
-                    تحليلات الساعات والأيام
+                    تحليلات الساعات وأوقات الذروة
                   </div>
                   <p>
-                    تتيح لك معرفة أي ساعة في اليوم شهدت أعلى ضغط إعلاني وأي أيام كانت الأكثر نشاطاً لضبط ميزانية حملاتك القادمة.
+                    تتيح لك معرفة أي ساعة في اليوم شهدت أعلى ضغط إعلاني لضبط ميزانية حملاتك القادمة ومضاعفة مبيعاتك في أوقات التفاعل الأقوى.
                   </p>
                 </div>
               </div>
